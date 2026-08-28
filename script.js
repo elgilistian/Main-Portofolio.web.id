@@ -500,73 +500,107 @@ Saya juga belajar bahwa dalam membuat website, terkadang hasil pertama belum ten
 /* =========================================
    CONTACT FORM
 ========================================= */
-
-const contactForm =
-    document.getElementById("contactForm");
-
-const formStatus =
-    document.getElementById("formStatus");
-
+const contactForm = document.getElementById("contactForm");
+const formStatus = document.getElementById("formStatus");
 
 if (contactForm) {
+    contactForm.addEventListener("submit", async function (event) {
+        event.preventDefault();
 
-    contactForm.addEventListener(
-        "submit",
-        function (event) {
+        // Tampilkan status mengirim
+        formStatus.style.display = "block";
+        formStatus.textContent = "Mengirim pesan...";
 
-            event.preventDefault();
+        // Ambil data form
+        const formData = new FormData(contactForm);
 
-            formStatus.style.display = "block";
+        try {
+            const response = await fetch(contactForm.action, {
+                method: "POST",
+                body: formData,
+                headers: {
+                    "Accept": "application/json"
+                }
+            });
 
+            if (response.ok) {
+                // Berhasil
+                formStatus.textContent =
+                    "Pesan berhasil dikirim. Terima kasih sudah menghubungi saya!";
+
+                contactForm.reset();
+
+                // Hilangkan status setelah 4 detik
+                setTimeout(() => {
+                    formStatus.style.display = "none";
+                }, 4000);
+
+            } else {
+                // Gagal
+                formStatus.textContent =
+                    "Gagal mengirim pesan. Silakan coba lagi.";
+            }
+
+        } catch (error) {
+            // Error koneksi
             formStatus.textContent =
-                "Pesan berhasil disiapkan. Terima kasih sudah menghubungi saya.";
-
-            contactForm.reset();
-
-            setTimeout(() => {
-
-                formStatus.style.display = "none";
-
-            }, 4000);
-
+                "Terjadi kesalahan koneksi. Silakan coba lagi.";
         }
-    );
-
+    });
 }
 
 
-
+// ==========================================
+// ANIMASI WEBSITE
+// ==========================================
 
 document.addEventListener("DOMContentLoaded", function () {
+
     // Jalankan animasi Hero langsung saat halaman selesai dimuat
-    const heroSection = document.querySelector("#hero, header, .hero-content");
+    const heroSection =
+        document.querySelector("#hero, header, .hero-content");
+
     if (heroSection) {
         heroSection.classList.add("hero-active");
     }
 
-    // Konfigurasi Intersection Observer untuk Scroll Section
+
+    // Konfigurasi Intersection Observer
     const observerOptions = {
         root: null,
-        rootMargin: "0px 0px -80px 0px", // Memicu animasi sedikit lebih awal sebelum elemen sepenuhnya terlihat
-        threshold: 0.1 // Hanya butuh 10% elemen terlihat agar transisi yang halus mulai berjalan
+        rootMargin: "0px 0px -80px 0px",
+        threshold: 0.1
     };
 
-    const observer = new IntersectionObserver((entries, observer) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                // Memberikan sedikit delay via requestAnimationFrame agar rendering GPU lebih lancar
-                requestAnimationFrame(() => {
-                    entry.target.classList.add("scroll-active");
-                });
-                observer.unobserve(entry.target);
-            }
-        });
-    }, observerOptions);
 
-    // Daftarkan semua elemen non-hero untuk di-animasikan saat scroll
+    // Intersection Observer untuk animasi scroll
+    const observer = new IntersectionObserver(
+        (entries, observer) => {
+
+            entries.forEach(entry => {
+
+                if (entry.isIntersecting) {
+
+                    requestAnimationFrame(() => {
+                        entry.target.classList.add("scroll-active");
+                    });
+
+                    observer.unobserve(entry.target);
+                }
+
+            });
+
+        },
+        observerOptions
+    );
+
+
+    // Daftarkan semua elemen untuk animasi
     const scrollTargets = document.querySelectorAll(
         "section:not(#hero), .about-info, .about-visual, .skill-category, .project-card, .info-card, .bottom-item"
     );
 
     scrollTargets.forEach(el => observer.observe(el));
+
 });
+
