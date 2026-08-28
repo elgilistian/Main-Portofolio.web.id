@@ -604,3 +604,723 @@ document.addEventListener("DOMContentLoaded", function () {
 
 });
 
+
+
+
+
+document.addEventListener("DOMContentLoaded", () => {
+
+    /* =====================================================
+       ELEMENT
+    ===================================================== */
+
+    const categoryNav =
+        document.querySelector(".pro-category-nav");
+
+    const categories =
+        document.querySelectorAll(".pro-category");
+
+    const title =
+        document.getElementById("proSkillTitle");
+
+    const description =
+        document.getElementById("proSkillDescription");
+
+    const number =
+        document.getElementById("proSkillNumber");
+
+    const list =
+        document.getElementById("proSkillList");
+
+    const count =
+        document.getElementById("proSkillCount");
+
+
+    /* =====================================================
+       SKILLS DATA
+    ===================================================== */
+
+    const skills = {
+
+        frontend: {
+
+            number: "01",
+
+            title: "Front End",
+
+            description:
+                "Membangun tampilan website yang modern, responsif, dan interaktif.",
+
+            items: [
+
+                {
+                    icon: "fa-brands fa-html5",
+                    name: "HTML5",
+                    desc: "Structure & Semantic Web"
+                },
+
+                {
+                    icon: "fa-brands fa-css3-alt",
+                    name: "CSS3",
+                    desc: "Styling & Responsive Design"
+                },
+
+                {
+                    icon: "fa-brands fa-js",
+                    name: "JavaScript",
+                    desc: "Interaction & Web Logic"
+                }
+
+            ]
+
+        },
+
+
+        backend: {
+
+            number: "02",
+
+            title: "Back End",
+
+            description:
+                "Mempelajari pengembangan sisi server dan pengelolaan database.",
+
+            items: [
+
+                {
+                    icon: "fa-brands fa-php",
+                    name: "PHP",
+                    desc: "Server Side Development"
+                },
+
+                {
+                    icon: "fa-solid fa-database",
+                    name: "MySQL",
+                    desc: "Database Management · Beginner"
+                }
+
+            ]
+
+        },
+
+
+        programming: {
+
+            number: "03",
+
+            title: "Programming",
+
+            description:
+                "Bahasa pemrograman untuk melatih logika, algoritma, debugging, dan problem solving.",
+
+            items: [
+
+                {
+                    icon: "fa-brands fa-python",
+                    name: "Python",
+                    desc: "Debugging & Programming"
+                },
+
+                {
+                    icon: "fa-solid fa-code",
+                    name: "C++",
+                    desc: "Programming Fundamentals"
+                },
+
+                {
+                    icon: "fa-brands fa-java",
+                    name: "Java",
+                    desc: "Object Oriented Programming"
+                }
+
+            ]
+
+        },
+
+
+        ui: {
+
+            number: "04",
+
+            title: "UI Design",
+
+            description:
+                "Merancang interface yang clean, modern, dan mudah digunakan.",
+
+            items: [
+
+                {
+                    icon: "fa-brands fa-figma",
+                    name: "Figma",
+                    desc: "Interface & Prototype Design"
+                },
+
+                {
+                    icon: "fa-solid fa-pen-ruler",
+                    name: "Stitch",
+                    desc: "UI Exploration & Design"
+                }
+
+            ]
+
+        },
+
+
+        framework: {
+
+            number: "05",
+
+            title: "Framework",
+
+            description:
+                "Framework yang membantu mempercepat proses pembuatan website responsif.",
+
+            items: [
+
+                {
+                    icon: "fa-brands fa-bootstrap",
+                    name: "Bootstrap",
+                    desc: "Responsive UI Framework"
+                },
+
+                {
+                    icon: "fa-solid fa-wind",
+                    name: "Tailwind CSS",
+                    desc: "Utility First CSS"
+                }
+
+            ]
+
+        },
+
+
+        editing: {
+
+            number: "06",
+
+            title: "Editing",
+
+            description:
+                "Tools kreatif untuk membuat desain, video, motion, dan konten digital.",
+
+            items: [
+
+                {
+                    icon: "fa-solid fa-palette",
+                    name: "Canva",
+                    desc: "Graphic & Content Design"
+                },
+
+                {
+                    icon: "fa-solid fa-film",
+                    name: "CapCut",
+                    desc: "Video Editing"
+                },
+
+                {
+                    icon: "fa-solid fa-image",
+                    name: "Photoshop",
+                    desc: "Image Editing"
+                },
+
+                {
+                    icon: "fa-solid fa-font",
+                    name: "PixelLab",
+                    desc: "Typography & Graphics"
+                },
+
+                {
+                    icon: "fa-solid fa-clapperboard",
+                    name: "Alight Motion",
+                    desc: "Motion Editing"
+                }
+
+            ]
+
+        },
+
+
+        tools: {
+
+            number: "07",
+
+            title: "Tools",
+
+            description:
+                "Software yang membantu saya dalam coding, debugging, development, dan eksperimen.",
+
+            items: [
+
+                {
+                    icon: "fa-solid fa-code",
+                    name: "VS Code",
+                    desc: "Code Editor"
+                },
+
+                {
+                    icon: "fa-solid fa-terminal",
+                    name: "Code::Blocks",
+                    desc: "C / C++ Development"
+                },
+
+                {
+                    icon: "fa-solid fa-flask",
+                    name: "Google Colab",
+                    desc: "Python Notebook"
+                },
+
+                {
+                    icon: "fa-brands fa-git-alt",
+                    name: "Git",
+                    desc: "Version Control"
+                },
+
+                {
+                    icon: "fa-solid fa-bug",
+                    name: "DevTools",
+                    desc: "Debugging & Testing"
+                }
+
+            ]
+
+        }
+
+    };
+
+
+    /* =====================================================
+       RENDER SKILLS
+    ===================================================== */
+
+    function renderSkills(category) {
+
+        const data = skills[category];
+
+        if (!data) return;
+
+
+        /* -----------------------------------------------
+           UPDATE HEADER
+        ----------------------------------------------- */
+
+        title.textContent =
+            data.title;
+
+        description.textContent =
+            data.description;
+
+        number.textContent =
+            data.number;
+
+        count.textContent =
+            `${String(data.items.length).padStart(2, "0")} SKILLS`;
+
+
+        /* -----------------------------------------------
+           CLEAR OLD SKILLS
+        ----------------------------------------------- */
+
+        list.innerHTML = "";
+
+
+        /* -----------------------------------------------
+           CREATE SKILLS
+        ----------------------------------------------- */
+
+        data.items.forEach((skill, index) => {
+
+            const element =
+                document.createElement("div");
+
+            element.className =
+                "pro-skill";
+
+
+            element.innerHTML = `
+
+                <div class="pro-skill-symbol">
+
+                    <i class="${skill.icon}"></i>
+
+                </div>
+
+                <div class="pro-skill-info">
+
+                    <strong>
+                        ${skill.name}
+                    </strong>
+
+                    <span>
+                        ${skill.desc}
+                    </span>
+
+                </div>
+
+            `;
+
+
+            list.appendChild(element);
+
+
+            /* stagger animation */
+
+            setTimeout(() => {
+
+                element.classList.add("show");
+
+            }, 70 * index);
+
+        });
+
+    }
+
+
+    /* =====================================================
+       SELECT CATEGORY
+    ===================================================== */
+
+    function selectCategory(categoryElement) {
+
+        if (!categoryElement) return;
+
+
+        /* remove active */
+
+        categories.forEach(item => {
+
+            item.classList.remove("active");
+
+        });
+
+
+        /* activate */
+
+        categoryElement.classList.add("active");
+
+
+        /* render */
+
+        renderSkills(
+            categoryElement.dataset.skill
+        );
+
+
+        /* -----------------------------------------------
+           AUTO SCROLL TO ACTIVE CATEGORY
+        ----------------------------------------------- */
+
+        if (window.innerWidth <= 700) {
+
+            categoryElement.scrollIntoView({
+
+                behavior: "smooth",
+
+                block: "nearest",
+
+                inline: "center"
+
+            });
+
+        }
+
+    }
+
+
+    /* =====================================================
+       CLICK / TAP
+    ===================================================== */
+
+    categories.forEach(category => {
+
+        category.addEventListener(
+            "click",
+            () => {
+
+                selectCategory(category);
+
+            }
+        );
+
+    });
+
+
+    /* =====================================================
+       MOBILE TOUCH SWIPE
+    ===================================================== */
+
+    let touchStartX = 0;
+
+    let touchStartY = 0;
+
+    let touchEndX = 0;
+
+    let touchEndY = 0;
+
+
+    categoryNav.addEventListener(
+        "touchstart",
+        event => {
+
+            touchStartX =
+                event.touches[0].clientX;
+
+            touchStartY =
+                event.touches[0].clientY;
+
+        },
+        {
+            passive: true
+        }
+    );
+
+
+    categoryNav.addEventListener(
+        "touchmove",
+        event => {
+
+            touchEndX =
+                event.touches[0].clientX;
+
+            touchEndY =
+                event.touches[0].clientY;
+
+        },
+        {
+            passive: true
+        }
+    );
+
+
+    categoryNav.addEventListener(
+        "touchend",
+        () => {
+
+            const diffX =
+                touchStartX - touchEndX;
+
+            const diffY =
+                touchStartY - touchEndY;
+
+
+            /*
+
+               Jika gerakan horizontal
+               lebih besar daripada vertical,
+               berarti user sedang swipe kategori.
+
+            */
+
+            if (
+                Math.abs(diffX) >
+                Math.abs(diffY)
+            ) {
+
+                if (
+                    Math.abs(diffX) > 35
+                ) {
+
+                    if (diffX > 0) {
+
+                        /* SWIPE LEFT */
+
+                        categoryNav.scrollBy({
+
+                            left: 180,
+
+                            behavior: "smooth"
+
+                        });
+
+                    } else {
+
+                        /* SWIPE RIGHT */
+
+                        categoryNav.scrollBy({
+
+                            left: -180,
+
+                            behavior: "smooth"
+
+                        });
+
+                    }
+
+                }
+
+            }
+
+
+            touchStartX = 0;
+            touchStartY = 0;
+
+            touchEndX = 0;
+            touchEndY = 0;
+
+        }
+    );
+
+
+    /* =====================================================
+       MOUSE DRAG
+       Berguna untuk desktop / laptop
+    ===================================================== */
+
+    let isDragging = false;
+
+    let startX = 0;
+
+    let scrollStart = 0;
+
+
+    categoryNav.addEventListener(
+        "mousedown",
+        event => {
+
+            isDragging = true;
+
+            categoryNav.classList.add(
+                "is-dragging"
+            );
+
+            startX =
+                event.pageX -
+                categoryNav.offsetLeft;
+
+            scrollStart =
+                categoryNav.scrollLeft;
+
+        }
+    );
+
+
+    categoryNav.addEventListener(
+        "mouseleave",
+        () => {
+
+            isDragging = false;
+
+            categoryNav.classList.remove(
+                "is-dragging"
+            );
+
+        }
+    );
+
+
+    categoryNav.addEventListener(
+        "mouseup",
+        () => {
+
+            isDragging = false;
+
+            categoryNav.classList.remove(
+                "is-dragging"
+            );
+
+        }
+    );
+
+
+    categoryNav.addEventListener(
+        "mousemove",
+        event => {
+
+            if (!isDragging) return;
+
+
+            event.preventDefault();
+
+
+            const x =
+                event.pageX -
+                categoryNav.offsetLeft;
+
+            const walk =
+                (x - startX) * 1.5;
+
+
+            categoryNav.scrollLeft =
+                scrollStart - walk;
+
+        }
+    );
+
+
+    /* =====================================================
+       KEYBOARD NAVIGATION
+    ===================================================== */
+
+    categories.forEach(
+        (category, index) => {
+
+            category.addEventListener(
+                "keydown",
+                event => {
+
+                    let nextIndex;
+
+
+                    if (
+                        event.key === "ArrowRight" ||
+                        event.key === "ArrowDown"
+                    ) {
+
+                        event.preventDefault();
+
+                        nextIndex =
+                            (index + 1)
+                            % categories.length;
+
+                    }
+
+
+                    if (
+                        event.key === "ArrowLeft" ||
+                        event.key === "ArrowUp"
+                    ) {
+
+                        event.preventDefault();
+
+                        nextIndex =
+                            (
+                                index -
+                                1 +
+                                categories.length
+                            )
+                            %
+                            categories.length;
+
+                    }
+
+
+                    if (
+                        nextIndex !== undefined
+                    ) {
+
+                        const next =
+                            categories[nextIndex];
+
+                        next.focus();
+
+                        selectCategory(next);
+
+                    }
+
+                }
+            );
+
+        }
+    );
+
+
+    /* =====================================================
+       INITIAL STATE
+    ===================================================== */
+
+    selectCategory(
+        document.querySelector(
+            ".pro-category.active"
+        )
+    );
+
+});
