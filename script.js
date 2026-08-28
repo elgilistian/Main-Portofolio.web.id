@@ -303,7 +303,7 @@ document.addEventListener("DOMContentLoaded", function () {
             title: "Website Sistem Akademik sederhana",
             description: "pada wesbite ini adalah layanan akademik bagi mahasiswa dan dosen dengan fitur sederhana sperti menejmen tugas, absen, chat dosen dll.",
             tech: ["PHP", "Bootstrap", "MySql"],
-            link: "hhttps://myacademic.ct.ws/"
+            link: "https://myacademic.ct.ws/"
         },
         project4: {
             image: "assets/port-2.png",
