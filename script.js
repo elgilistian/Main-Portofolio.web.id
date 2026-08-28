@@ -1,23 +1,195 @@
-// ==========================================
-// NAVBAR & HAMBURGER MENU
-// ==========================================
-const hamburger = document.getElementById("hamburger");
+/* =====================================================
+   NAVIGATION
+===================================================== */
+
+const siteHeader = document.getElementById("siteHeader");
+const navToggle = document.getElementById("navToggle");
 const navMenu = document.getElementById("navMenu");
-const navLinks = document.querySelectorAll(".nav-menu a");
+const navLinks = document.querySelectorAll(".nav-link");
 
-if (hamburger && navMenu) {
-    hamburger.addEventListener("click", () => {
-        hamburger.classList.toggle("active");
-        navMenu.classList.toggle("active");
+
+/* HAMBURGER */
+
+if (navToggle && navMenu) {
+
+    navToggle.addEventListener("click", function () {
+
+        const opened =
+            navMenu.classList.toggle("open");
+
+        navToggle.classList.toggle(
+            "active",
+            opened
+        );
+
+        navToggle.setAttribute(
+            "aria-expanded",
+            opened
+        );
+
     });
 
-    // Tutup menu setelah memilih halaman
-    navLinks.forEach(link => {
-        link.addEventListener("click", () => {
-            hamburger.classList.remove("active");
-            navMenu.classList.remove("active");
-        });
+}
+
+
+/* CLOSE MENU */
+
+navLinks.forEach(function (link) {
+
+    link.addEventListener("click", function () {
+
+        if (!navMenu || !navToggle) return;
+
+        navMenu.classList.remove("open");
+
+        navToggle.classList.remove("active");
+
+        navToggle.setAttribute(
+            "aria-expanded",
+            "false"
+        );
+
     });
+
+});
+
+
+/* =====================================================
+   NAVBAR SCROLL
+===================================================== */
+
+window.addEventListener("scroll", function () {
+
+    if (!siteHeader) return;
+
+    if (window.scrollY > 30) {
+
+        siteHeader.classList.add("scrolled");
+
+    } else {
+
+        siteHeader.classList.remove("scrolled");
+
+    }
+
+}, { passive: true });
+
+
+/* =====================================================
+   HERO INTERACTION
+===================================================== */
+
+const hero =
+    document.querySelector(".hero-new");
+
+const glow =
+    document.querySelector(".hero-glow");
+
+const imageArea =
+    document.getElementById("heroImageArea");
+
+const follow =
+    document.getElementById("heroFollow");
+
+
+if (hero) {
+
+    hero.addEventListener("mousemove", function (event) {
+
+        if (window.innerWidth <= 760) return;
+
+        const rect =
+            hero.getBoundingClientRect();
+
+        const x =
+            event.clientX - rect.left;
+
+        const y =
+            event.clientY - rect.top;
+
+
+        /* GLOW */
+
+        if (glow) {
+
+            glow.style.left =
+                x + "px";
+
+            glow.style.top =
+                y + "px";
+
+        }
+
+
+        /* PARALLAX */
+
+        if (imageArea) {
+
+            const centerX =
+                rect.width / 2;
+
+            const centerY =
+                rect.height / 2;
+
+            const moveX =
+                (x - centerX) / 45;
+
+            const moveY =
+                (y - centerY) / 45;
+
+            imageArea.style.transform =
+                `translate(${moveX}px, ${moveY}px)`;
+
+        }
+
+    });
+
+
+    hero.addEventListener("mouseleave", function () {
+
+        if (imageArea) {
+
+            imageArea.style.transform =
+                "translate(0, 0)";
+
+        }
+
+    });
+
+}
+
+
+/* =====================================================
+   IMAGE CURSOR
+===================================================== */
+
+if (imageArea && follow) {
+
+    imageArea.addEventListener(
+        "mousemove",
+        function (event) {
+
+            if (window.innerWidth <= 760)
+                return;
+
+            const rect =
+                imageArea.getBoundingClientRect();
+
+            const x =
+                event.clientX - rect.left;
+
+            const y =
+                event.clientY - rect.top;
+
+            follow.style.left =
+                x + "px";
+
+            follow.style.top =
+                y + "px";
+
+        }
+    );
+
 }
 
 // ==========================================
