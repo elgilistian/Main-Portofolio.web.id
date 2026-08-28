@@ -1,764 +1,112 @@
-/* =====================================================
-   NAVIGATION
-===================================================== */
+/* =========================================================
+   ELGI LISTIANI PORTFOLIO
+   INTERACTION SYSTEM
+   ========================================================= */
 
-const siteHeader = document.getElementById("siteHeader");
-const navToggle = document.getElementById("navToggle");
-const navMenu = document.getElementById("navMenu");
-const navLinks = document.querySelectorAll(".nav-link");
+document.addEventListener("DOMContentLoaded", () => {
 
+    /* =====================================================
+       ELEMENTS
+       ===================================================== */
 
-/* HAMBURGER */
+    const body = document.body;
+    const header = document.getElementById("siteHeader");
 
-if (navToggle && navMenu) {
+    const navToggle = document.getElementById("navToggle");
+    const navMenu = document.getElementById("navMenu");
+    const navLinks = document.querySelectorAll(".nav-link");
 
-    navToggle.addEventListener("click", function () {
+    const sections = document.querySelectorAll("main section[id]");
 
-        const opened =
-            navMenu.classList.toggle("open");
+    /* =====================================================
+       NAVBAR
+       ===================================================== */
 
-        navToggle.classList.toggle(
-            "active",
-            opened
-        );
+    function updateHeader() {
+        if (!header) return;
 
-        navToggle.setAttribute(
-            "aria-expanded",
-            opened
-        );
-
-    });
-
-}
-
-
-/* CLOSE MENU */
-
-navLinks.forEach(function (link) {
-
-    link.addEventListener("click", function () {
-
-        if (!navMenu || !navToggle) return;
-
-        navMenu.classList.remove("open");
-
-        navToggle.classList.remove("active");
-
-        navToggle.setAttribute(
-            "aria-expanded",
-            "false"
-        );
-
-    });
-
-});
-
-
-/* =====================================================
-   NAVBAR SCROLL
-===================================================== */
-
-window.addEventListener("scroll", function () {
-
-    if (!siteHeader) return;
-
-    if (window.scrollY > 30) {
-
-        siteHeader.classList.add("scrolled");
-
-    } else {
-
-        siteHeader.classList.remove("scrolled");
-
-    }
-
-}, { passive: true });
-
-
-/* =====================================================
-   HERO INTERACTION
-===================================================== */
-
-const hero =
-    document.querySelector(".hero-new");
-
-const glow =
-    document.querySelector(".hero-glow");
-
-const imageArea =
-    document.getElementById("heroImageArea");
-
-const follow =
-    document.getElementById("heroFollow");
-
-
-if (hero) {
-
-    hero.addEventListener("mousemove", function (event) {
-
-        if (window.innerWidth <= 760) return;
-
-        const rect =
-            hero.getBoundingClientRect();
-
-        const x =
-            event.clientX - rect.left;
-
-        const y =
-            event.clientY - rect.top;
-
-
-        /* GLOW */
-
-        if (glow) {
-
-            glow.style.left =
-                x + "px";
-
-            glow.style.top =
-                y + "px";
-
-        }
-
-
-        /* PARALLAX */
-
-        if (imageArea) {
-
-            const centerX =
-                rect.width / 2;
-
-            const centerY =
-                rect.height / 2;
-
-            const moveX =
-                (x - centerX) / 45;
-
-            const moveY =
-                (y - centerY) / 45;
-
-            imageArea.style.transform =
-                `translate(${moveX}px, ${moveY}px)`;
-
-        }
-
-    });
-
-
-    hero.addEventListener("mouseleave", function () {
-
-        if (imageArea) {
-
-            imageArea.style.transform =
-                "translate(0, 0)";
-
-        }
-
-    });
-
-}
-
-
-/* =====================================================
-   IMAGE CURSOR
-===================================================== */
-
-if (imageArea && follow) {
-
-    imageArea.addEventListener(
-        "mousemove",
-        function (event) {
-
-            if (window.innerWidth <= 760)
-                return;
-
-            const rect =
-                imageArea.getBoundingClientRect();
-
-            const x =
-                event.clientX - rect.left;
-
-            const y =
-                event.clientY - rect.top;
-
-            follow.style.left =
-                x + "px";
-
-            follow.style.top =
-                y + "px";
-
-        }
-    );
-
-}
-
-// ==========================================
-// DETAIL MODAL (MODAL PERTAMA)
-// ==========================================
-const detailButton = document.getElementById("detailButton");
-const detailModal = document.getElementById("detailModal");
-const modalClose = document.getElementById("modalClose");
-
-// Buka modal detail
-if (detailButton && detailModal) {
-    detailButton.addEventListener("click", () => {
-        detailModal.classList.add("active");
-        document.body.style.overflow = "hidden";
-    });
-}
-
-// Tutup dengan tombol X (Modal Detail)
-if (modalClose && detailModal) {
-    modalClose.addEventListener("click", () => {
-        detailModal.classList.remove("active");
-        document.body.style.overflow = "";
-    });
-
-    // Tutup ketika klik area luar modal
-    detailModal.addEventListener("click", (event) => {
-        if (event.target === detailModal) {
-            detailModal.classList.remove("active");
-            document.body.style.overflow = "";
-        }
-    });
-}
-
-// Tutup Detail Modal dengan tombol Escape
-document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape" && detailModal && detailModal.classList.contains("active")) {
-        detailModal.classList.remove("active");
-        document.body.style.overflow = "";
-    }
-});
-
-
-/* ==================================================
-   PROJECT SLIDER + PREVIEW MODAL
-================================================== */
-document.addEventListener("DOMContentLoaded", function () {
-
-    const slider = document.getElementById("projectsSlider");
-    const prevButton = document.getElementById("projectPrev");
-    const nextButton = document.getElementById("projectNext");
-    const currentNumber = document.getElementById("projectCurrent");
-    const progressBar = document.getElementById("projectProgress");
-
-    /* Jika section slider tidak ada, hentikan fungsi slider */
-    if (!slider) {
-        return;
-    }
-
-    const cards = Array.from(slider.querySelectorAll(".project-card"));
-    if (cards.length === 0) {
-        return;
-    }
-
-    let currentIndex = 0;
-    let autoSlide = null;
-    let isDragging = false;
-    let startX = 0;
-    let startScrollLeft = 0;
-
-    /* ==================================================
-        GET CARD WIDTH
-    ================================================== */
-    function getCardWidth() {
-        const card = cards[0];
-        const sliderStyle = window.getComputedStyle(slider);
-        const gap = parseFloat(sliderStyle.gap) || 22;
-        return card.offsetWidth + gap;
-    }
-
-    /* ==================================================
-        UPDATE UI
-    ================================================== */
-    function updateUI() {
-        if (currentNumber) {
-            currentNumber.textContent = String(currentIndex + 1).padStart(2, "0");
-        }
-
-        if (progressBar) {
-            const percentage = ((currentIndex + 1) / cards.length) * 100;
-            progressBar.style.width = percentage + "%";
-        }
-    }
-
-    /* ==================================================
-        MOVE TO CARD
-    ================================================== */
-    function goToProject(index) {
-        if (index < 0) {
-            index = cards.length - 1;
-        }
-
-        if (index >= cards.length) {
-            index = 0;
-        }
-
-        currentIndex = index;
-        const position = currentIndex * getCardWidth();
-
-        slider.scrollTo({
-            left: position,
-            behavior: "smooth"
-        });
-
-        updateUI();
-    }
-
-    /* ==================================================
-        NEXT & PREVIOUS
-    ================================================== */
-    function nextProject() {
-        goToProject(currentIndex + 1);
-    }
-
-    function previousProject() {
-        goToProject(currentIndex - 1);
-    }
-
-    if (nextButton) {
-        nextButton.addEventListener("click", function (event) {
-            event.preventDefault();
-            nextProject();
-            restartAutoSlide();
-        });
-    }
-
-    if (prevButton) {
-        prevButton.addEventListener("click", function (event) {
-            event.preventDefault();
-            previousProject();
-            restartAutoSlide();
-        });
-    }
-
-    /* ==================================================
-        AUTO SLIDE
-    ================================================== */
-    function startAutoSlide() {
-        clearInterval(autoSlide);
-        autoSlide = setInterval(function () {
-            nextProject();
-        }, 2500);
-    }
-
-    function stopAutoSlide() {
-        clearInterval(autoSlide);
-        autoSlide = null;
-    }
-
-    function restartAutoSlide() {
-        stopAutoSlide();
-        startAutoSlide();
-    }
-
-    /* PAUSE ON HOVER */
-    slider.addEventListener("mouseenter", stopAutoSlide);
-    slider.addEventListener("mouseleave", function () {
-        if (!isDragging) {
-            startAutoSlide();
-        }
-    });
-
-    /* ==================================================
-        MOUSE DRAG
-    ================================================== */
-    slider.addEventListener("mousedown", function (event) {
-        isDragging = true;
-        startX = event.pageX;
-        startScrollLeft = slider.scrollLeft;
-        slider.classList.add("dragging");
-        stopAutoSlide();
-    });
-
-    slider.addEventListener("mousemove", function (event) {
-        if (!isDragging) return;
-        event.preventDefault();
-        const distance = event.pageX - startX;
-        slider.scrollLeft = startScrollLeft - distance;
-    });
-
-    function stopDragging() {
-        if (!isDragging) return;
-        isDragging = false;
-        slider.classList.remove("dragging");
-
-        const cardWidth = getCardWidth();
-        currentIndex = Math.round(slider.scrollLeft / cardWidth);
-        currentIndex = Math.max(0, Math.min(currentIndex, cards.length - 1));
-
-        goToProject(currentIndex);
-        startAutoSlide();
-    }
-
-    slider.addEventListener("mouseup", stopDragging);
-    slider.addEventListener("mouseleave", function () {
-        if (isDragging) {
-            stopDragging();
-        }
-    });
-
-    /* ==================================================
-        TOUCH SWIPE
-    ================================================== */
-    let touchStartX = 0;
-    let touchStartScroll = 0;
-
-    slider.addEventListener("touchstart", function (event) {
-        touchStartX = event.touches[0].clientX;
-        touchStartScroll = slider.scrollLeft;
-        stopAutoSlide();
-    }, { passive: true });
-
-    slider.addEventListener("touchend", function (event) {
-        const touchEndX = event.changedTouches[0].clientX;
-        const distance = touchStartX - touchEndX;
-
-        if (distance > 50) {
-            nextProject();
-        } else if (distance < -50) {
-            previousProject();
+        if (window.scrollY > 30) {
+            header.classList.add("scrolled");
         } else {
-            const cardWidth = getCardWidth();
-            currentIndex = Math.round(slider.scrollLeft / cardWidth);
-            goToProject(currentIndex);
+            header.classList.remove("scrolled");
         }
-        startAutoSlide();
-    }, { passive: true });
-
-    /* ==================================================
-        PREVIEW MODAL (PROJECT MODAL)
-    ================================================== */
-    const modal = document.getElementById("projectModal");
-    
-    // PERBAIKAN: Target tombol X spesifik yang berada di dalam #projectModal
-    const projectModalClose = modal ? modal.querySelector("#modalClose") : null;
-    const modalBackdrop = modal ? modal.querySelector(".modal-backdrop") : null;
-
-    const modalImage = document.getElementById("modalProjectImage");
-    const modalCategory = document.getElementById("modalProjectCategory");
-    const modalYear = document.getElementById("modalProjectYear");
-    const modalTitle = document.getElementById("modalProjectTitle");
-    const modalDescription = document.getElementById("modalProjectDescription");
-    const modalTech1 = document.getElementById("modalTech1");
-    const modalTech2 = document.getElementById("modalTech2");
-    const modalTech3 = document.getElementById("modalTech3");
-    const modalDirectLink = document.getElementById("modalDirectLink");
-
-    /* ==================================================
-        PROJECT DATA
-    ================================================== */
-    const projectData = {
-        project1: {
-            image: "assets/priw1.png",
-            category: "WEB DEVELOPMENT",
-            year: "2026",
-            title: "Website Jasa Pembuatan Website",
-            description: "Website yang saya bangun menggunakan php ini sebagai beckend adalah sebuah layanan jasa untuk pembuatan website yang bisa digunakan semua orang yang lagi butuh sebguah website berdarkan keperluan.",
-            tech: ["PHP", "Bootstrap", "MySql"],
-            link: "https://vicode.ct.ws/"
-        },
-        project2: {
-            image: "assets/priw2.png",
-            category: "WEB DEVELOPMENT",
-            year: "2026",
-            title: "Website top up game",
-            description: "Pada Webiste ini saya mencoba mengambangkan website top up game dengan sistem pembayaran mengunakan virtua coin vigi coin sistem pembayaran dalam wesbite ini tanpa menggukan paymanet gatway tapi menggunkan semi-otomatis.",
-            tech: ["PHP", "Bootstrap", "MySql"],
-            link: "https://virgigame.gt.tc/"
-        },
-        project3: {
-            image: "assets/priw3.png",
-            category: "DASHBOARD",
-            year: "2026",
-            title: "Website Sistem Akademik sederhana",
-            description: "pada wesbite ini adalah layanan akademik bagi mahasiswa dan dosen dengan fitur sederhana sperti menejmen tugas, absen, chat dosen dll.",
-            tech: ["PHP", "Bootstrap", "MySql"],
-            link: "https://myacademic.ct.ws/"
-        },
-        project4: {
-            image: "assets/port-2.png",
-            category: "UI DESIGN",
-            year: "2026",
-            title: "Sistem Rumah sakit (Desain)",
-            description: "Saya Dan tim Saya memrancang desain sistem rumah sakit yang terdapat 3 role pasien ,Admin, Dokter. Yang bertujuan untuk menyelesaikan matkul Analisis Desain Perangkat Lunak",
-            tech: ["Figma"],
-            link: "https://figma.com"
-        },
-        project5: {
-            image: "assets/pro5.png",
-            category: "UI DESIGN",
-            year: "2026",
-            title: "Landing Page untuk menyimpan media",
-            description: " Saya membuat wesbite landing page untuk menyimpan foto dan vidio sebagai percobaan Membangun Wesbite yang responsif dan modren. ",
-            tech: ["HTML", "CSS", "JavaScript"],
-            link: "https://github.com"
-        }
-    };
-
-    /* OPEN MODAL */
-    function openProjectModal(projectId) {
-        const data = projectData[projectId];
-        if (!data || !modal) return;
-
-        modalImage.src = data.image;
-        modalImage.alt = data.title;
-        modalCategory.textContent = data.category;
-        modalYear.textContent = data.year;
-        modalTitle.textContent = data.title;
-        modalDescription.textContent = data.description;
-
-        modalTech1.textContent = data.tech[0] || "";
-        modalTech2.textContent = data.tech[1] || "";
-        modalTech3.textContent = data.tech[2] || "";
-
-        modalDirectLink.href = data.link;
-
-        modal.classList.add("active");
-        modal.setAttribute("aria-hidden", "false");
-        document.body.style.overflow = "hidden";
     }
 
-    /* CLOSE MODAL */
-    function closeProjectModal() {
-        if (!modal) return;
+    updateHeader();
 
-        modal.classList.remove("active");
-        modal.setAttribute("aria-hidden", "true");
-        document.body.style.overflow = "";
-    }
-
-    /* PREVIEW BUTTON EVENTS */
-    const previewButtons = document.querySelectorAll(".preview-button");
-    previewButtons.forEach(function (button) {
-        button.addEventListener("click", function (event) {
-            event.preventDefault();
-            event.stopPropagation();
-
-            const projectId = button.dataset.project;
-            openProjectModal(projectId);
-        });
+    window.addEventListener("scroll", updateHeader, {
+        passive: true
     });
 
-    /* CLOSE BUTTON EVENT (PERBAIKAN) */
-    if (projectModalClose) {
-        projectModalClose.addEventListener("click", function (event) {
-            event.preventDefault();
-            closeProjectModal();
+
+    /* =====================================================
+       MOBILE MENU
+       ===================================================== */
+
+    if (navToggle && navMenu) {
+
+        navToggle.addEventListener("click", () => {
+
+            const isOpen = navMenu.classList.toggle("open");
+
+            navToggle.classList.toggle("open", isOpen);
+
+            navToggle.setAttribute(
+                "aria-expanded",
+                isOpen ? "true" : "false"
+            );
+
         });
-    }
 
-    /* BACKDROP CLOSE EVENT */
-    if (modalBackdrop) {
-        modalBackdrop.addEventListener("click", function () {
-            closeProjectModal();
-        });
-    }
 
-    /* ESCAPE KEY CLOSE EVENT FOR PROJECT MODAL */
-    document.addEventListener("keydown", function (event) {
-        if (event.key === "Escape" && modal && modal.classList.contains("active")) {
-            closeProjectModal();
-        }
-    });
+        navLinks.forEach(link => {
 
-    /* PREVENT IMAGE DRAG */
-    slider.querySelectorAll("img").forEach(function (image) {
-        image.addEventListener("dragstart", function (event) {
-            event.preventDefault();
-        });
-    });
+            link.addEventListener("click", () => {
 
-    /* INITIALIZE */
-    updateUI();
-    startAutoSlide();
-});
+                navMenu.classList.remove("open");
+                navToggle.classList.remove("open");
 
-/* =========================================
-   SIMPLE BLOG MODAL (ARTIKEL UTUH)
-========================================= */
-document.addEventListener("DOMContentLoaded", function () {
+                navToggle.setAttribute(
+                    "aria-expanded",
+                    "false"
+                );
 
-    const modal = document.getElementById("blogModal");
-    const closeBtn = document.getElementById("blogModalClose");
-    const overlay = document.querySelector(".blog-modal-overlay");
-
-    const image = document.getElementById("blogModalImage");
-    const meta = document.getElementById("blogModalMeta");
-    const title = document.getElementById("blogModalTitle");
-    const description = document.getElementById("blogModalDescription");
-    const text = document.getElementById("blogModalText");
-
-    const blogs = {
-        1: {
-            image: "assets/blog1.png",
-            meta: "WEB DEVELOPMENT · 28 AGUSTUS 2026 · 5 MIN READ",
-            title: "Cara Saya Mengenal coding Dan Web developer",
-            description: "Web development menjadi salah satu bidang yang menarik untuk dipelajari.",
-            text: `Dunia teknologi merupakan salah satu bidang yang terus berkembang dan memiliki banyak peluang untuk dipelajari. Salah satu hal yang menarik perhatian saya adalah coding dan pengembangan website. Pada awalnya, saya menganggap coding sebagai sesuatu yang sulit karena banyak terdapat kode, simbol, dan istilah yang belum saya pahami. Namun, setelah mulai mempelajarinya, saya menyadari bahwa coding bukan hanya tentang menulis kode, tetapi juga tentang bagaimana kita berpikir, memecahkan masalah, dan menciptakan sesuatu yang dapat digunakan oleh orang lain.
-
-Awal Saya Mengenal Coding
-
-Pertama kali mengenal coding, saya masih merasa cukup asing dengan berbagai bahasa pemrograman. Saya sering melihat orang membuat website atau aplikasi dan bertanya-tanya bagaimana semua itu bisa dibuat hanya dengan menggunakan kode. Rasa penasaran tersebut membuat saya mulai mencoba mempelajari dasar-dasar pemrograman.
-
-Saya mulai mengenal beberapa bahasa yang umum digunakan dalam pengembangan website, seperti HTML, CSS, dan JavaScript. Dari ketiga teknologi tersebut, saya memahami bahwa masing-masing memiliki fungsi yang berbeda. HTML digunakan untuk membuat struktur halaman, CSS digunakan untuk mengatur tampilan, sedangkan JavaScript digunakan untuk membuat website menjadi lebih interaktif.
-
-Pada tahap awal, saya sering mengalami kesulitan dalam memahami struktur kode. Kesalahan kecil seperti kurang tanda kurung, salah menulis nama class, atau kesalahan penulisan kode dapat membuat website tidak berjalan sesuai keinginan. Dari pengalaman tersebut, saya mulai memahami bahwa ketelitian merupakan salah satu hal penting dalam dunia coding.
-
-Mulai Mencoba Membuat Website
-
-Setelah memahami dasar-dasar HTML dan CSS, saya mulai mencoba membuat website sederhana. Awalnya saya hanya membuat halaman dengan teks, gambar, tombol, dan beberapa bagian sederhana. Meskipun terlihat sederhana, ketika berhasil membuat halaman tersebut tampil sesuai dengan yang saya inginkan, saya merasa cukup senang dan termotivasi untuk belajar lebih jauh.
-
-Saya kemudian mulai mencoba membuat website dengan desain yang lebih modern dan rapi. Saya belajar mengenai penggunaan warna, ukuran tulisan, layout, navigasi, hingga membuat website agar dapat menyesuaikan dengan ukuran layar perangkat yang berbeda.
-
-Dari sinilah saya mulai tertarik dengan web development. Saya menyadari bahwa membuat website tidak hanya membutuhkan kemampuan coding, tetapi juga membutuhkan kreativitas dalam menentukan desain dan pengalaman pengguna.
-
-Tantangan yang Saya Hadapi
-
-Dalam proses belajar coding, tentu tidak semuanya berjalan dengan mudah. Salah satu tantangan terbesar yang saya alami adalah ketika kode yang dibuat tidak berjalan seperti yang diharapkan. Terkadang saya sudah merasa bahwa kode tersebut benar, tetapi ketika dijalankan ternyata terdapat error.
-
-Pada awalnya, hal tersebut cukup membuat saya bingung. Namun, saya mulai belajar untuk tidak langsung menyerah ketika menemukan error. Saya mencoba membaca pesan error, mencari penyebabnya, kemudian memperbaiki kode secara bertahap.
-
-Saya juga menyadari bahwa kemampuan coding tidak bisa dikuasai hanya dalam waktu singkat. Dibutuhkan latihan dan pengalaman secara terus-menerus. Semakin sering mencoba membuat sebuah project, semakin banyak pula hal yang dapat dipelajari.
-
-Pengalaman Membuat Project
-
-Salah satu hal yang membuat saya semakin tertarik dengan coding adalah ketika mulai mengerjakan sebuah project. Dengan project, saya tidak hanya belajar teori, tetapi juga langsung menerapkan apa yang sudah dipelajari.
-
-Saya mulai mencoba membuat berbagai halaman website seperti halaman beranda, tentang saya, keahlian, project, blog, dan kontak. Dari project tersebut saya belajar bagaimana menggabungkan HTML, CSS, dan JavaScript menjadi sebuah website yang lebih lengkap.
-
-Saya juga belajar bahwa dalam membuat website, terkadang hasil pertama belum tentu sesuai dengan yang diharapkan. Ada bagian yang harus diperbaiki, baik dari segi tampilan maupun fungsi. Proses mencoba, menemukan kesalahan, memperbaiki, dan mencoba kembali menjadi pengalaman yang sangat berharga bagi saya.`
-        }
-    };
-
-    function openBlog(id) {
-        const blog = blogs[id];
-        if (!blog || !modal) return;
-
-        if (image) { image.src = blog.image; image.alt = blog.title; }
-        if (meta) meta.textContent = blog.meta;
-        if (title) title.textContent = blog.title;
-        if (description) description.textContent = blog.description;
-        if (text) text.innerText = blog.text; // Menggunakan innerText agar enter/paragraf terbaca rapi
-
-        modal.classList.add("active");
-        document.body.style.overflow = "hidden";
-    }
-
-    function closeBlog() {
-        if (!modal) return;
-        modal.classList.remove("active");
-        document.body.style.overflow = "";
-    }
-
-    document.querySelectorAll(".blog-btn").forEach(button => {
-        button.addEventListener("click", function () {
-            openBlog(this.dataset.blog);
-        });
-    });
-
-    if (closeBtn) closeBtn.addEventListener("click", closeBlog);
-    if (overlay) overlay.addEventListener("click", closeBlog);
-
-    document.addEventListener("keydown", function (event) {
-        if (event.key === "Escape" && modal && modal.classList.contains("active")) {
-            closeBlog();
-        }
-    });
-
-});
-
-/* =========================================
-   CONTACT FORM
-========================================= */
-const contactForm = document.getElementById("contactForm");
-const formStatus = document.getElementById("formStatus");
-
-if (contactForm) {
-    contactForm.addEventListener("submit", async function (event) {
-        event.preventDefault();
-
-        // Tampilkan status mengirim
-        formStatus.style.display = "block";
-        formStatus.textContent = "Mengirim pesan...";
-
-        // Ambil data form
-        const formData = new FormData(contactForm);
-
-        try {
-            const response = await fetch(contactForm.action, {
-                method: "POST",
-                body: formData,
-                headers: {
-                    "Accept": "application/json"
-                }
             });
 
-            if (response.ok) {
-                // Berhasil
-                formStatus.textContent =
-                    "Pesan berhasil dikirim. Terima kasih sudah menghubungi saya!";
+        });
 
-                contactForm.reset();
-
-                // Hilangkan status setelah 4 detik
-                setTimeout(() => {
-                    formStatus.style.display = "none";
-                }, 4000);
-
-            } else {
-                // Gagal
-                formStatus.textContent =
-                    "Gagal mengirim pesan. Silakan coba lagi.";
-            }
-
-        } catch (error) {
-            // Error koneksi
-            formStatus.textContent =
-                "Terjadi kesalahan koneksi. Silakan coba lagi.";
-        }
-    });
-}
-
-
-// ==========================================
-// ANIMASI WEBSITE
-// ==========================================
-
-document.addEventListener("DOMContentLoaded", function () {
-
-    // Jalankan animasi Hero langsung saat halaman selesai dimuat
-    const heroSection =
-        document.querySelector("#hero, header, .hero-content");
-
-    if (heroSection) {
-        heroSection.classList.add("hero-active");
     }
 
 
-    // Konfigurasi Intersection Observer
+    /* =====================================================
+       ACTIVE NAVIGATION
+       ===================================================== */
+
     const observerOptions = {
         root: null,
-        rootMargin: "0px 0px -80px 0px",
-        threshold: 0.1
+        rootMargin: "-35% 0px -55% 0px",
+        threshold: 0
     };
 
-
-    // Intersection Observer untuk animasi scroll
-    const observer = new IntersectionObserver(
-        (entries, observer) => {
+    const sectionObserver = new IntersectionObserver(
+        entries => {
 
             entries.forEach(entry => {
 
-                if (entry.isIntersecting) {
+                if (!entry.isIntersecting) return;
 
-                    requestAnimationFrame(() => {
-                        entry.target.classList.add("scroll-active");
-                    });
+                const id = entry.target.id;
 
-                    observer.unobserve(entry.target);
-                }
+                navLinks.forEach(link => {
+
+                    const href = link.getAttribute("href");
+
+                    link.classList.toggle(
+                        "active",
+                        href === `#${id}`
+                    );
+
+                });
 
             });
 
@@ -766,770 +114,1233 @@ document.addEventListener("DOMContentLoaded", function () {
         observerOptions
     );
 
+    sections.forEach(section => {
+        sectionObserver.observe(section);
+    });
 
-    // Daftarkan semua elemen untuk animasi
-    const scrollTargets = document.querySelectorAll(
-        "section:not(#hero), .about-info, .about-visual, .skill-category, .project-card, .info-card, .bottom-item"
+
+    /* =====================================================
+       SMOOTH ANCHOR
+       ===================================================== */
+
+    document.querySelectorAll('a[href^="#"]').forEach(link => {
+
+        link.addEventListener("click", event => {
+
+            const targetId = link.getAttribute("href");
+
+            if (
+                !targetId ||
+                targetId === "#" ||
+                targetId.length < 2
+            ) {
+                return;
+            }
+
+            const target = document.querySelector(targetId);
+
+            if (!target) return;
+
+            event.preventDefault();
+
+            target.scrollIntoView({
+                behavior: "smooth",
+                block: "start"
+            });
+
+        });
+
+    });
+
+
+    /* =====================================================
+       HERO MOUSE PARALLAX
+       ===================================================== */
+
+    const heroImageArea =
+        document.getElementById("heroImageArea");
+
+    const heroSection =
+        document.querySelector(".hero-new");
+
+    if (
+        heroImageArea &&
+        heroSection &&
+        window.matchMedia("(pointer: fine)").matches
+    ) {
+
+        heroSection.addEventListener("mousemove", event => {
+
+            const rect =
+                heroSection.getBoundingClientRect();
+
+            const x =
+                (event.clientX - rect.left) /
+                rect.width - .5;
+
+            const y =
+                (event.clientY - rect.top) /
+                rect.height - .5;
+
+            const rotateY = x * 5;
+            const rotateX = y * -5;
+
+            heroImageArea.style.transform =
+                `perspective(900px)
+                 rotateX(${rotateX}deg)
+                 rotateY(${rotateY}deg)`;
+
+        });
+
+        heroSection.addEventListener("mouseleave", () => {
+
+            heroImageArea.style.transform =
+                "perspective(900px) rotateX(0deg) rotateY(0deg)";
+
+        });
+
+    }
+
+
+    /* =====================================================
+       SCROLL REVEAL
+       ===================================================== */
+
+    const revealElements = document.querySelectorAll(
+        ".about-heading, .about-info, .about-visual, " +
+        ".bottom-item, .pro-title-wrap, .pro-header-side, " +
+        ".pro-category, .pro-showcase, .projects-title, " +
+        ".projects-description, .project-card, .blog-heading, " +
+        ".blog-single, .contact-heading, .contact-info, " +
+        ".contact-form-box"
     );
 
-    scrollTargets.forEach(el => observer.observe(el));
+    revealElements.forEach((element, index) => {
 
-});
+        element.classList.add("reveal");
 
+        if (
+            element.classList.contains("pro-category") ||
+            element.classList.contains("project-card") ||
+            element.classList.contains("bottom-item")
+        ) {
+            element.style.transitionDelay =
+                `${Math.min(index * .04, .3)}s`;
+        }
 
+    });
 
+    const revealObserver = new IntersectionObserver(
+        entries => {
 
+            entries.forEach(entry => {
 
-document.addEventListener("DOMContentLoaded", () => {
+                if (!entry.isIntersecting) return;
+
+                entry.target.classList.add("revealed");
+
+                revealObserver.unobserve(entry.target);
+
+            });
+
+        },
+        {
+            threshold: .12,
+            rootMargin: "0px 0px -40px 0px"
+        }
+    );
+
+    revealElements.forEach(element => {
+        revealObserver.observe(element);
+    });
 
 
     /* =====================================================
-       ELEMENT
-    ===================================================== */
+       SKILLS
+       ===================================================== */
 
-    const categoryNav =
-        document.querySelector(".pro-category-nav");
-
-    const categories =
-        document.querySelectorAll(".pro-category");
-
-    const title =
-        document.getElementById("proSkillTitle");
-
-    const description =
-        document.getElementById("proSkillDescription");
-
-    const number =
-        document.getElementById("proSkillNumber");
-
-    const list =
-        document.getElementById("proSkillList");
-
-    const count =
-        document.getElementById("proSkillCount");
-
-
-    /* =====================================================
-       SKILL DATA
-    ===================================================== */
-
-    const skills = {
-
-
-        /* -------------------------------------------------
-           FRONT END
-        ------------------------------------------------- */
+    const skillData = {
 
         frontend: {
-
-            number: "01",
-
             title: "Front End",
-
+            number: "01",
             description:
                 "Membangun tampilan website yang modern, responsif, dan interaktif.",
-
-            items: [
-
-                {
-                    icon: "fa-brands fa-html5",
-                    name: "HTML5",
-                    desc: "Structure & Semantic Web"
-                },
-
-                {
-                    icon: "fa-brands fa-css3-alt",
-                    name: "CSS3",
-                    desc: "Styling & Responsive Design"
-                },
-
-                {
-                    icon: "fa-brands fa-js",
-                    name: "JavaScript",
-                    desc: "Interaction & Web Logic"
-                }
-
+            skills: [
+                ["HTML", "STRUCTURE"],
+                ["CSS", "STYLING"],
+                ["JavaScript", "INTERACTION"]
             ]
-
         },
-
-
-        /* -------------------------------------------------
-           BACK END
-        ------------------------------------------------- */
 
         backend: {
-
-            number: "02",
-
             title: "Back End",
-
+            number: "02",
             description:
-                "Mempelajari pengembangan sisi server dan pengelolaan database.",
-
-            items: [
-
-                {
-                    icon: "fa-brands fa-php",
-                    name: "PHP",
-                    desc: "Server Side Development"
-                },
-
-                {
-                    icon: "fa-solid fa-database",
-                    name: "MySQL",
-                    desc: "Database Management · Beginner"
-                }
-
+                "Mempelajari bagaimana website bekerja dari sisi server dan database.",
+            skills: [
+                ["PHP", "BACK END"],
+                ["MySQL", "DATABASE"],
+                ["CRUD", "SYSTEM"]
             ]
-
         },
-
-
-        /* -------------------------------------------------
-           PROGRAMMING
-        ------------------------------------------------- */
 
         programming: {
-
-            number: "03",
-
             title: "Programming",
-
+            number: "03",
             description:
-                "Bahasa pemrograman untuk melatih logika, algoritma, debugging, dan problem solving.",
-
-            items: [
-
-                {
-                    icon: "fa-brands fa-python",
-                    name: "Python",
-                    desc: "Debugging & Programming"
-                },
-
-                {
-                    icon: "fa-solid fa-code",
-                    name: "C++",
-                    desc: "Programming Fundamentals"
-                },
-
-                {
-                    icon: "fa-brands fa-java",
-                    name: "Java",
-                    desc: "Object Oriented Programming"
-                }
-
+                "Mengembangkan logika pemrograman melalui project dan latihan.",
+            skills: [
+                ["PHP", "PROGRAMMING"],
+                ["JavaScript", "LOGIC"],
+                ["Python", "LEARNING"]
             ]
-
         },
-
-
-        /* -------------------------------------------------
-           UI DESIGN
-        ------------------------------------------------- */
 
         ui: {
-
-            number: "04",
-
             title: "UI Design",
-
+            number: "04",
             description:
-                "Merancang interface yang clean, modern, dan mudah digunakan.",
-
-            items: [
-
-                {
-                    icon: "fa-brands fa-figma",
-                    name: "Figma",
-                    desc: "Interface & Prototype Design"
-                },
-
-                {
-                    icon: "fa-solid fa-pen-ruler",
-                    name: "Stitch",
-                    desc: "UI Exploration & Design"
-                }
-
+                "Membuat interface yang sederhana, terstruktur, dan nyaman digunakan.",
+            skills: [
+                ["Figma", "UI DESIGN"],
+                ["Wireframe", "PLANNING"],
+                ["Prototype", "INTERACTION"]
             ]
-
         },
-
-
-        /* -------------------------------------------------
-           FRAMEWORK
-        ------------------------------------------------- */
 
         framework: {
-
-            number: "05",
-
             title: "Framework",
-
+            number: "05",
             description:
-                "Framework yang membantu mempercepat proses pembuatan website responsif.",
-
-            items: [
-
-                {
-                    icon: "fa-brands fa-bootstrap",
-                    name: "Bootstrap",
-                    desc: "Responsive UI Framework"
-                },
-
-                {
-                    icon: "fa-solid fa-wind",
-                    name: "Tailwind CSS",
-                    desc: "Utility First CSS"
-                }
-
+                "Menggunakan framework dan library untuk mempercepat proses pengembangan.",
+            skills: [
+                ["Bootstrap", "CSS FRAMEWORK"],
+                ["Font Awesome", "ICONS"],
+                ["Responsive", "LAYOUT"]
             ]
-
         },
-
-
-        /* -------------------------------------------------
-           EDITING
-        ------------------------------------------------- */
 
         editing: {
-
-            number: "06",
-
             title: "Editing",
-
+            number: "06",
             description:
-                "Tools kreatif untuk membuat desain, video, motion, dan konten digital.",
-
-            items: [
-
-                {
-                    icon: "fa-solid fa-palette",
-                    name: "Canva",
-                    desc: "Graphic & Content Design"
-                },
-
-                {
-                    icon: "fa-solid fa-film",
-                    name: "CapCut",
-                    desc: "Video Editing"
-                },
-
-                {
-                    icon: "fa-solid fa-image",
-                    name: "Photoshop",
-                    desc: "Image Editing"
-                },
-
-                {
-                    icon: "fa-solid fa-font",
-                    name: "PixelLab",
-                    desc: "Typography & Graphics"
-                },
-
-                {
-                    icon: "fa-solid fa-clapperboard",
-                    name: "Alight Motion",
-                    desc: "Motion Editing"
-                }
-
+                "Mengembangkan kemampuan visual untuk mendukung kebutuhan project.",
+            skills: [
+                ["Image Editing", "VISUAL"],
+                ["Video Editing", "CONTENT"],
+                ["Creative", "DESIGN"]
             ]
-
         },
 
-
-        /* -------------------------------------------------
-           TOOLS
-        ------------------------------------------------- */
-
         tools: {
-
-            number: "07",
-
             title: "Tools",
-
+            number: "07",
             description:
-                "Software yang membantu saya dalam coding, debugging, development, dan eksperimen.",
-
-            items: [
-
-                {
-                    icon: "fa-solid fa-code",
-                    name: "VS Code",
-                    desc: "Code Editor"
-                },
-
-                {
-                    icon: "fa-solid fa-terminal",
-                    name: "Code::Blocks",
-                    desc: "C / C++ Development"
-                },
-
-                {
-                    icon: "fa-solid fa-flask",
-                    name: "Google Colab",
-                    desc: "Python Notebook"
-                },
-
-                {
-                    icon: "fa-brands fa-git-alt",
-                    name: "Git",
-                    desc: "Version Control"
-                },
-
-                {
-                    icon: "fa-solid fa-bug",
-                    name: "DevTools",
-                    desc: "Debugging & Testing"
-                }
-
+                "Berbagai tools yang membantu proses coding, desain, dan pengembangan project.",
+            skills: [
+                ["VS Code", "EDITOR"],
+                ["GitHub", "VERSION CONTROL"],
+                ["Figma", "DESIGN"]
             ]
-
         }
 
     };
 
 
-    /* =====================================================
-       RENDER SKILLS
-    ===================================================== */
+    const skillButtons =
+        document.querySelectorAll(".pro-category");
 
-    function renderSkills(category) {
+    const skillTitle =
+        document.getElementById("proSkillTitle");
 
-        const data =
-            skills[category];
+    const skillNumber =
+        document.getElementById("proSkillNumber");
+
+    const skillDescription =
+        document.getElementById("proSkillDescription");
+
+    const skillList =
+        document.getElementById("proSkillList");
+
+    const skillCount =
+        document.getElementById("proSkillCount");
+
+
+    function renderSkills(type) {
+
+        const data = skillData[type];
 
         if (!data) return;
 
+        if (skillTitle) {
+            skillTitle.style.opacity = "0";
+            skillTitle.style.transform = "translateY(8px)";
+        }
 
-        title.textContent =
-            data.title;
+        if (skillDescription) {
+            skillDescription.style.opacity = "0";
+        }
 
+        setTimeout(() => {
 
-        description.textContent =
-            data.description;
+            if (skillTitle) {
+                skillTitle.textContent = data.title;
+                skillTitle.style.opacity = "1";
+                skillTitle.style.transform = "translateY(0)";
+            }
 
+            if (skillNumber) {
+                skillNumber.textContent = data.number;
+            }
 
-        number.textContent =
-            data.number;
+            if (skillDescription) {
+                skillDescription.textContent =
+                    data.description;
 
+                skillDescription.style.opacity = "1";
+            }
 
-        count.textContent =
-            `${String(data.items.length).padStart(2, "0")} SKILLS`;
+            if (skillList) {
 
+                skillList.innerHTML = "";
 
-        list.innerHTML = "";
+                data.skills.forEach((skill, index) => {
 
+                    const item =
+                        document.createElement("div");
 
-        data.items.forEach(
-            (skill, index) => {
+                    item.className = "skill-item";
 
-                const element =
-                    document.createElement("div");
+                    item.style.opacity = "0";
+                    item.style.transform = "translateY(12px)";
 
+                    item.innerHTML = `
+                        <strong>${skill[0]}</strong>
+                        <span>${skill[1]}</span>
+                    `;
 
-                element.className =
-                    "pro-skill";
+                    skillList.appendChild(item);
 
+                    requestAnimationFrame(() => {
 
-                element.innerHTML = `
+                        setTimeout(() => {
 
-                    <div class="pro-skill-symbol">
+                            item.style.opacity = "1";
+                            item.style.transform =
+                                "translateY(0)";
 
-                        <i class="${skill.icon}"></i>
+                        }, index * 70);
 
-                    </div>
+                    });
 
-                    <div class="pro-skill-info">
-
-                        <strong>
-                            ${skill.name}
-                        </strong>
-
-                        <span>
-                            ${skill.desc}
-                        </span>
-
-                    </div>
-
-                `;
-
-
-                list.appendChild(element);
-
-
-                /* ANIMATION */
-
-                setTimeout(() => {
-
-                    element.classList.add("show");
-
-                }, 60 * index);
+                });
 
             }
+
+            if (skillCount) {
+                skillCount.textContent =
+                    `${String(data.skills.length).padStart(2, "0")} SKILLS`;
+            }
+
+        }, 130);
+
+    }
+
+
+    skillButtons.forEach(button => {
+
+        button.addEventListener("click", () => {
+
+            skillButtons.forEach(item => {
+                item.classList.remove("active");
+            });
+
+            button.classList.add("active");
+
+            const skill =
+                button.dataset.skill;
+
+            renderSkills(skill);
+
+        });
+
+    });
+
+    renderSkills("frontend");
+
+
+    /* =====================================================
+       PROJECT SLIDER
+       ===================================================== */
+
+    const slider =
+        document.getElementById("projectsSlider");
+
+    const prevButton =
+        document.getElementById("projectPrev");
+
+    const nextButton =
+        document.getElementById("projectNext");
+
+    const currentProject =
+        document.getElementById("projectCurrent");
+
+    const progress =
+        document.getElementById("projectProgress");
+
+    const cards =
+        slider ?
+        slider.querySelectorAll(".project-card") :
+        [];
+
+
+    function getProjectStep() {
+
+        if (!cards.length) return 0;
+
+        const card = cards[0];
+
+        const gap =
+            parseFloat(
+                getComputedStyle(slider).gap
+            ) || 20;
+
+        return card.offsetWidth + gap;
+
+    }
+
+
+    function updateProjectCounter() {
+
+        if (!slider || !cards.length) return;
+
+        const step = getProjectStep();
+
+        if (!step) return;
+
+        const index =
+            Math.round(slider.scrollLeft / step);
+
+        const current =
+            Math.min(
+                Math.max(index + 1, 1),
+                cards.length
+            );
+
+        if (currentProject) {
+            currentProject.textContent =
+                String(current).padStart(2, "0");
+        }
+
+        if (progress) {
+
+            const percentage =
+                cards.length > 1
+                    ? (current - 1) /
+                      (cards.length - 1) * 100
+                    : 100;
+
+            progress.style.width =
+                `${Math.max(20, percentage)}%`;
+        }
+
+    }
+
+
+    if (prevButton && slider) {
+
+        prevButton.addEventListener("click", () => {
+
+            slider.scrollBy({
+                left: -getProjectStep(),
+                behavior: "smooth"
+            });
+
+        });
+
+    }
+
+
+    if (nextButton && slider) {
+
+        nextButton.addEventListener("click", () => {
+
+            slider.scrollBy({
+                left: getProjectStep(),
+                behavior: "smooth"
+            });
+
+        });
+
+    }
+
+
+    if (slider) {
+
+        slider.addEventListener(
+            "scroll",
+            updateProjectCounter,
+            { passive: true }
         );
+
+        window.addEventListener(
+            "resize",
+            updateProjectCounter
+        );
+
+        updateProjectCounter();
+
+    }
+
+    
+
+
+    /* =====================================================
+       DRAG TO SCROLL
+       ===================================================== */
+
+    if (slider) {
+
+        let isDown = false;
+        let startX = 0;
+        let startScroll = 0;
+
+        slider.addEventListener("mousedown", event => {
+
+            if (
+                event.target.closest("button") ||
+                event.target.closest("a")
+            ) {
+                return;
+            }
+
+            isDown = true;
+
+            slider.classList.add("dragging");
+
+            startX = event.pageX;
+
+            startScroll = slider.scrollLeft;
+
+        });
+
+        window.addEventListener("mouseup", () => {
+
+            isDown = false;
+
+            slider.classList.remove("dragging");
+
+        });
+
+        slider.addEventListener("mousemove", event => {
+
+            if (!isDown) return;
+
+            event.preventDefault();
+
+            const distance =
+                (event.pageX - startX) * 1.15;
+
+            slider.scrollLeft =
+                startScroll - distance;
+
+        });
 
     }
 
 
     /* =====================================================
-       SELECT CATEGORY
-       
-       IMPORTANT:
-       scrollCategory = false saat halaman pertama
-       dibuka agar halaman tidak lompat.
-    ===================================================== */
+       PROJECT PREVIEW MODAL
+       ===================================================== */
 
-    function selectCategory(
-        categoryElement,
-        scrollCategory = false
-    ) {
+    const projectModal =
+        document.getElementById("projectModal");
 
-        if (!categoryElement) return;
+    const modalImage =
+        document.getElementById("modalProjectImage");
+
+    const modalTitle =
+        document.getElementById("modalProjectTitle");
+
+    const modalDescription =
+        document.getElementById("modalProjectDescription");
+
+    const modalCategory =
+        document.getElementById("modalProjectCategory");
+
+    const modalYear =
+        document.getElementById("modalProjectYear");
+
+    const modalTech1 =
+        document.getElementById("modalTech1");
+
+    const modalTech2 =
+        document.getElementById("modalTech2");
+
+    const modalTech3 =
+        document.getElementById("modalTech3");
+
+    const modalDirectLink =
+        document.getElementById("modalDirectLink");
 
 
-        categories.forEach(item => {
+    const projectData = {
 
-            item.classList.remove("active");
+        project1: {
+            image: "assets/pro1.png",
+            title: 'Website "Jasa Pembuatan Website"',
+            category: "WEB DEVELOPMENT",
+            year: "2026",
+            description:
+                "Website layanan pemesanan jasa pembuatan website berbasis PHP dengan sistem backend dan database.",
+            tech: ["PHP", "Bootstrap", "MySQL"],
+            link: "https://vicode.ct.ws/"
+        },
+
+        project2: {
+            image: "assets/pro2.png",
+            title: "Website Top Up Game",
+            category: "WEB DEVELOPMENT",
+            year: "2026",
+            description:
+                "Website top up game alternatif dengan sistem pembayaran semi otomatis.",
+            tech: ["PHP", "CSS", "MySQL"],
+            link: "https://virgigame.gt.tc/"
+        },
+
+        project3: {
+            image: "assets/pro3.png",
+            title: "Website Sistem Akademik Sederhana",
+            category: "WEB DEVELOPMENT",
+            year: "2026",
+            description:
+                "Sistem akademik sederhana untuk mahasiswa dan dosen dengan fitur manajemen tugas, absensi, dan komunikasi.",
+            tech: ["PHP", "CSS", "MySQL"],
+            link: "https://myacademic.ct.ws/"
+        },
+
+        project4: {
+            image: "assets/port-2.png",
+            title: "Desain Sistem Rumah Sakit",
+            category: "UI DESIGN",
+            year: "2026",
+            description:
+                "Perancangan interface sistem rumah sakit dengan role pasien, dokter, dan admin.",
+            tech: ["Figma", "UI", "Prototype"],
+            link: "https://figma.com/"
+        },
+
+        project5: {
+            image: "assets/pro5.png",
+            title: "Landing Page Media",
+            category: "LANDING PAGE",
+            year: "2025",
+            description:
+                "Landing page responsif untuk menyimpan foto dan video sekaligus menjadi latihan membangun interface modern.",
+            tech: ["HTML", "CSS", "JavaScript"],
+            link: "https://github.com/"
+        }
+
+    };
+
+
+    function openProjectModal(projectId) {
+
+        const data =
+            projectData[projectId];
+
+        if (!data || !projectModal) return;
+
+        if (modalImage) {
+            modalImage.src = data.image;
+            modalImage.alt = data.title;
+        }
+
+        if (modalTitle) {
+            modalTitle.textContent = data.title;
+        }
+
+        if (modalDescription) {
+            modalDescription.textContent =
+                data.description;
+        }
+
+        if (modalCategory) {
+            modalCategory.textContent =
+                data.category;
+        }
+
+        if (modalYear) {
+            modalYear.textContent =
+                data.year;
+        }
+
+        const techElements = [
+            modalTech1,
+            modalTech2,
+            modalTech3
+        ];
+
+        techElements.forEach((element, index) => {
+
+            if (!element) return;
+
+            if (data.tech[index]) {
+
+                element.textContent =
+                    data.tech[index];
+
+                element.style.display = "";
+
+            } else {
+
+                element.style.display = "none";
+
+            }
+
+        });
+
+        if (modalDirectLink) {
+            modalDirectLink.href = data.link;
+        }
+
+        projectModal.classList.add("active");
+
+        projectModal.setAttribute(
+            "aria-hidden",
+            "false"
+        );
+
+        body.classList.add("modal-open");
+
+    }
+
+
+    function closeProjectModal() {
+
+        if (!projectModal) return;
+
+        projectModal.classList.remove("active");
+
+        projectModal.setAttribute(
+            "aria-hidden",
+            "true"
+        );
+
+        body.classList.remove("modal-open");
+
+    }
+
+
+    document.querySelectorAll(".preview-button")
+        .forEach(button => {
+
+            button.addEventListener("click", event => {
+
+                event.stopPropagation();
+
+                openProjectModal(
+                    button.dataset.project
+                );
+
+            });
 
         });
 
 
-        categoryElement.classList.add("active");
+    if (projectModal) {
 
+        const close =
+            projectModal.querySelector(".modal-close");
 
-        renderSkills(
-            categoryElement.dataset.skill
-        );
+        const backdrop =
+            projectModal.querySelector(".modal-backdrop");
 
+        if (close) {
+            close.addEventListener(
+                "click",
+                closeProjectModal
+            );
+        }
 
-        /*
-           Hanya scroll kategori ketika
-           user benar-benar memilih kategori.
-        */
-
-        if (
-            scrollCategory &&
-            window.innerWidth <= 700
-        ) {
-
-            categoryElement.scrollIntoView({
-
-                behavior: "smooth",
-
-                block: "nearest",
-
-                inline: "center"
-
-            });
-
+        if (backdrop) {
+            backdrop.addEventListener(
+                "click",
+                closeProjectModal
+            );
         }
 
     }
 
 
     /* =====================================================
-       CLICK CATEGORY
-    ===================================================== */
+       PROFILE DETAIL MODAL
+       ===================================================== */
 
-    categories.forEach(category => {
+    const detailModal =
+        document.getElementById("detailModal");
 
-        category.addEventListener(
+    const detailButton =
+        document.getElementById("detailButton");
+
+
+    function openDetailModal() {
+
+        if (!detailModal) return;
+
+        detailModal.classList.add("active");
+
+        body.classList.add("modal-open");
+
+    }
+
+
+    function closeDetailModal() {
+
+        if (!detailModal) return;
+
+        detailModal.classList.remove("active");
+
+        body.classList.remove("modal-open");
+
+    }
+
+
+    if (detailButton) {
+
+        detailButton.addEventListener(
             "click",
-            () => {
+            event => {
 
-                selectCategory(
-                    category,
-                    true
-                );
+                event.preventDefault();
+
+                openDetailModal();
 
             }
+        );
+
+    }
+
+
+    if (detailModal) {
+
+        const close =
+            detailModal.querySelector(".modal-close");
+
+        if (close) {
+
+            close.addEventListener(
+                "click",
+                closeDetailModal
+            );
+
+        }
+
+        detailModal.addEventListener(
+            "click",
+            event => {
+
+                if (event.target === detailModal) {
+                    closeDetailModal();
+                }
+
+            }
+        );
+
+    }
+
+
+    /* =====================================================
+       BLOG MODAL
+       ===================================================== */
+
+    const blogModal =
+        document.getElementById("blogModal");
+
+    const blogButton =
+        document.querySelector(".blog-btn");
+
+
+    const blogData = {
+
+        "1": {
+            image: "assets/blog1.png",
+
+            meta:
+                "WEB DEVELOPMENT • 21 JULI 2026 • 5 MIN READ",
+
+            title:
+                "Cara Saya Mengenal Coding dan Web Developer",
+
+            description:
+                "Pengalaman saya dalam memulai dan mengenal dunia coding serta pengembangan website.",
+
+            content: `
+                <p>
+                    Perjalanan saya mengenal dunia coding
+                    dimulai dari rasa penasaran terhadap
+                    bagaimana sebuah website dapat bekerja.
+                </p>
+
+                <p>
+                    Dari sana saya mulai mempelajari HTML,
+                    CSS, JavaScript, PHP, dan berbagai teknologi
+                    lainnya melalui project-project kecil.
+                </p>
+
+                <p>
+                    Saya menyadari bahwa kemampuan programming
+                    tidak dibangun dalam satu malam. Setiap
+                    error, debugging, dan project yang selesai
+                    menjadi bagian dari proses belajar.
+                </p>
+
+                <p>
+                    Bagi saya, coding bukan hanya tentang
+                    menulis kode, tetapi juga tentang bagaimana
+                    memecahkan masalah dan terus berkembang.
+                </p>
+            `
+        }
+
+    };
+
+
+    function openBlogModal(id) {
+
+        if (!blogModal) return;
+
+        const data = blogData[id];
+
+        if (!data) return;
+
+        const image =
+            document.getElementById("blogModalImage");
+
+        const meta =
+            document.getElementById("blogModalMeta");
+
+        const title =
+            document.getElementById("blogModalTitle");
+
+        const description =
+            document.getElementById("blogModalDescription");
+
+        const text =
+            document.getElementById("blogModalText");
+
+
+        if (image) {
+            image.src = data.image;
+            image.alt = data.title;
+        }
+
+        if (meta) {
+            meta.textContent = data.meta;
+        }
+
+        if (title) {
+            title.textContent = data.title;
+        }
+
+        if (description) {
+            description.textContent =
+                data.description;
+        }
+
+        if (text) {
+            text.innerHTML = data.content;
+        }
+
+        blogModal.classList.add("active");
+
+        body.classList.add("modal-open");
+
+    }
+
+
+    function closeBlogModal() {
+
+        if (!blogModal) return;
+
+        blogModal.classList.remove("active");
+
+        body.classList.remove("modal-open");
+
+    }
+
+
+    if (blogButton) {
+
+        blogButton.addEventListener(
+            "click",
+            () => openBlogModal(
+                blogButton.dataset.blog || "1"
+            )
+        );
+
+    }
+
+
+    if (blogModal) {
+
+        const close =
+            blogModal.querySelector(".blog-modal-close");
+
+        const overlay =
+            blogModal.querySelector(".blog-modal-overlay");
+
+        if (close) {
+            close.addEventListener(
+                "click",
+                closeBlogModal
+            );
+        }
+
+        if (overlay) {
+            overlay.addEventListener(
+                "click",
+                closeBlogModal
+            );
+        }
+
+    }
+
+
+    /* =====================================================
+       ESC CLOSE ALL MODALS
+       ===================================================== */
+
+    document.addEventListener("keydown", event => {
+
+        if (event.key !== "Escape") return;
+
+        closeProjectModal();
+        closeDetailModal();
+        closeBlogModal();
+
+    });
+
+
+    /* =====================================================
+       CONTACT FORM
+       ===================================================== */
+
+    const contactForm =
+        document.getElementById("contactForm");
+
+    const formStatus =
+        document.getElementById("formStatus");
+
+
+    if (contactForm) {
+
+        contactForm.addEventListener(
+            "submit",
+            async event => {
+
+                event.preventDefault();
+
+                const submitButton =
+                    contactForm.querySelector(
+                        ".contact-submit"
+                    );
+
+                const originalText =
+                    submitButton
+                        ? submitButton.innerHTML
+                        : "";
+
+                if (submitButton) {
+
+                    submitButton.disabled = true;
+
+                    submitButton.innerHTML =
+                        "Mengirim...";
+
+                }
+
+                if (formStatus) {
+                    formStatus.textContent =
+                        "";
+                }
+
+                try {
+
+                    const response =
+                        await fetch(
+                            contactForm.action,
+                            {
+                                method: "POST",
+                                body:
+                                    new FormData(
+                                        contactForm
+                                    ),
+                                headers: {
+                                    "Accept":
+                                        "application/json"
+                                }
+                            }
+                        );
+
+                    if (response.ok) {
+
+                        contactForm.reset();
+
+                        if (formStatus) {
+
+                            formStatus.textContent =
+                                "Pesan berhasil dikirim. Terima kasih!";
+
+                            formStatus.style.color =
+                                "#21884c";
+
+                        }
+
+                    } else {
+
+                        throw new Error(
+                            "Request failed"
+                        );
+
+                    }
+
+                } catch (error) {
+
+                    if (formStatus) {
+
+                        formStatus.textContent =
+                            "Pesan belum berhasil dikirim. Silakan coba lagi.";
+
+                        formStatus.style.color =
+                            "#c33";
+
+                    }
+
+                } finally {
+
+                    if (submitButton) {
+
+                        submitButton.disabled = false;
+
+                        submitButton.innerHTML =
+                            originalText;
+
+                    }
+
+                }
+
+            }
+        );
+
+    }
+
+
+    /* =====================================================
+       PREVENT IMAGE DRAG
+       ===================================================== */
+
+    document.querySelectorAll("img").forEach(image => {
+
+        image.addEventListener(
+            "dragstart",
+            event => event.preventDefault()
         );
 
     });
 
 
     /* =====================================================
-       TOUCH SWIPE
-    ===================================================== */
+       HERO PARALLAX SCROLL
+       ===================================================== */
 
-    let touchStartX = 0;
+    const heroVisual =
+        document.querySelector(".hero-new-visual");
 
-    let touchStartY = 0;
+    if (heroVisual) {
 
-    let touchEndX = 0;
-
-    let touchEndY = 0;
-
-
-    categoryNav.addEventListener(
-        "touchstart",
-        event => {
-
-            touchStartX =
-                event.touches[0].clientX;
-
-            touchStartY =
-                event.touches[0].clientY;
-
-        },
-        {
-            passive: true
-        }
-    );
-
-
-    categoryNav.addEventListener(
-        "touchmove",
-        event => {
-
-            touchEndX =
-                event.touches[0].clientX;
-
-            touchEndY =
-                event.touches[0].clientY;
-
-        },
-        {
-            passive: true
-        }
-    );
-
-
-    categoryNav.addEventListener(
-        "touchend",
-        () => {
-
-            const diffX =
-                touchStartX - touchEndX;
-
-
-            const diffY =
-                touchStartY - touchEndY;
-
-
-            /*
-               Pastikan gesture benar-benar
-               horizontal.
-            */
-
-            if (
-                Math.abs(diffX) >
-                Math.abs(diffY)
-            ) {
+        window.addEventListener(
+            "scroll",
+            () => {
 
                 if (
-                    Math.abs(diffX) > 35
+                    window.innerWidth < 760 ||
+                    window.matchMedia(
+                        "(prefers-reduced-motion: reduce)"
+                    ).matches
                 ) {
+                    return;
+                }
 
-                    categoryNav.scrollBy({
+                const rect =
+                    heroVisual.getBoundingClientRect();
 
-                        left:
-                            diffX > 0
-                                ? 180
-                                : -180,
+                const viewport =
+                    window.innerHeight;
 
+                if (
+                    rect.bottom < 0 ||
+                    rect.top > viewport
+                ) {
+                    return;
+                }
+
+                const progress =
+                    (viewport - rect.top) /
+                    (viewport + rect.height);
+
+                const offset =
+                    (progress - .5) * 18;
+
+                heroVisual.style.transform =
+                    `translateY(${offset}px)`;
+
+            },
+            { passive: true }
+        );
+
+    }
+
+
+    /* =====================================================
+       SPECIAL PAGE BUTTON
+       ===================================================== */
+
+    const specialPage =
+        document.querySelector(".nav-contact");
+
+    if (specialPage) {
+
+        specialPage.addEventListener(
+            "click",
+            event => {
+
+                event.preventDefault();
+
+                const target =
+                    document.getElementById("project");
+
+                if (target) {
+
+                    target.scrollIntoView({
                         behavior: "smooth"
-
                     });
 
                 }
 
             }
+        );
 
-
-            touchStartX = 0;
-
-            touchStartY = 0;
-
-            touchEndX = 0;
-
-            touchEndY = 0;
-
-        }
-    );
+    }
 
 
     /* =====================================================
-       MOUSE DRAG
-    ===================================================== */
-
-    let isDragging = false;
-
-    let startX = 0;
-
-    let scrollStart = 0;
-
-
-    categoryNav.addEventListener(
-        "mousedown",
-        event => {
-
-            isDragging = true;
-
-            categoryNav.classList.add(
-                "is-dragging"
-            );
-
-
-            startX =
-                event.pageX -
-                categoryNav.offsetLeft;
-
-
-            scrollStart =
-                categoryNav.scrollLeft;
-
-        }
-    );
-
-
-    categoryNav.addEventListener(
-        "mouseleave",
-        () => {
-
-            isDragging = false;
-
-            categoryNav.classList.remove(
-                "is-dragging"
-            );
-
-        }
-    );
-
-
-    categoryNav.addEventListener(
-        "mouseup",
-        () => {
-
-            isDragging = false;
-
-            categoryNav.classList.remove(
-                "is-dragging"
-            );
-
-        }
-    );
-
-
-    categoryNav.addEventListener(
-        "mousemove",
-        event => {
-
-            if (!isDragging) return;
-
-
-            event.preventDefault();
-
-
-            const x =
-                event.pageX -
-                categoryNav.offsetLeft;
-
-
-            const walk =
-                (x - startX) * 1.5;
-
-
-            categoryNav.scrollLeft =
-                scrollStart - walk;
-
-        }
-    );
-
-
-    /* =====================================================
-       KEYBOARD
-    ===================================================== */
-
-    categories.forEach(
-        (category, index) => {
-
-            category.addEventListener(
-                "keydown",
-                event => {
-
-                    let nextIndex;
-
-
-                    if (
-                        event.key === "ArrowRight" ||
-                        event.key === "ArrowDown"
-                    ) {
-
-                        event.preventDefault();
-
-
-                        nextIndex =
-                            (index + 1)
-                            %
-                            categories.length;
-
-                    }
-
-
-                    if (
-                        event.key === "ArrowLeft" ||
-                        event.key === "ArrowUp"
-                    ) {
-
-                        event.preventDefault();
-
-
-                        nextIndex =
-                            (
-                                index -
-                                1 +
-                                categories.length
-                            )
-                            %
-                            categories.length;
-
-                    }
-
-
-                    if (
-                        nextIndex !== undefined
-                    ) {
-
-                        const next =
-                            categories[nextIndex];
-
-
-                        next.focus();
-
-
-                        selectCategory(
-                            next,
-                            true
-                        );
-
-                    }
-
-                }
-            );
-
-        }
-    );
-
-
-    /* =====================================================
-       INITIAL LOAD
-       
-       FALSE = JANGAN SCROLL HALAMAN
-    ===================================================== */
-
-    const initialCategory =
-        document.querySelector(
-            ".pro-category.active"
-        )
-        ||
-        categories[0];
-
-
-    selectCategory(
-        initialCategory,
-        false
-    );
+       INITIAL STATE
+       ===================================================== */
+
+    updateHeader();
+    updateProjectCounter();
 
 });
+
