@@ -593,8 +593,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     }
 
-    
-
 
     /* =====================================================
        DRAG TO SCROLL
@@ -1344,3 +1342,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
 });
 
+/* =====================================================
+   HERO ENTRY ANIMATION
+   ===================================================== */
+
+document.addEventListener("DOMContentLoaded", () => {
+    const hero = document.querySelector(".hero-new");
+
+    if (!hero) return;
+
+    // Tambahkan class awal
+    hero.classList.add("hero-enter");
+
+    // Jalankan animasi setelah halaman siap
+    requestAnimationFrame(() => {
+        setTimeout(() => {
+            hero.classList.add("hero-show");
+        }, 150);
+    });
+});
