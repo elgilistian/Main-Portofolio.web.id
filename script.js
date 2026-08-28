@@ -610,6 +610,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 document.addEventListener("DOMContentLoaded", () => {
 
+
     /* =====================================================
        ELEMENT
     ===================================================== */
@@ -637,10 +638,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* =====================================================
-       SKILLS DATA
+       SKILL DATA
     ===================================================== */
 
     const skills = {
+
+
+        /* -------------------------------------------------
+           FRONT END
+        ------------------------------------------------- */
 
         frontend: {
 
@@ -676,6 +682,10 @@ document.addEventListener("DOMContentLoaded", () => {
         },
 
 
+        /* -------------------------------------------------
+           BACK END
+        ------------------------------------------------- */
+
         backend: {
 
             number: "02",
@@ -703,6 +713,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
         },
 
+
+        /* -------------------------------------------------
+           PROGRAMMING
+        ------------------------------------------------- */
 
         programming: {
 
@@ -738,6 +752,10 @@ document.addEventListener("DOMContentLoaded", () => {
         },
 
 
+        /* -------------------------------------------------
+           UI DESIGN
+        ------------------------------------------------- */
+
         ui: {
 
             number: "04",
@@ -766,6 +784,10 @@ document.addEventListener("DOMContentLoaded", () => {
         },
 
 
+        /* -------------------------------------------------
+           FRAMEWORK
+        ------------------------------------------------- */
+
         framework: {
 
             number: "05",
@@ -793,6 +815,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
         },
 
+
+        /* -------------------------------------------------
+           EDITING
+        ------------------------------------------------- */
 
         editing: {
 
@@ -839,6 +865,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
         },
 
+
+        /* -------------------------------------------------
+           TOOLS
+        ------------------------------------------------- */
 
         tools: {
 
@@ -894,97 +924,97 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function renderSkills(category) {
 
-        const data = skills[category];
+        const data =
+            skills[category];
 
         if (!data) return;
 
 
-        /* -----------------------------------------------
-           UPDATE HEADER
-        ----------------------------------------------- */
-
         title.textContent =
             data.title;
+
 
         description.textContent =
             data.description;
 
+
         number.textContent =
             data.number;
+
 
         count.textContent =
             `${String(data.items.length).padStart(2, "0")} SKILLS`;
 
 
-        /* -----------------------------------------------
-           CLEAR OLD SKILLS
-        ----------------------------------------------- */
-
         list.innerHTML = "";
 
 
-        /* -----------------------------------------------
-           CREATE SKILLS
-        ----------------------------------------------- */
+        data.items.forEach(
+            (skill, index) => {
 
-        data.items.forEach((skill, index) => {
-
-            const element =
-                document.createElement("div");
-
-            element.className =
-                "pro-skill";
+                const element =
+                    document.createElement("div");
 
 
-            element.innerHTML = `
-
-                <div class="pro-skill-symbol">
-
-                    <i class="${skill.icon}"></i>
-
-                </div>
-
-                <div class="pro-skill-info">
-
-                    <strong>
-                        ${skill.name}
-                    </strong>
-
-                    <span>
-                        ${skill.desc}
-                    </span>
-
-                </div>
-
-            `;
+                element.className =
+                    "pro-skill";
 
 
-            list.appendChild(element);
+                element.innerHTML = `
+
+                    <div class="pro-skill-symbol">
+
+                        <i class="${skill.icon}"></i>
+
+                    </div>
+
+                    <div class="pro-skill-info">
+
+                        <strong>
+                            ${skill.name}
+                        </strong>
+
+                        <span>
+                            ${skill.desc}
+                        </span>
+
+                    </div>
+
+                `;
 
 
-            /* stagger animation */
+                list.appendChild(element);
 
-            setTimeout(() => {
 
-                element.classList.add("show");
+                /* ANIMATION */
 
-            }, 70 * index);
+                setTimeout(() => {
 
-        });
+                    element.classList.add("show");
+
+                }, 60 * index);
+
+            }
+        );
 
     }
 
 
     /* =====================================================
        SELECT CATEGORY
+       
+       IMPORTANT:
+       scrollCategory = false saat halaman pertama
+       dibuka agar halaman tidak lompat.
     ===================================================== */
 
-    function selectCategory(categoryElement) {
+    function selectCategory(
+        categoryElement,
+        scrollCategory = false
+    ) {
 
         if (!categoryElement) return;
 
-
-        /* remove active */
 
         categories.forEach(item => {
 
@@ -993,23 +1023,23 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
 
-        /* activate */
-
         categoryElement.classList.add("active");
 
-
-        /* render */
 
         renderSkills(
             categoryElement.dataset.skill
         );
 
 
-        /* -----------------------------------------------
-           AUTO SCROLL TO ACTIVE CATEGORY
-        ----------------------------------------------- */
+        /*
+           Hanya scroll kategori ketika
+           user benar-benar memilih kategori.
+        */
 
-        if (window.innerWidth <= 700) {
+        if (
+            scrollCategory &&
+            window.innerWidth <= 700
+        ) {
 
             categoryElement.scrollIntoView({
 
@@ -1027,7 +1057,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* =====================================================
-       CLICK / TAP
+       CLICK CATEGORY
     ===================================================== */
 
     categories.forEach(category => {
@@ -1036,7 +1066,10 @@ document.addEventListener("DOMContentLoaded", () => {
             "click",
             () => {
 
-                selectCategory(category);
+                selectCategory(
+                    category,
+                    true
+                );
 
             }
         );
@@ -1045,7 +1078,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* =====================================================
-       MOBILE TOUCH SWIPE
+       TOUCH SWIPE
     ===================================================== */
 
     let touchStartX = 0;
@@ -1098,16 +1131,14 @@ document.addEventListener("DOMContentLoaded", () => {
             const diffX =
                 touchStartX - touchEndX;
 
+
             const diffY =
                 touchStartY - touchEndY;
 
 
             /*
-
-               Jika gerakan horizontal
-               lebih besar daripada vertical,
-               berarti user sedang swipe kategori.
-
+               Pastikan gesture benar-benar
+               horizontal.
             */
 
             if (
@@ -1119,31 +1150,16 @@ document.addEventListener("DOMContentLoaded", () => {
                     Math.abs(diffX) > 35
                 ) {
 
-                    if (diffX > 0) {
+                    categoryNav.scrollBy({
 
-                        /* SWIPE LEFT */
+                        left:
+                            diffX > 0
+                                ? 180
+                                : -180,
 
-                        categoryNav.scrollBy({
+                        behavior: "smooth"
 
-                            left: 180,
-
-                            behavior: "smooth"
-
-                        });
-
-                    } else {
-
-                        /* SWIPE RIGHT */
-
-                        categoryNav.scrollBy({
-
-                            left: -180,
-
-                            behavior: "smooth"
-
-                        });
-
-                    }
+                    });
 
                 }
 
@@ -1151,9 +1167,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
             touchStartX = 0;
+
             touchStartY = 0;
 
             touchEndX = 0;
+
             touchEndY = 0;
 
         }
@@ -1162,7 +1180,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     /* =====================================================
        MOUSE DRAG
-       Berguna untuk desktop / laptop
     ===================================================== */
 
     let isDragging = false;
@@ -1182,9 +1199,11 @@ document.addEventListener("DOMContentLoaded", () => {
                 "is-dragging"
             );
 
+
             startX =
                 event.pageX -
                 categoryNav.offsetLeft;
+
 
             scrollStart =
                 categoryNav.scrollLeft;
@@ -1235,6 +1254,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 event.pageX -
                 categoryNav.offsetLeft;
 
+
             const walk =
                 (x - startX) * 1.5;
 
@@ -1247,7 +1267,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* =====================================================
-       KEYBOARD NAVIGATION
+       KEYBOARD
     ===================================================== */
 
     categories.forEach(
@@ -1267,9 +1287,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
                         event.preventDefault();
 
+
                         nextIndex =
                             (index + 1)
-                            % categories.length;
+                            %
+                            categories.length;
 
                     }
 
@@ -1280,6 +1302,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     ) {
 
                         event.preventDefault();
+
 
                         nextIndex =
                             (
@@ -1300,9 +1323,14 @@ document.addEventListener("DOMContentLoaded", () => {
                         const next =
                             categories[nextIndex];
 
+
                         next.focus();
 
-                        selectCategory(next);
+
+                        selectCategory(
+                            next,
+                            true
+                        );
 
                     }
 
@@ -1314,13 +1342,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* =====================================================
-       INITIAL STATE
+       INITIAL LOAD
+       
+       FALSE = JANGAN SCROLL HALAMAN
     ===================================================== */
 
-    selectCategory(
+    const initialCategory =
         document.querySelector(
             ".pro-category.active"
         )
+        ||
+        categories[0];
+
+
+    selectCategory(
+        initialCategory,
+        false
     );
 
 });
