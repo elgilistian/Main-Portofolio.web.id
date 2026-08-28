@@ -2849,319 +2849,135 @@ section {
 
 }
 
-/* =========================================
-   CINEMATIC PAGE INTRO
-   ========================================= */
+/* =====================================================
+   HERO ENTRY ANIMATION
+   ===================================================== */
 
-body {
-    animation: pageReveal 1.2s cubic-bezier(.22, 1, .36, 1) both;
+.hero-new.hero-enter {
+    opacity: 0;
+    transform: translateY(35px);
 }
 
-@keyframes pageReveal {
-    0% {
-        opacity: 0;
-        filter: blur(10px);
-        transform: scale(1.015);
-    }
-
-    60% {
-        opacity: 1;
-        filter: blur(0);
-        transform: scale(1);
-    }
-
-    100% {
-        opacity: 1;
-        filter: blur(0);
-        transform: scale(1);
-    }
+.hero-new.hero-show {
+    opacity: 1;
+    transform: translateY(0);
+    transition:
+        opacity 0.9s cubic-bezier(.22, 1, .36, 1),
+        transform 0.9s cubic-bezier(.22, 1, .36, 1);
 }
 
 
-/* =========================================
-   HERO
-   ========================================= */
+/* ---------- ELEMENT HERO ---------- */
 
-.hero {
-    position: relative;
-    overflow: hidden;
+.hero-new .hero-content {
+    opacity: 0;
+    transform: translateY(25px);
+    transition:
+        opacity 0.8s ease,
+        transform 0.8s cubic-bezier(.22, 1, .36, 1);
+    transition-delay: 0.15s;
+}
+
+.hero-new .hero-image,
+.hero-new .hero-image-area,
+.hero-new .hero-visual {
+    opacity: 0;
+    transform: translateX(35px) scale(.96);
+    transition:
+        opacity 0.9s ease,
+        transform 1s cubic-bezier(.22, 1, .36, 1);
+    transition-delay: 0.3s;
 }
 
 
-/* Garis cinematic */
+/* ---------- SAAT HERO MUNCUL ---------- */
 
-.hero::before {
-    content: "";
-    position: absolute;
-    left: 0;
-    top: 0;
-
-    width: 0;
-    height: 1px;
-
-    background: currentColor;
-
-    animation: lineReveal 1.4s cubic-bezier(.22, 1, .36, 1) .2s forwards;
+.hero-new.hero-show .hero-content {
+    opacity: 1;
+    transform: translateY(0);
 }
 
-@keyframes lineReveal {
+.hero-new.hero-show .hero-image,
+.hero-new.hero-show .hero-image-area,
+.hero-new.hero-show .hero-visual {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+}
+
+
+/* ---------- TEXT DETAIL ---------- */
+
+.hero-new.hero-show h1 {
+    animation: heroTitleIn 0.9s cubic-bezier(.22, 1, .36, 1) both;
+    animation-delay: 0.2s;
+}
+
+.hero-new.hero-show p {
+    animation: heroTextIn 0.8s ease both;
+    animation-delay: 0.4s;
+}
+
+.hero-new.hero-show .hero-buttons,
+.hero-new.hero-show .hero-actions {
+    animation: heroButtonsIn 0.8s cubic-bezier(.22, 1, .36, 1) both;
+    animation-delay: 0.55s;
+}
+
+
+/* ---------- KEYFRAMES ---------- */
+
+@keyframes heroTitleIn {
     from {
-        width: 0;
-        opacity: 0;
-    }
-
-    to {
-        width: 100%;
-        opacity: .25;
-    }
-}
-
-
-/* =========================================
-   TEXT REVEAL
-   ========================================= */
-
-.hero-content h1 {
-    animation:
-        titleReveal 1s cubic-bezier(.22, 1, .36, 1) .25s both;
-}
-
-.hero-content p {
-    animation:
-        paragraphReveal 1s cubic-bezier(.22, 1, .36, 1) .45s both;
-}
-
-.hero-content .hero-buttons {
-    animation:
-        buttonReveal .9s cubic-bezier(.22, 1, .36, 1) .65s both;
-}
-
-
-@keyframes titleReveal {
-
-    0% {
-        opacity: 0;
-        transform: translateY(45px);
-        filter: blur(12px);
-        letter-spacing: 8px;
-    }
-
-    100% {
-        opacity: 1;
-        transform: translateY(0);
-        filter: blur(0);
-        letter-spacing: normal;
-    }
-}
-
-
-@keyframes paragraphReveal {
-
-    0% {
         opacity: 0;
         transform: translateY(25px);
-        filter: blur(7px);
-    }
-
-    100% {
-        opacity: 1;
-        transform: translateY(0);
-        filter: blur(0);
-    }
-}
-
-
-@keyframes buttonReveal {
-
-    0% {
-        opacity: 0;
-        transform: translateY(20px) scale(.96);
-    }
-
-    100% {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-    }
-}
-
-
-/* =========================================
-   IMAGE / PHOTO
-   ========================================= */
-
-.hero-image {
-    animation:
-        imageReveal 1.4s cubic-bezier(.16, 1, .3, 1) .35s both;
-}
-
-
-@keyframes imageReveal {
-
-    0% {
-        opacity: 0;
-        transform:
-            translateX(70px)
-            translateY(20px)
-            scale(.88)
-            rotate(2deg);
-
-        filter: blur(12px);
-    }
-
-    60% {
-        opacity: 1;
-        filter: blur(0);
-    }
-
-    100% {
-        opacity: 1;
-        transform:
-            translateX(0)
-            translateY(0)
-            scale(1)
-            rotate(0);
-    }
-}
-
-
-/* =========================================
-   IMAGE LIGHT SWEEP
-   ========================================= */
-
-.hero-image {
-    position: relative;
-    overflow: hidden;
-}
-
-.hero-image::after {
-    content: "";
-
-    position: absolute;
-
-    top: 0;
-    left: -120%;
-
-    width: 70%;
-    height: 100%;
-
-    background: linear-gradient(
-        90deg,
-        transparent,
-        rgba(255,255,255,.35),
-        transparent
-    );
-
-    transform: skewX(-20deg);
-
-    animation: imageLight 1.5s ease .8s both;
-}
-
-
-@keyframes imageLight {
-
-    0% {
-        left: -120%;
-    }
-
-    100% {
-        left: 150%;
-    }
-}
-
-
-/* =========================================
-   FLOATING ELEMENT
-   ========================================= */
-
-.hero-image img {
-    animation: imageFloat 5s ease-in-out 1.8s infinite;
-}
-
-
-@keyframes imageFloat {
-
-    0%,
-    100% {
-        transform: translateY(0);
-    }
-
-    50% {
-        transform: translateY(-8px);
-    }
-}
-
-
-/* =========================================
-   PROJECT CARD
-   ========================================= */
-
-.project-card {
-    opacity: 0;
-    animation: cardReveal .8s cubic-bezier(.22, 1, .36, 1) forwards;
-}
-
-.project-card:nth-child(1) {
-    animation-delay: .15s;
-}
-
-.project-card:nth-child(2) {
-    animation-delay: .25s;
-}
-
-.project-card:nth-child(3) {
-    animation-delay: .35s;
-}
-
-.project-card:nth-child(4) {
-    animation-delay: .45s;
-}
-
-
-@keyframes cardReveal {
-
-    from {
-        opacity: 0;
-        transform:
-            translateY(40px)
-            scale(.96);
-        filter: blur(6px);
+        filter: blur(8px);
     }
 
     to {
         opacity: 1;
-        transform:
-            translateY(0)
-            scale(1);
+        transform: translateY(0);
         filter: blur(0);
     }
 }
 
+@keyframes heroTextIn {
+    from {
+        opacity: 0;
+        transform: translateY(15px);
+    }
 
-/* =========================================
-   PROJECT HOVER
-   ========================================= */
-
-.project-card {
-    transition:
-        transform .45s cubic-bezier(.22, 1, .36, 1),
-        box-shadow .45s ease;
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
-.project-card:hover {
-    transform: translateY(-8px) scale(1.015);
+@keyframes heroButtonsIn {
+    from {
+        opacity: 0;
+        transform: translateY(18px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 
-/* =========================================
-   REDUCE MOTION
-   ========================================= */
+/* ---------- REDUCE MOTION ---------- */
 
 @media (prefers-reduced-motion: reduce) {
 
-    *,
-    *::before,
-    *::after {
-        animation: none !important;
+    .hero-new,
+    .hero-new .hero-content,
+    .hero-new .hero-image,
+    .hero-new .hero-image-area,
+    .hero-new .hero-visual {
+        opacity: 1 !important;
+        transform: none !important;
         transition: none !important;
+        animation: none !important;
     }
+
 }
