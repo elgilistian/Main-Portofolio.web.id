@@ -3299,11 +3299,9 @@ span:last-child {
     border-radius:
         50%;
 
-    background:
-        var(--dark);
+    background:black;
 
-    color:
-        #064d73;
+    color:#ffffff;
 
     font-size:
         19px;
