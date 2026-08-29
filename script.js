@@ -1,488 +1,2023 @@
 /* =========================================================
-   ELGI LISTIANI — PORTFOLIO INTERACTIONS
+   ELGI PORTFOLIO
+   CLEAN INTERACTION SYSTEM
 ========================================================= */
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener("DOMContentLoaded", function () {
+    "use strict";
 
-  /* ---------- NAVBAR: scroll state + mobile toggle ---------- */
-  const header = document.getElementById('siteHeader');
-  const navToggle = document.getElementById('navToggle');
-  const navMenu = document.getElementById('navMenu');
-  const navLinks = document.querySelectorAll('.nav-link');
 
-  const onScroll = () => {
-    if (window.scrollY > 24) header.classList.add('scrolled');
-    else header.classList.remove('scrolled');
-  };
-  onScroll();
-  window.addEventListener('scroll', onScroll, { passive: true });
+    /* =====================================================
+       HELPER
+    ===================================================== */
 
-  if (navToggle && navMenu) {
-    navToggle.addEventListener('click', () => {
-      const open = navMenu.classList.toggle('open');
-      navToggle.classList.toggle('open', open);
-      navToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    const $ = (selector, parent = document) => {
+        return parent.querySelector(selector);
+    };
+
+    const $$ = (selector, parent = document) => {
+        return Array.from(
+            parent.querySelectorAll(selector)
+        );
+    };
+
+
+    /* =====================================================
+       PAGE LOAD
+    ===================================================== */
+
+    window.addEventListener("load", function () {
+        document.body.classList.add("page-ready");
     });
-    navMenu.querySelectorAll('a').forEach(a => {
-      a.addEventListener('click', () => {
-        navMenu.classList.remove('open');
-        navToggle.classList.remove('open');
-        navToggle.setAttribute('aria-expanded', 'false');
-      });
-    });
-  }
 
-  // Active link highlight on scroll
-  const sections = [...document.querySelectorAll('main section[id]')];
-  if (sections.length && navLinks.length) {
-    const spy = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          const id = entry.target.getAttribute('id');
-          navLinks.forEach(link => {
-            link.classList.toggle('active', link.getAttribute('href') === `#${id}`);
-          });
-        }
-      });
-    }, { rootMargin: '-45% 0px -50% 0px', threshold: 0 });
-    sections.forEach(s => spy.observe(s));
-  }
 
-  /* ---------- SCROLL REVEAL ---------- */
-  const revealTargets = document.querySelectorAll(
-    '.about-info, .about-visual, .pro-skills-header, .pro-skills-content, .project-card, .blog-single, .contact-info, .contact-form-box, .about-bottom .bottom-item'
-  );
-  revealTargets.forEach(el => el.setAttribute('data-reveal', ''));
+    /* =====================================================
+       NAVBAR
+    ===================================================== */
 
-  const revealObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('in-view');
-        revealObserver.unobserve(entry.target);
-      }
-    });
-  }, { threshold: 0.15 });
-  revealTargets.forEach(el => revealObserver.observe(el));
+    const siteHeader = $("#siteHeader");
+    const navToggle = $("#navToggle");
+    const navMenu = $("#navMenu");
 
-  /* ---------- PROFILE DETAIL MODAL ---------- */
-  const detailModal = document.getElementById('detailModal');
-  const detailButton = document.getElementById('detailButton');
-  const detailCloseButtons = detailModal ? detailModal.querySelectorAll('.modal-close') : [];
+    function closeNav() {
+        if (!navMenu || !navToggle) return;
 
-  const openModal = (modal) => {
-    modal.classList.add('open');
-    modal.setAttribute('aria-hidden', 'false');
-    document.body.style.overflow = 'hidden';
-  };
-  const closeModal = (modal) => {
-    modal.classList.remove('open');
-    modal.setAttribute('aria-hidden', 'true');
-    document.body.style.overflow = '';
-  };
+        navMenu.classList.remove("active");
+        navToggle.classList.remove("is-open");
 
-  if (detailButton && detailModal) {
-    detailButton.addEventListener('click', (e) => {
-      e.preventDefault();
-      openModal(detailModal);
-    });
-    detailCloseButtons.forEach(btn => btn.addEventListener('click', () => closeModal(detailModal)));
-    detailModal.addEventListener('click', (e) => {
-      if (e.target === detailModal) closeModal(detailModal);
-    });
-  }
-
-  /* ---------- PRO SKILLS: category switch + drag-to-scroll rail ---------- */
-  const skillData = {
-    frontend: {
-      title: 'Front End',
-      number: '01',
-      description: 'Membangun tampilan website yang modern, responsif, dan interaktif.',
-      skills: ['HTML5', 'CSS3', 'JavaScript']
-    },
-    backend: {
-      title: 'Back End',
-      number: '02',
-      description: 'Mengelola logika server, data, dan alur aplikasi di balik layar.',
-      skills: ['PHP', 'MySQL', 'REST API']
-    },
-    programming: {
-      title: 'Programming',
-      number: '03',
-      description: 'Dasar pemrograman untuk menyelesaikan masalah secara terstruktur.',
-      skills: ['C++', 'PHP', 'JavaScript','Python']
-    },
-    ui: {
-      title: 'UI Design',
-      number: '04',
-      description: 'Merancang tampilan antarmuka yang rapi, enak dilihat, dan mudah digunakan.',
-      skills: ['Figma', 'Wireframing', 'Prototyping']
-    },
-    framework: {
-      title: 'Framework',
-      number: '05',
-      description: 'Mempercepat pengembangan dengan struktur dan komponen siap pakai.',
-      skills: ['Bootstrap', 'Tailwind CSS']
-    },
-    editing: {
-      title: 'Editing',
-      number: '06',
-      description: 'Mengedit aset visual sederhana untuk kebutuhan project dan konten.',
-      skills: ['Canva', 'CapCut PC','Photoshop','kinemaster','alight motion',]
-    },
-    tools: {
-      title: 'Tools',
-      number: '07',
-      description: 'Perangkat sehari-hari untuk menulis, menguji, dan mengelola kode.',
-      skills: ['VS Code', 'Git', 'XAMPP','Visual Studio','codeblock','GColab']
+        navToggle.setAttribute(
+            "aria-expanded",
+            "false"
+        );
     }
-  };
 
-  const categoryButtons = document.querySelectorAll('.pro-category');
-  const skillTitle = document.getElementById('proSkillTitle');
-  const skillNumber = document.getElementById('proSkillNumber');
-  const skillDescription = document.getElementById('proSkillDescription');
-  const skillList = document.getElementById('proSkillList');
-  const skillCount = document.getElementById('proSkillCount');
+    if (navToggle) {
+        navToggle.addEventListener(
+            "click",
+            function (event) {
 
-  const renderSkill = (key) => {
-    const data = skillData[key];
-    if (!data) return;
-    skillTitle.textContent = data.title;
-    skillNumber.textContent = data.number;
-    skillDescription.textContent = data.description;
-    skillCount.textContent = String(data.skills.length).padStart(2, '0') + ' SKILLS';
-    skillList.innerHTML = '';
-    data.skills.forEach((skill, i) => {
-      const chip = document.createElement('span');
-      chip.className = 'pro-skill-chip';
-      chip.style.animationDelay = `${i * 0.06}s`;
-      chip.innerHTML = `<i class="fa-solid fa-check"></i>${skill}`;
-      skillList.appendChild(chip);
-    });
-  };
+                event.stopPropagation();
 
-  categoryButtons.forEach(btn => {
-    btn.addEventListener('click', () => {
-      categoryButtons.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      renderSkill(btn.dataset.skill);
-    });
-  });
+                const isOpen =
+                    navMenu.classList.contains(
+                        "active"
+                    );
 
-  if (categoryButtons.length) renderSkill(categoryButtons[0].dataset.skill);
+                navMenu.classList.toggle(
+                    "active",
+                    !isOpen
+                );
 
-  // Generic drag-to-scroll (mouse + touch works natively, mouse needs JS)
-  const makeDraggable = (el) => {
-    if (!el) return;
-    let isDown = false;
-    let startX = 0;
-    let scrollStart = 0;
-    let moved = false;
+                navToggle.classList.toggle(
+                    "is-open",
+                    !isOpen
+                );
 
-    el.addEventListener('mousedown', (e) => {
-      isDown = true;
-      moved = false;
-      el.classList.add('dragging');
-      startX = e.pageX;
-      scrollStart = el.scrollLeft;
-    });
-    window.addEventListener('mouseup', () => {
-      isDown = false;
-      el.classList.remove('dragging');
-    });
-    window.addEventListener('mousemove', (e) => {
-      if (!isDown) return;
-      e.preventDefault();
-      const dx = e.pageX - startX;
-      if (Math.abs(dx) > 5) moved = true;
-      el.scrollLeft = scrollStart - dx;
-    });
-    // Prevent click-through firing after a real drag
-    el.addEventListener('click', (e) => {
-      if (moved) {
-        e.stopPropagation();
-        e.preventDefault();
-      }
-    }, true);
-  };
+                navToggle.setAttribute(
+                    "aria-expanded",
+                    String(!isOpen)
+                );
+            }
+        );
+    }
 
-  makeDraggable(document.querySelector('.pro-category-nav'));
-
-  /* ---------- PROJECT SLIDER: drag + arrows + autoplay ---------- */
-  const slider = document.getElementById('projectsSlider');
-  const prevBtn = document.getElementById('projectPrev');
-  const nextBtn = document.getElementById('projectNext');
-  const counterCurrent = document.getElementById('projectCurrent');
-  const progressBar = document.getElementById('projectProgress');
-
-  if (slider) {
-    const cards = slider.querySelectorAll('.project-card');
-    const total = cards.length;
-
-    const cardStep = () => {
-      const card = cards[0];
-      const style = window.getComputedStyle(slider);
-      const gap = parseFloat(style.columnGap || style.gap || 24);
-      return card.getBoundingClientRect().width + gap;
-    };
-
-    const updateCounter = () => {
-      const step = cardStep();
-      const index = Math.round(slider.scrollLeft / step);
-      const clamped = Math.min(Math.max(index, 0), total - 1);
-      if (counterCurrent) counterCurrent.textContent = String(clamped + 1).padStart(2, '0');
-      if (progressBar) progressBar.style.width = `${((clamped + 1) / total) * 100}%`;
-      return clamped;
-    };
-
-    const scrollToIndex = (index) => {
-      const clamped = (index + total) % total;
-      slider.scrollTo({ left: clamped * cardStep(), behavior: 'smooth' });
-    };
-
-    let currentIndex = 0;
-
-    if (nextBtn) nextBtn.addEventListener('click', () => {
-      currentIndex = updateCounter();
-      scrollToIndex(currentIndex + 1);
-    });
-    if (prevBtn) prevBtn.addEventListener('click', () => {
-      currentIndex = updateCounter();
-      scrollToIndex(currentIndex - 1);
+    $$(".nav-link").forEach(function (link) {
+        link.addEventListener(
+            "click",
+            closeNav
+        );
     });
 
-    slider.addEventListener('scroll', () => {
-      updateCounter();
-    }, { passive: true });
+    document.addEventListener(
+        "click",
+        function (event) {
 
-    // Drag to scroll (mouse)
-    let isDown = false, startX = 0, scrollStart = 0, moved = false;
-    slider.addEventListener('mousedown', (e) => {
-      isDown = true;
-      moved = false;
-      slider.classList.add('dragging');
-      startX = e.pageX;
-      scrollStart = slider.scrollLeft;
-      pauseAutoplay();
-    });
-    window.addEventListener('mouseup', () => {
-      isDown = false;
-      slider.classList.remove('dragging');
-      resumeAutoplay();
-    });
-    window.addEventListener('mousemove', (e) => {
-      if (!isDown) return;
-      e.preventDefault();
-      const dx = e.pageX - startX;
-      if (Math.abs(dx) > 5) moved = true;
-      slider.scrollLeft = scrollStart - dx;
-    });
-    slider.addEventListener('click', (e) => {
-      if (moved) { e.stopPropagation(); e.preventDefault(); }
-    }, true);
+            if (!navMenu || !navToggle) {
+                return;
+            }
 
-    // Pause autoplay on touch interaction too
-    slider.addEventListener('touchstart', pauseAutoplay, { passive: true });
-    slider.addEventListener('touchend', () => setTimeout(resumeAutoplay, 2000), { passive: true });
+            if (
+                !navMenu.contains(event.target) &&
+                !navToggle.contains(event.target)
+            ) {
+                closeNav();
+            }
+        }
+    );
 
-    // Autoplay: project geser sendiri
-    let autoplayTimer = null;
-    function startAutoplay() {
-      autoplayTimer = setInterval(() => {
-        const idx = updateCounter();
-        const next = idx + 1 >= total ? 0 : idx + 1;
-        if (next === 0) {
-          slider.scrollTo({ left: 0, behavior: 'smooth' });
+
+    /* Header scroll */
+
+    function headerScroll() {
+        if (!siteHeader) return;
+
+        if (window.scrollY > 15) {
+            siteHeader.classList.add(
+                "scrolled"
+            );
         } else {
-          scrollToIndex(next);
+            siteHeader.classList.remove(
+                "scrolled"
+            );
         }
-      }, 3800);
-    }
-    function pauseAutoplay() {
-      if (autoplayTimer) {
-        clearInterval(autoplayTimer);
-        autoplayTimer = null;
-      }
-    }
-    function resumeAutoplay() {
-      pauseAutoplay();
-      startAutoplay();
     }
 
-    slider.addEventListener('mouseenter', pauseAutoplay);
-    slider.addEventListener('mouseleave', resumeAutoplay);
+    window.addEventListener(
+        "scroll",
+        headerScroll,
+        { passive: true }
+    );
 
-    updateCounter();
-    startAutoplay();
+    headerScroll();
 
-    window.addEventListener('resize', () => updateCounter());
-  }
 
-  /* ---------- PROJECT PREVIEW MODAL ---------- */
-  const projectModal = document.getElementById('projectModal');
-  const previewButtons = document.querySelectorAll('.preview-button');
-  const projectModalCloseButtons = projectModal ? projectModal.querySelectorAll('.modal-close') : [];
+    /* =====================================================
+       NAV ACTIVE SECTION
+    ===================================================== */
 
-  const projectDetails = {
-    project1: {
-      image: 'assets/pro1.png',
-      category: 'WEB DEVELOPMENT',
-      year: '2026',
-      title: 'Website "Jasa Pembuatan Website"',
-      description: 'Ini Adalah Project website untuk membuat layanan pemasanan website berbasis PHP sebagai backend.',
-      tech: ['PHP', 'Bootstrap', 'MySQL'],
-      link: 'https://vicode.ct.ws/'
-    },
-    project2: {
-      image: 'assets/pro2.png',
-      category: 'WEB DEVELOPMENT',
-      year: '2026',
-      title: 'Website Top Up Game',
-      description: 'Website top up game dengan alternatif payment gateway menggunakan pembayaran mandiri semi otomatis.',
-      tech: ['PHP', 'CSS', 'MySQL'],
-      link: 'https://virgigame.gt.tc/'
-    },
-    project3: {
-      image: 'assets/pro3.png',
-      category: 'WEB DEVELOPMENT',
-      year: '2026',
-      title: 'Website Sistem Akademik Sederhana',
-      description: 'Layanan akademik bagi mahasiswa dan dosen dengan fitur sederhana seperti manajemen tugas, absen, dan chat dosen.',
-      tech: ['PHP', 'CSS', 'MySQL'],
-      link: 'https://myacademic.ct.ws/'
-    },
-    project4: {
-      image: 'assets/port-2.png',
-      category: 'UI DESIGN',
-      year: '2026',
-      title: 'Desain Sistem Rumah Sakit',
-      description: 'Merancang desain sistem rumah sakit dengan 3 role: pasien, admin, dan dokter, untuk menyelesaikan mata kuliah Analisis Desain Perangkat Lunak.',
-      tech: ['Figma'],
-      link: 'https://figma.com'
-    },
-    project5: {
-      image: 'assets/pro5.png',
-      category: 'LANDING PAGE',
-      year: '2025',
-      title: 'Landing Page untuk Menyimpan Media',
-      description: 'Landing page untuk menyimpan foto dan video sebagai percobaan membangun website yang responsif dan modern.',
-      tech: ['HTML', 'CSS', 'JavaScript'],
-      link: 'https://github.com'
+    const sections = $$(
+        "#beranda, #tentang, #keahlian, #project, #blog, #kontak"
+    );
+
+    const navLinks = $$(".nav-link");
+
+    if (sections.length) {
+
+        const navObserver =
+            new IntersectionObserver(
+                function (entries) {
+
+                    entries.forEach(
+                        function (entry) {
+
+                            if (
+                                !entry.isIntersecting
+                            ) {
+                                return;
+                            }
+
+                            navLinks.forEach(
+                                function (link) {
+
+                                    link.classList.remove(
+                                        "active"
+                                    );
+
+                                    const href =
+                                        link.getAttribute(
+                                            "href"
+                                        );
+
+                                    if (
+                                        href ===
+                                        "#" +
+                                        entry.target.id
+                                    ) {
+                                        link.classList.add(
+                                            "active"
+                                        );
+                                    }
+                                }
+                            );
+                        }
+                    );
+                },
+                {
+                    threshold: 0.15,
+                    rootMargin:
+                        "-20% 0px -60% 0px"
+                }
+            );
+
+        sections.forEach(
+            function (section) {
+                navObserver.observe(
+                    section
+                );
+            }
+        );
     }
-  };
 
-  const modalImage = document.getElementById('modalProjectImage');
-  const modalCategory = document.getElementById('modalProjectCategory');
-  const modalYear = document.getElementById('modalProjectYear');
-  const modalTitle = document.getElementById('modalProjectTitle');
-  const modalDescription = document.getElementById('modalProjectDescription');
-  const modalTech1 = document.getElementById('modalTech1');
-  const modalTech2 = document.getElementById('modalTech2');
-  const modalTech3 = document.getElementById('modalTech3');
-  const modalDirectLink = document.getElementById('modalDirectLink');
 
-  previewButtons.forEach(btn => {
-    btn.addEventListener('click', () => {
-      const data = projectDetails[btn.dataset.project];
-      if (!data || !projectModal) return;
+    /* =====================================================
+       SMOOTH ANCHOR
+    ===================================================== */
 
-      modalImage.src = data.image;
-      modalImage.alt = data.title;
-      modalCategory.textContent = data.category;
-      modalYear.textContent = data.year;
-      modalTitle.textContent = data.title;
-      modalDescription.textContent = data.description;
+    $$('a[href^="#"]').forEach(
+        function (link) {
 
-      const techEls = [modalTech1, modalTech2, modalTech3];
-      techEls.forEach((el, i) => {
-        if (!el) return;
-        if (data.tech[i]) {
-          el.textContent = data.tech[i];
-          el.style.display = '';
-        } else {
-          el.style.display = 'none';
+            link.addEventListener(
+                "click",
+                function (event) {
+
+                    const href =
+                        link.getAttribute(
+                            "href"
+                        );
+
+                    if (
+                        !href ||
+                        href === "#"
+                    ) {
+                        return;
+                    }
+
+                    const target =
+                        document.querySelector(
+                            href
+                        );
+
+                    if (!target) return;
+
+                    event.preventDefault();
+
+                    target.scrollIntoView({
+                        behavior: "smooth"
+                    });
+                }
+            );
         }
-      });
+    );
 
-      modalDirectLink.href = data.link;
-      openModal(projectModal);
-    });
-  });
 
-  projectModalCloseButtons.forEach(btn => btn.addEventListener('click', () => closeModal(projectModal)));
-  if (projectModal) {
-    projectModal.addEventListener('click', (e) => {
-      if (e.target === projectModal || e.target.classList.contains('modal-backdrop')) closeModal(projectModal);
-    });
-  }
+    /* =====================================================
+       HERO PARALLAX
+    ===================================================== */
 
-  /* ---------- BLOG MODAL ---------- */
-  const blogModals = document.querySelectorAll('.blog-modal');
-  const blogModal = blogModals[0]; // first one is the functional one
-  const blogButtons = document.querySelectorAll('.blog-btn');
+    const hero =
+        $(".hero-new");
 
-  const blogDetails = {
-    1: {
-      image: 'assets/blog1.png',
-      meta: 'WEB DEVELOPMENT • 21 Juli 2026 • 5 MIN READ',
-      title: 'Cara Saya Mengenal Coding dan Web Developer',
-      description: 'Pengalaman saya dalam memulai dan mengenal dunia coding dan pengembangan website.',
-      text: `Awalnya saya penasaran dengan bagaimana sebuah website bisa dibuat, mulai dari tampilan sampai fungsinya. Dari rasa penasaran itu saya mulai belajar HTML dan CSS secara otodidak lewat video dan dokumentasi.
+    const heroImage =
+        $(".hero-image-area");
 
-Semakin lama, saya mulai tertarik membuat website yang punya fungsi nyata, bukan sekadar tampilan statis. Di sinilah saya mulai belajar PHP dan database untuk membangun sistem sederhana seperti layanan pemesanan dan top up.
+    if (
+        hero &&
+        heroImage &&
+        window.matchMedia(
+            "(pointer: fine)"
+        ).matches
+    ) {
 
-Proses belajar ini tidak instan, banyak error dan percobaan berulang. Tapi dari situ saya belajar bahwa coding bukan soal seberapa cepat selesai, tapi seberapa konsisten mau belajar dari kesalahan.`
+        hero.addEventListener(
+            "mousemove",
+            function (event) {
+
+                const rect =
+                    hero.getBoundingClientRect();
+
+                const x =
+                    (
+                        event.clientX -
+                        rect.left
+                    ) /
+                    rect.width -
+                    .5;
+
+                const y =
+                    (
+                        event.clientY -
+                        rect.top
+                    ) /
+                    rect.height -
+                    .5;
+
+                heroImage.style.transform =
+                    `translate(
+                        ${x * -5}px,
+                        ${y * -5}px
+                    )`;
+            }
+        );
+
+        hero.addEventListener(
+            "mouseleave",
+            function () {
+
+                heroImage.style.transform =
+                    "";
+            }
+        );
     }
-  };
 
-  const blogModalImage = document.getElementById('blogModalImage');
-  const blogModalMeta = document.getElementById('blogModalMeta');
-  const blogModalTitle = document.getElementById('blogModalTitle');
-  const blogModalDescription = document.getElementById('blogModalDescription');
-  const blogModalText = document.getElementById('blogModalText');
 
-  blogButtons.forEach(btn => {
-    btn.addEventListener('click', () => {
-      const data = blogDetails[btn.dataset.blog];
-      if (!data || !blogModal) return;
+    /* =====================================================
+       SCROLL REVEAL
+    ===================================================== */
 
-      blogModalImage.src = data.image;
-      blogModalImage.alt = data.title;
-      blogModalMeta.textContent = data.meta;
-      blogModalTitle.textContent = data.title;
-      blogModalDescription.textContent = data.description;
-      blogModalText.innerHTML = data.text
-        .split('\n\n')
-        .map(p => `<p>${p}</p>`)
-        .join('');
+    const revealTargets = [
+        ".about-heading",
+        ".about-info",
+        ".about-visual",
+        ".bottom-item",
+        ".pro-skills-header",
+        ".pro-category-nav",
+        ".pro-showcase",
+        ".projects-header",
+        ".project-card",
+        ".blog-heading",
+        ".blog-single",
+        ".contact-heading",
+        ".contact-info",
+        ".contact-form-box"
+    ];
 
-      openModal(blogModal);
-    });
-  });
+    revealTargets.forEach(
+        function (selector) {
 
-  blogModals.forEach(modal => {
-    modal.querySelectorAll('.blog-modal-close').forEach(btn => btn.addEventListener('click', () => closeModal(modal)));
-    modal.querySelector('.blog-modal-overlay')?.addEventListener('click', () => closeModal(modal));
-  });
+            $$(selector).forEach(
+                function (element) {
 
-  /* ---------- ESC closes any open modal ---------- */
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') {
-      [detailModal, projectModal, blogModal].forEach(m => {
-        if (m && m.classList.contains('open')) closeModal(m);
-      });
+                    element.style.opacity =
+                        "0";
+
+                    element.style.transform =
+                        "translateY(25px)";
+
+                    element.style.transition =
+                        "opacity .7s ease, transform .7s cubic-bezier(.22,1,.36,1)";
+                }
+            );
+        }
+    );
+
+
+    const revealObserver =
+        new IntersectionObserver(
+            function (entries, observer) {
+
+                entries.forEach(
+                    function (entry) {
+
+                        if (
+                            !entry.isIntersecting
+                        ) {
+                            return;
+                        }
+
+                        entry.target.style.opacity =
+                            "1";
+
+                        entry.target.style.transform =
+                            "translateY(0)";
+
+                        observer.unobserve(
+                            entry.target
+                        );
+                    }
+                );
+            },
+            {
+                threshold: .08,
+                rootMargin:
+                    "0px 0px -40px 0px"
+            }
+        );
+
+    revealTargets.forEach(
+        function (selector) {
+
+            $$(selector).forEach(
+                function (element) {
+
+                    revealObserver.observe(
+                        element
+                    );
+                }
+            );
+        }
+    );
+
+
+    /* =====================================================
+       =====================================================
+       SKILL SECTION
+       =====================================================
+    ===================================================== */
+
+    const skillData = {
+
+        frontend: {
+            title: "Front End",
+            number: "01",
+            description:
+                "Membangun tampilan website yang modern, responsif, dan interaktif.",
+
+            skills: [
+                ["HTML", "Semantic structure"],
+                ["CSS", "Responsive styling"],
+                ["JavaScript", "Interaction"],
+                ["Bootstrap", "Rapid UI"]
+            ]
+        },
+
+        backend: {
+            title: "Back End",
+            number: "02",
+            description:
+                "Mengembangkan logic website, pengolahan data, dan komunikasi dengan database.",
+
+            skills: [
+                ["PHP", "Server-side"],
+                ["MySQL", "Database"],
+                ["CRUD", "Data processing"],
+                ["API", "Data exchange"]
+            ]
+        },
+
+        programming: {
+            title: "Programming",
+            number: "03",
+            description:
+                "Programming untuk membangun logic dan menyelesaikan berbagai masalah.",
+
+            skills: [
+                ["PHP", "Programming"],
+                ["JavaScript", "Web logic"],
+                ["C++", "Programming"],
+                ["Python", "Basic logic"]
+            ]
+        },
+
+        ui: {
+            title: "UI Design",
+            number: "04",
+            description:
+                "Membuat interface yang sederhana, jelas, dan nyaman digunakan.",
+
+            skills: [
+                ["Figma", "Interface design"],
+                ["Wireframe", "Page structure"],
+                ["Prototype", "Interaction"],
+                ["Typography", "Hierarchy"]
+            ]
+        },
+
+        framework: {
+            title: "Framework",
+            number: "05",
+            description:
+                "Menggunakan framework dan library untuk mempercepat proses development.",
+
+            skills: [
+                ["Bootstrap", "CSS framework"],
+                ["Font Awesome", "Icons"],
+                ["PHP", "Backend"],
+                ["Components", "Reusable UI"]
+            ]
+        },
+
+        editing: {
+            title: "Editing",
+            number: "06",
+            description:
+                "Mengolah media visual untuk kebutuhan digital.",
+
+            skills: [
+                ["Photo Editing", "Visual"],
+                ["Video Editing", "Video"],
+                ["Thumbnail", "Content"],
+                ["Layout", "Composition"]
+            ]
+        },
+
+        tools: {
+            title: "Tools",
+            number: "07",
+            description:
+                "Tools yang membantu coding, debugging, design, dan pengembangan website.",
+
+            skills: [
+                ["VS Code", "Code editor"],
+                ["GitHub", "Version control"],
+                ["Figma", "Design"],
+                ["DevTools", "Debugging"]
+            ]
+        }
+
+    };
+
+
+    const skillButtons =
+        $$(".pro-category");
+
+    const skillTitle =
+        $("#proSkillTitle");
+
+    const skillNumber =
+        $("#proSkillNumber");
+
+    const skillDescription =
+        $("#proSkillDescription");
+
+    const skillList =
+        $("#proSkillList");
+
+    const skillCount =
+        $("#proSkillCount");
+
+
+    function showSkills(
+        key
+    ) {
+
+        const data =
+            skillData[key];
+
+        if (!data) return;
+
+
+        /* active */
+
+        skillButtons.forEach(
+            function (button) {
+
+                button.classList.toggle(
+                    "active",
+                    button.dataset.skill ===
+                    key
+                );
+            }
+        );
+
+
+        /* heading */
+
+        if (skillTitle) {
+            skillTitle.textContent =
+                data.title;
+        }
+
+        if (skillNumber) {
+            skillNumber.textContent =
+                data.number;
+        }
+
+        if (skillDescription) {
+            skillDescription.textContent =
+                data.description;
+        }
+
+
+        /* list */
+
+        if (skillList) {
+
+            skillList.innerHTML = "";
+
+            data.skills.forEach(
+                function (
+                    skill,
+                    index
+                ) {
+
+                    const card =
+                        document.createElement(
+                            "div"
+                        );
+
+                    card.className =
+                        "skill-chip";
+
+                    card.innerHTML = `
+                        <strong>
+                            ${skill[0]}
+                        </strong>
+
+                        <span>
+                            ${skill[1]}
+                        </span>
+                    `;
+
+                    skillList.appendChild(
+                        card
+                    );
+
+                    card.animate(
+                        [
+                            {
+                                opacity: 0,
+                                transform:
+                                    "translateY(10px)"
+                            },
+                            {
+                                opacity: 1,
+                                transform:
+                                    "translateY(0)"
+                            }
+                        ],
+                        {
+                            duration: 350,
+                            delay:
+                                index * 50,
+                            fill: "both",
+                            easing:
+                                "cubic-bezier(.22,1,.36,1)"
+                        }
+                    );
+                }
+            );
+        }
+
+
+        /* count */
+
+        if (skillCount) {
+            skillCount.textContent =
+                String(
+                    data.skills.length
+                ).padStart(
+                    2,
+                    "0"
+                ) +
+                " SKILLS";
+        }
     }
-  });
 
-  /* ---------- CONTACT FORM: basic status feedback ---------- */
-  const contactForm = document.getElementById('contactForm');
-  const formStatus = document.getElementById('formStatus');
 
-  if (contactForm && formStatus) {
-    contactForm.addEventListener('submit', () => {
-      formStatus.textContent = 'Mengirim pesan...';
-      formStatus.style.color = 'var(--muted)';
-    });
-  }
+    /* =====================================================
+       SKILL BUTTON
+       SUPER SIMPLE
+    ===================================================== */
+
+    skillButtons.forEach(
+        function (button) {
+
+            button.addEventListener(
+                "click",
+                function () {
+
+                    const skill =
+                        button.dataset.skill;
+
+                    showSkills(
+                        skill
+                    );
+                }
+            );
+        }
+    );
+
+
+    /* default */
+
+    showSkills(
+        "frontend"
+    );
+
+
+    /* =====================================================
+       SKILL HORIZONTAL DRAG
+       MOBILE + TABLET
+       
+       IMPORTANT:
+       BUTTON CLICK TIDAK DIGANGGU
+    ===================================================== */
+
+    const skillScroller =
+        $(".pro-category-nav");
+
+    if (skillScroller) {
+
+        let isDragging = false;
+
+        let startX = 0;
+        let startScroll = 0;
+
+        let movedDistance = 0;
+
+        skillScroller.addEventListener(
+            "pointerdown",
+            function (event) {
+
+                /*
+                 * Kalau yang ditekan button,
+                 * jangan memulai drag.
+                 */
+                if (
+                    event.target.closest(
+                        ".pro-category"
+                    )
+                ) {
+                    return;
+                }
+
+                isDragging = true;
+
+                startX =
+                    event.clientX;
+
+                startScroll =
+                    skillScroller.scrollLeft;
+
+                movedDistance = 0;
+
+                skillScroller.classList.add(
+                    "dragging"
+                );
+            }
+        );
+
+
+        skillScroller.addEventListener(
+            "pointermove",
+            function (event) {
+
+                if (!isDragging) return;
+
+                const distance =
+                    event.clientX -
+                    startX;
+
+                movedDistance =
+                    Math.abs(distance);
+
+                skillScroller.scrollLeft =
+                    startScroll -
+                    distance;
+            }
+        );
+
+
+        function endSkillDrag() {
+
+            if (!isDragging) {
+                return;
+            }
+
+            isDragging = false;
+
+            skillScroller.classList.remove(
+                "dragging"
+            );
+        }
+
+
+        skillScroller.addEventListener(
+            "pointerup",
+            endSkillDrag
+        );
+
+        skillScroller.addEventListener(
+            "pointercancel",
+            endSkillDrag
+        );
+
+
+        /*
+         * Wheel desktop
+         */
+
+        skillScroller.addEventListener(
+            "wheel",
+            function (event) {
+
+                if (
+                    Math.abs(
+                        event.deltaY
+                    ) >
+                    Math.abs(
+                        event.deltaX
+                    )
+                ) {
+
+                    skillScroller.scrollLeft +=
+                        event.deltaY;
+                }
+            },
+            {
+                passive: true
+            }
+        );
+    }
+
+
+    /* =====================================================
+       =====================================================
+       PROJECT SLIDER
+       =====================================================
+    ===================================================== */
+
+    const projectSlider =
+        $("#projectsSlider");
+
+    const projectCards =
+        $$(".project-card");
+
+    const previousButton =
+        $("#projectPrev");
+
+    const nextButton =
+        $("#projectNext");
+
+    const currentCounter =
+        $("#projectCurrent");
+
+    const progressBar =
+        $("#projectProgress");
+
+
+    let projectTimer = null;
+
+
+    /* =====================================================
+       PROJECT STEP
+    ===================================================== */
+
+    function getProjectStep() {
+
+        if (
+            !projectCards.length
+        ) {
+            return 0;
+        }
+
+        const card =
+            projectCards[0];
+
+        const style =
+            window.getComputedStyle(
+                projectSlider
+            );
+
+        const gap =
+            parseFloat(
+                style.gap
+            ) || 22;
+
+        return (
+            card.offsetWidth +
+            gap
+        );
+    }
+
+
+    /* =====================================================
+       PROJECT COUNTER
+    ===================================================== */
+
+    function updateProjectCounter() {
+
+        if (
+            !projectSlider ||
+            !projectCards.length
+        ) {
+            return;
+        }
+
+        const step =
+            getProjectStep();
+
+        if (!step) return;
+
+        const index =
+            Math.round(
+                projectSlider.scrollLeft /
+                step
+            );
+
+        const safeIndex =
+            Math.max(
+                0,
+                Math.min(
+                    index,
+                    projectCards.length - 1
+                )
+            );
+
+
+        if (currentCounter) {
+
+            currentCounter.textContent =
+                String(
+                    safeIndex + 1
+                ).padStart(
+                    2,
+                    "0"
+                );
+        }
+
+
+        if (progressBar) {
+
+            const max =
+                projectSlider.scrollWidth -
+                projectSlider.clientWidth;
+
+            let percent = 20;
+
+            if (max > 0) {
+
+                percent =
+                    (
+                        projectSlider.scrollLeft /
+                        max
+                    ) * 100;
+            }
+
+            progressBar.style.width =
+                Math.max(
+                    20,
+                    Math.min(
+                        100,
+                        percent
+                    )
+                ) + "%";
+        }
+    }
+
+
+    /* =====================================================
+       PROJECT GO TO
+    ===================================================== */
+
+    function goToProject(
+        index
+    ) {
+
+        if (
+            !projectSlider ||
+            !projectCards.length
+        ) {
+            return;
+        }
+
+        const step =
+            getProjectStep();
+
+        const max =
+            projectSlider.scrollWidth -
+            projectSlider.clientWidth;
+
+        let target =
+            step * index;
+
+        target =
+            Math.max(
+                0,
+                Math.min(
+                    target,
+                    max
+                )
+            );
+
+        projectSlider.scrollTo({
+            left: target,
+            behavior: "smooth"
+        });
+    }
+
+
+    /* =====================================================
+       NEXT PROJECT
+    ===================================================== */
+
+    function nextProject() {
+
+        if (!projectSlider) return;
+
+        const step =
+            getProjectStep();
+
+        const max =
+            projectSlider.scrollWidth -
+            projectSlider.clientWidth;
+
+        let target =
+            projectSlider.scrollLeft +
+            step;
+
+
+        /*
+         * End → back to first
+         */
+
+        if (
+            target >=
+            max - 5
+        ) {
+            target = 0;
+        }
+
+
+        projectSlider.scrollTo({
+            left: target,
+            behavior: "smooth"
+        });
+
+
+        restartProjectTimer();
+    }
+
+
+    /* =====================================================
+       PREVIOUS PROJECT
+    ===================================================== */
+
+    function previousProject() {
+
+        if (!projectSlider) return;
+
+        const step =
+            getProjectStep();
+
+        let target =
+            projectSlider.scrollLeft -
+            step;
+
+
+        /*
+         * Beginning → go to last
+         */
+
+        if (target <= 5) {
+
+            const max =
+                projectSlider.scrollWidth -
+                projectSlider.clientWidth;
+
+            target = max;
+        }
+
+
+        projectSlider.scrollTo({
+            left: target,
+            behavior: "smooth"
+        });
+
+
+        restartProjectTimer();
+    }
+
+
+    previousButton?.addEventListener(
+        "click",
+        previousProject
+    );
+
+    nextButton?.addEventListener(
+        "click",
+        nextProject
+    );
+
+
+    /* =====================================================
+       PROJECT AUTO SLIDE
+    ===================================================== */
+
+    function stopProjectTimer() {
+
+        if (projectTimer) {
+
+            clearInterval(
+                projectTimer
+            );
+
+            projectTimer = null;
+        }
+    }
+
+
+    function startProjectTimer() {
+
+        if (
+            !projectSlider ||
+            projectCards.length < 2
+        ) {
+            return;
+        }
+
+
+        stopProjectTimer();
+
+
+        /*
+         * 5 second interval.
+         */
+
+        projectTimer =
+            setInterval(
+                function () {
+
+                    nextProject();
+
+                },
+                1000
+            );
+    }
+
+
+    function restartProjectTimer() {
+
+        stopProjectTimer();
+
+        setTimeout(
+            function () {
+
+                startProjectTimer();
+
+            },
+            2000
+        );
+    }
+
+
+    /* =====================================================
+       PAUSE AUTO SLIDE WHEN HOVER
+    ===================================================== */
+
+    if (projectSlider) {
+
+        projectSlider.addEventListener(
+            "mouseenter",
+            stopProjectTimer
+        );
+
+        projectSlider.addEventListener(
+            "mouseleave",
+            startProjectTimer
+        );
+
+        projectSlider.addEventListener(
+            "touchstart",
+            stopProjectTimer,
+            {
+                passive: true
+            }
+        );
+
+        projectSlider.addEventListener(
+            "touchend",
+            restartProjectTimer,
+            {
+                passive: true
+            }
+        );
+
+        projectSlider.addEventListener(
+            "scroll",
+            updateProjectCounter,
+            {
+                passive: true
+            }
+        );
+    }
+
+
+    /* =====================================================
+       PROJECT DRAG
+       
+       VERY IMPORTANT:
+       Kita tidak menggunakan setPointerCapture.
+       Jadi tombol Preview tetap menerima click.
+    ===================================================== */
+
+    if (projectSlider) {
+
+        let dragging = false;
+
+        let startX = 0;
+
+        let startScroll = 0;
+
+        let moved = false;
+
+
+        projectSlider.addEventListener(
+            "pointerdown",
+            function (event) {
+
+                /*
+                 * Jangan drag ketika klik
+                 * tombol Preview.
+                 */
+                if (
+                    event.target.closest(
+                        "button, a"
+                    )
+                ) {
+                    return;
+                }
+
+
+                dragging = true;
+
+                moved = false;
+
+                startX =
+                    event.clientX;
+
+                startScroll =
+                    projectSlider.scrollLeft;
+
+                projectSlider.classList.add(
+                    "dragging"
+                );
+
+
+                stopProjectTimer();
+            }
+        );
+
+
+        projectSlider.addEventListener(
+            "pointermove",
+            function (event) {
+
+                if (!dragging) {
+                    return;
+                }
+
+                const distance =
+                    event.clientX -
+                    startX;
+
+
+                if (
+                    Math.abs(distance) >
+                    5
+                ) {
+                    moved = true;
+                }
+
+
+                projectSlider.scrollLeft =
+                    startScroll -
+                    distance;
+            }
+        );
+
+
+        function endProjectDrag() {
+
+            if (!dragging) {
+                return;
+            }
+
+            dragging = false;
+
+            projectSlider.classList.remove(
+                "dragging"
+            );
+
+
+            updateProjectCounter();
+
+            restartProjectTimer();
+        }
+
+
+        projectSlider.addEventListener(
+            "pointerup",
+            endProjectDrag
+        );
+
+        projectSlider.addEventListener(
+            "pointercancel",
+            endProjectDrag
+        );
+    }
+
+
+    /* =====================================================
+       PROJECT PREVIEW MODAL
+    ===================================================== */
+
+    const projectModal =
+        $("#projectModal");
+
+    const modalImage =
+        $("#modalProjectImage");
+
+    const modalCategory =
+        $("#modalProjectCategory");
+
+    const modalYear =
+        $("#modalProjectYear");
+
+    const modalTitle =
+        $("#modalProjectTitle");
+
+    const modalDescription =
+        $("#modalProjectDescription");
+
+    const modalDirectLink =
+        $("#modalDirectLink");
+
+    const modalTech = [
+        $("#modalTech1"),
+        $("#modalTech2"),
+        $("#modalTech3")
+    ];
+
+
+    function getCardData(card) {
+
+        if (!card) return null;
+
+        const image =
+            $(".project-image img", card);
+
+        const category =
+            $(".project-meta span:first-child", card);
+
+        const year =
+            $(".project-meta span:last-child", card);
+
+        const title =
+            $(".project-body h3", card);
+
+        const description =
+            $(".project-body > p", card);
+
+        const tags =
+            $$(".project-tags span", card);
+
+        const directLink =
+            $(".project-direct-link", card);
+
+
+        return {
+
+            image:
+                image
+                    ? image.src
+                    : "",
+
+            category:
+                category
+                    ? category.textContent.trim()
+                    : "",
+
+            year:
+                year
+                    ? year.textContent.trim()
+                    : "",
+
+            title:
+                title
+                    ? title.textContent.trim()
+                    : "",
+
+            description:
+                description
+                    ? description.textContent.trim()
+                    : "",
+
+            tags:
+                tags.map(
+                    function (tag) {
+                        return tag.textContent.trim();
+                    }
+                ),
+
+            link:
+                directLink
+                    ? directLink.href
+                    : "#"
+        };
+    }
+
+
+    /* =====================================================
+       OPEN PROJECT
+    ===================================================== */
+
+    function openProject(
+        card
+    ) {
+
+        if (
+            !projectModal ||
+            !card
+        ) {
+            return;
+        }
+
+        const data =
+            getCardData(card);
+
+        if (!data) return;
+
+
+        if (modalImage) {
+
+            modalImage.src =
+                data.image;
+
+            modalImage.alt =
+                data.title;
+        }
+
+
+        if (modalCategory) {
+
+            modalCategory.textContent =
+                data.category;
+        }
+
+
+        if (modalYear) {
+
+            modalYear.textContent =
+                data.year;
+        }
+
+
+        if (modalTitle) {
+
+            modalTitle.textContent =
+                data.title;
+        }
+
+
+        if (modalDescription) {
+
+            modalDescription.textContent =
+                data.description;
+        }
+
+
+        modalTech.forEach(
+            function (
+                tech,
+                index
+            ) {
+
+                if (!tech) return;
+
+                const value =
+                    data.tags[index] ||
+                    "";
+
+                tech.textContent =
+                    value;
+
+                tech.style.display =
+                    value
+                        ? "inline-block"
+                        : "none";
+            }
+        );
+
+
+        if (modalDirectLink) {
+
+            modalDirectLink.href =
+                data.link;
+        }
+
+
+        projectModal.classList.add(
+            "active"
+        );
+
+        projectModal.setAttribute(
+            "aria-hidden",
+            "false"
+        );
+
+        document.body.classList.add(
+            "lock-scroll"
+        );
+
+
+        stopProjectTimer();
+    }
+
+
+    /* =====================================================
+       CLOSE PROJECT
+    ===================================================== */
+
+    function closeProject() {
+
+        if (!projectModal) return;
+
+        projectModal.classList.remove(
+            "active"
+        );
+
+        projectModal.setAttribute(
+            "aria-hidden",
+            "true"
+        );
+
+        document.body.classList.remove(
+            "lock-scroll"
+        );
+
+        startProjectTimer();
+    }
+
+
+    /* =====================================================
+       PREVIEW BUTTONS
+       
+       IMPORTANT:
+       Query langsung semua tombol.
+    ===================================================== */
+
+    $$(".preview-button").forEach(
+        function (button) {
+
+            button.addEventListener(
+                "click",
+                function (event) {
+
+                    event.preventDefault();
+
+                    event.stopPropagation();
+
+
+                    const card =
+                        button.closest(
+                            ".project-card"
+                        );
+
+
+                    openProject(
+                        card
+                    );
+                }
+            );
+        }
+    );
+
+
+    /* close */
+
+    $$(".project-modal .modal-close")
+        .forEach(
+            function (button) {
+
+                button.addEventListener(
+                    "click",
+                    closeProject
+                );
+            }
+        );
+
+
+    $(".project-modal .modal-backdrop")
+        ?.addEventListener(
+            "click",
+            closeProject
+        );
+
+
+    /* =====================================================
+       DETAIL MODAL
+    ===================================================== */
+
+    const detailModal =
+        $("#detailModal");
+
+    const detailButton =
+        $("#detailButton");
+
+
+    if (
+        detailModal &&
+        detailButton
+    ) {
+
+        detailButton.addEventListener(
+            "click",
+            function (event) {
+
+                event.preventDefault();
+
+                detailModal.classList.add(
+                    "active"
+                );
+
+                document.body.classList.add(
+                    "lock-scroll"
+                );
+
+                stopProjectTimer();
+            }
+        );
+
+
+        $$(".modal-close", detailModal)
+            .forEach(
+                function (button) {
+
+                    button.addEventListener(
+                        "click",
+                        function () {
+
+                            detailModal.classList.remove(
+                                "active"
+                            );
+
+                            document.body.classList.remove(
+                                "lock-scroll"
+                            );
+
+                            startProjectTimer();
+                        }
+                    );
+                }
+            );
+
+
+        detailModal.addEventListener(
+            "click",
+            function (event) {
+
+                if (
+                    event.target ===
+                    detailModal
+                ) {
+
+                    detailModal.classList.remove(
+                        "active"
+                    );
+
+                    document.body.classList.remove(
+                        "lock-scroll"
+                    );
+
+                    startProjectTimer();
+                }
+            }
+        );
+    }
+
+
+    /* =====================================================
+       BLOG MODAL
+       
+       HTML kamu mempunyai dua blog modal.
+       Kita hanya gunakan modal pertama.
+    ===================================================== */
+
+    const blogModal =
+        $(".blog-modal");
+
+    const blogButton =
+        $(".blog-btn");
+
+
+    if (
+        blogModal &&
+        blogButton
+    ) {
+
+        const blogClose =
+            $(".blog-modal-close",
+                blogModal
+            );
+
+        const blogOverlay =
+            $(".blog-modal-overlay",
+                blogModal
+            );
+
+        const blogImage =
+            $("#blogModalImage",
+                blogModal
+            );
+
+        const blogMeta =
+            $("#blogModalMeta",
+                blogModal
+            );
+
+        const blogTitle =
+            $("#blogModalTitle",
+                blogModal
+            );
+
+        const blogDescription =
+            $("#blogModalDescription",
+                blogModal
+            );
+
+        const blogText =
+            $("#blogModalText",
+                blogModal
+            );
+
+
+        function openBlog() {
+
+            const image =
+                $(".blog-single-image img");
+
+            const meta =
+                $(".blog-meta");
+
+            const title =
+                $(".blog-single-content h3");
+
+            const description =
+                $(".blog-single-content > p");
+
+
+            if (
+                blogImage &&
+                image
+            ) {
+
+                blogImage.src =
+                    image.src;
+
+                blogImage.alt =
+                    image.alt;
+            }
+
+
+            if (
+                blogMeta &&
+                meta
+            ) {
+
+                blogMeta.textContent =
+                    meta.textContent.trim();
+            }
+
+
+            if (
+                blogTitle &&
+                title
+            ) {
+
+                blogTitle.textContent =
+                    title.textContent.trim();
+            }
+
+
+            if (
+                blogDescription &&
+                description
+            ) {
+
+                blogDescription.textContent =
+                    description.textContent.trim();
+            }
+
+
+            if (blogText) {
+
+                blogText.innerHTML = `
+
+                    <p>
+                        Belajar coding bagi saya
+                        dimulai dari rasa penasaran
+                        untuk memahami bagaimana
+                        sebuah website bekerja.
+                    </p>
+
+                    <p>
+                        Dari HTML, CSS, JavaScript,
+                        sampai backend dan database,
+                        setiap project memberikan
+                        pengalaman baru.
+                    </p>
+
+                    <p>
+                        Tidak semua project berjalan
+                        mulus. Dari error dan debugging
+                        saya justru mendapatkan banyak
+                        pengalaman.
+                    </p>
+
+                    <p>
+                        Saya masih terus belajar dan
+                        ingin membangun lebih banyak
+                        project nyata.
+                    </p>
+                `;
+            }
+
+
+            blogModal.classList.add(
+                "active"
+            );
+
+            document.body.classList.add(
+                "lock-scroll"
+            );
+
+            stopProjectTimer();
+        }
+
+
+        function closeBlog() {
+
+            blogModal.classList.remove(
+                "active"
+            );
+
+            document.body.classList.remove(
+                "lock-scroll"
+            );
+
+            startProjectTimer();
+        }
+
+
+        blogButton.addEventListener(
+            "click",
+            function (event) {
+
+                event.preventDefault();
+
+                openBlog();
+            }
+        );
+
+
+        blogClose?.addEventListener(
+            "click",
+            closeBlog
+        );
+
+
+        blogOverlay?.addEventListener(
+            "click",
+            closeBlog
+        );
+    }
+
+
+    /* =====================================================
+       ESC KEY
+    ===================================================== */
+
+    document.addEventListener(
+        "keydown",
+        function (event) {
+
+            if (
+                event.key !==
+                "Escape"
+            ) {
+                return;
+            }
+
+
+            closeProject();
+
+
+            if (detailModal) {
+
+                detailModal.classList.remove(
+                    "active"
+                );
+            }
+
+
+            if (blogModal) {
+
+                blogModal.classList.remove(
+                    "active"
+                );
+            }
+
+
+            document.body.classList.remove(
+                "lock-scroll"
+            );
+
+
+            closeNav();
+        }
+    );
+
+
+    /* =====================================================
+       CONTACT FORMSPREE
+    ===================================================== */
+
+    const contactForm =
+        $("#contactForm");
+
+    const formStatus =
+        $("#formStatus");
+
+
+    if (contactForm) {
+
+        contactForm.addEventListener(
+            "submit",
+            async function (event) {
+
+                event.preventDefault();
+
+
+                const button =
+                    $(".contact-submit",
+                        contactForm
+                    );
+
+
+                const oldHTML =
+                    button
+                        ? button.innerHTML
+                        : "";
+
+
+                if (button) {
+
+                    button.disabled =
+                        true;
+
+                    button.textContent =
+                        "Mengirim...";
+                }
+
+
+                try {
+
+                    const response =
+                        await fetch(
+                            contactForm.action,
+                            {
+                                method: "POST",
+
+                                body:
+                                    new FormData(
+                                        contactForm
+                                    ),
+
+                                headers: {
+                                    Accept:
+                                        "application/json"
+                                }
+                            }
+                        );
+
+
+                    if (
+                        !response.ok
+                    ) {
+                        throw new Error(
+                            "Request failed"
+                        );
+                    }
+
+
+                    contactForm.reset();
+
+
+                    if (formStatus) {
+
+                        formStatus.textContent =
+                            "Pesan berhasil dikirim.";
+                    }
+
+                } catch (error) {
+
+                    if (formStatus) {
+
+                        formStatus.textContent =
+                            "Pesan gagal dikirim. Silakan coba lagi.";
+                    }
+
+                } finally {
+
+                    if (button) {
+
+                        button.disabled =
+                            false;
+
+                        button.innerHTML =
+                            oldHTML;
+                    }
+                }
+            }
+        );
+    }
+
+
+    /* =====================================================
+       INITIAL PROJECT STATE
+    ===================================================== */
+
+    updateProjectCounter();
+
+    setTimeout(
+        function () {
+            startProjectTimer();
+        },
+        1000
+    );
+
+
+    /* =====================================================
+       RESIZE
+    ===================================================== */
+
+    window.addEventListener(
+        "resize",
+        function () {
+
+            updateProjectCounter();
+        }
+    );
 
 });
