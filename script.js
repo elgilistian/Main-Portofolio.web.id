@@ -1,1363 +1,488 @@
 /* =========================================================
-   ELGI LISTIANI PORTFOLIO
-   INTERACTION SYSTEM
-   ========================================================= */
+   ELGI LISTIANI — PORTFOLIO INTERACTIONS
+========================================================= */
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener('DOMContentLoaded', () => {
 
-    /* =====================================================
-       ELEMENTS
-       ===================================================== */
+  /* ---------- NAVBAR: scroll state + mobile toggle ---------- */
+  const header = document.getElementById('siteHeader');
+  const navToggle = document.getElementById('navToggle');
+  const navMenu = document.getElementById('navMenu');
+  const navLinks = document.querySelectorAll('.nav-link');
 
-    const body = document.body;
-    const header = document.getElementById("siteHeader");
+  const onScroll = () => {
+    if (window.scrollY > 24) header.classList.add('scrolled');
+    else header.classList.remove('scrolled');
+  };
+  onScroll();
+  window.addEventListener('scroll', onScroll, { passive: true });
 
-    const navToggle = document.getElementById("navToggle");
-    const navMenu = document.getElementById("navMenu");
-    const navLinks = document.querySelectorAll(".nav-link");
+  if (navToggle && navMenu) {
+    navToggle.addEventListener('click', () => {
+      const open = navMenu.classList.toggle('open');
+      navToggle.classList.toggle('open', open);
+      navToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+    navMenu.querySelectorAll('a').forEach(a => {
+      a.addEventListener('click', () => {
+        navMenu.classList.remove('open');
+        navToggle.classList.remove('open');
+        navToggle.setAttribute('aria-expanded', 'false');
+      });
+    });
+  }
 
-    const sections = document.querySelectorAll("main section[id]");
+  // Active link highlight on scroll
+  const sections = [...document.querySelectorAll('main section[id]')];
+  if (sections.length && navLinks.length) {
+    const spy = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const id = entry.target.getAttribute('id');
+          navLinks.forEach(link => {
+            link.classList.toggle('active', link.getAttribute('href') === `#${id}`);
+          });
+        }
+      });
+    }, { rootMargin: '-45% 0px -50% 0px', threshold: 0 });
+    sections.forEach(s => spy.observe(s));
+  }
 
-    /* =====================================================
-       NAVBAR
-       ===================================================== */
+  /* ---------- SCROLL REVEAL ---------- */
+  const revealTargets = document.querySelectorAll(
+    '.about-info, .about-visual, .pro-skills-header, .pro-skills-content, .project-card, .blog-single, .contact-info, .contact-form-box, .about-bottom .bottom-item'
+  );
+  revealTargets.forEach(el => el.setAttribute('data-reveal', ''));
 
-    function updateHeader() {
-        if (!header) return;
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('in-view');
+        revealObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15 });
+  revealTargets.forEach(el => revealObserver.observe(el));
 
-        if (window.scrollY > 30) {
-            header.classList.add("scrolled");
+  /* ---------- PROFILE DETAIL MODAL ---------- */
+  const detailModal = document.getElementById('detailModal');
+  const detailButton = document.getElementById('detailButton');
+  const detailCloseButtons = detailModal ? detailModal.querySelectorAll('.modal-close') : [];
+
+  const openModal = (modal) => {
+    modal.classList.add('open');
+    modal.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+  };
+  const closeModal = (modal) => {
+    modal.classList.remove('open');
+    modal.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+  };
+
+  if (detailButton && detailModal) {
+    detailButton.addEventListener('click', (e) => {
+      e.preventDefault();
+      openModal(detailModal);
+    });
+    detailCloseButtons.forEach(btn => btn.addEventListener('click', () => closeModal(detailModal)));
+    detailModal.addEventListener('click', (e) => {
+      if (e.target === detailModal) closeModal(detailModal);
+    });
+  }
+
+  /* ---------- PRO SKILLS: category switch + drag-to-scroll rail ---------- */
+  const skillData = {
+    frontend: {
+      title: 'Front End',
+      number: '01',
+      description: 'Membangun tampilan website yang modern, responsif, dan interaktif.',
+      skills: ['HTML5', 'CSS3', 'JavaScript']
+    },
+    backend: {
+      title: 'Back End',
+      number: '02',
+      description: 'Mengelola logika server, data, dan alur aplikasi di balik layar.',
+      skills: ['PHP', 'MySQL', 'REST API']
+    },
+    programming: {
+      title: 'Programming',
+      number: '03',
+      description: 'Dasar pemrograman untuk menyelesaikan masalah secara terstruktur.',
+      skills: ['C++', 'PHP', 'JavaScript','Python']
+    },
+    ui: {
+      title: 'UI Design',
+      number: '04',
+      description: 'Merancang tampilan antarmuka yang rapi, enak dilihat, dan mudah digunakan.',
+      skills: ['Figma', 'Wireframing', 'Prototyping']
+    },
+    framework: {
+      title: 'Framework',
+      number: '05',
+      description: 'Mempercepat pengembangan dengan struktur dan komponen siap pakai.',
+      skills: ['Bootstrap', 'Tailwind CSS']
+    },
+    editing: {
+      title: 'Editing',
+      number: '06',
+      description: 'Mengedit aset visual sederhana untuk kebutuhan project dan konten.',
+      skills: ['Canva', 'CapCut PC','Photoshop','kinemaster','alight motion',]
+    },
+    tools: {
+      title: 'Tools',
+      number: '07',
+      description: 'Perangkat sehari-hari untuk menulis, menguji, dan mengelola kode.',
+      skills: ['VS Code', 'Git', 'XAMPP','Visual Studio','codeblock','GColab']
+    }
+  };
+
+  const categoryButtons = document.querySelectorAll('.pro-category');
+  const skillTitle = document.getElementById('proSkillTitle');
+  const skillNumber = document.getElementById('proSkillNumber');
+  const skillDescription = document.getElementById('proSkillDescription');
+  const skillList = document.getElementById('proSkillList');
+  const skillCount = document.getElementById('proSkillCount');
+
+  const renderSkill = (key) => {
+    const data = skillData[key];
+    if (!data) return;
+    skillTitle.textContent = data.title;
+    skillNumber.textContent = data.number;
+    skillDescription.textContent = data.description;
+    skillCount.textContent = String(data.skills.length).padStart(2, '0') + ' SKILLS';
+    skillList.innerHTML = '';
+    data.skills.forEach((skill, i) => {
+      const chip = document.createElement('span');
+      chip.className = 'pro-skill-chip';
+      chip.style.animationDelay = `${i * 0.06}s`;
+      chip.innerHTML = `<i class="fa-solid fa-check"></i>${skill}`;
+      skillList.appendChild(chip);
+    });
+  };
+
+  categoryButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      categoryButtons.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderSkill(btn.dataset.skill);
+    });
+  });
+
+  if (categoryButtons.length) renderSkill(categoryButtons[0].dataset.skill);
+
+  // Generic drag-to-scroll (mouse + touch works natively, mouse needs JS)
+  const makeDraggable = (el) => {
+    if (!el) return;
+    let isDown = false;
+    let startX = 0;
+    let scrollStart = 0;
+    let moved = false;
+
+    el.addEventListener('mousedown', (e) => {
+      isDown = true;
+      moved = false;
+      el.classList.add('dragging');
+      startX = e.pageX;
+      scrollStart = el.scrollLeft;
+    });
+    window.addEventListener('mouseup', () => {
+      isDown = false;
+      el.classList.remove('dragging');
+    });
+    window.addEventListener('mousemove', (e) => {
+      if (!isDown) return;
+      e.preventDefault();
+      const dx = e.pageX - startX;
+      if (Math.abs(dx) > 5) moved = true;
+      el.scrollLeft = scrollStart - dx;
+    });
+    // Prevent click-through firing after a real drag
+    el.addEventListener('click', (e) => {
+      if (moved) {
+        e.stopPropagation();
+        e.preventDefault();
+      }
+    }, true);
+  };
+
+  makeDraggable(document.querySelector('.pro-category-nav'));
+
+  /* ---------- PROJECT SLIDER: drag + arrows + autoplay ---------- */
+  const slider = document.getElementById('projectsSlider');
+  const prevBtn = document.getElementById('projectPrev');
+  const nextBtn = document.getElementById('projectNext');
+  const counterCurrent = document.getElementById('projectCurrent');
+  const progressBar = document.getElementById('projectProgress');
+
+  if (slider) {
+    const cards = slider.querySelectorAll('.project-card');
+    const total = cards.length;
+
+    const cardStep = () => {
+      const card = cards[0];
+      const style = window.getComputedStyle(slider);
+      const gap = parseFloat(style.columnGap || style.gap || 24);
+      return card.getBoundingClientRect().width + gap;
+    };
+
+    const updateCounter = () => {
+      const step = cardStep();
+      const index = Math.round(slider.scrollLeft / step);
+      const clamped = Math.min(Math.max(index, 0), total - 1);
+      if (counterCurrent) counterCurrent.textContent = String(clamped + 1).padStart(2, '0');
+      if (progressBar) progressBar.style.width = `${((clamped + 1) / total) * 100}%`;
+      return clamped;
+    };
+
+    const scrollToIndex = (index) => {
+      const clamped = (index + total) % total;
+      slider.scrollTo({ left: clamped * cardStep(), behavior: 'smooth' });
+    };
+
+    let currentIndex = 0;
+
+    if (nextBtn) nextBtn.addEventListener('click', () => {
+      currentIndex = updateCounter();
+      scrollToIndex(currentIndex + 1);
+    });
+    if (prevBtn) prevBtn.addEventListener('click', () => {
+      currentIndex = updateCounter();
+      scrollToIndex(currentIndex - 1);
+    });
+
+    slider.addEventListener('scroll', () => {
+      updateCounter();
+    }, { passive: true });
+
+    // Drag to scroll (mouse)
+    let isDown = false, startX = 0, scrollStart = 0, moved = false;
+    slider.addEventListener('mousedown', (e) => {
+      isDown = true;
+      moved = false;
+      slider.classList.add('dragging');
+      startX = e.pageX;
+      scrollStart = slider.scrollLeft;
+      pauseAutoplay();
+    });
+    window.addEventListener('mouseup', () => {
+      isDown = false;
+      slider.classList.remove('dragging');
+      resumeAutoplay();
+    });
+    window.addEventListener('mousemove', (e) => {
+      if (!isDown) return;
+      e.preventDefault();
+      const dx = e.pageX - startX;
+      if (Math.abs(dx) > 5) moved = true;
+      slider.scrollLeft = scrollStart - dx;
+    });
+    slider.addEventListener('click', (e) => {
+      if (moved) { e.stopPropagation(); e.preventDefault(); }
+    }, true);
+
+    // Pause autoplay on touch interaction too
+    slider.addEventListener('touchstart', pauseAutoplay, { passive: true });
+    slider.addEventListener('touchend', () => setTimeout(resumeAutoplay, 2000), { passive: true });
+
+    // Autoplay: project geser sendiri
+    let autoplayTimer = null;
+    function startAutoplay() {
+      autoplayTimer = setInterval(() => {
+        const idx = updateCounter();
+        const next = idx + 1 >= total ? 0 : idx + 1;
+        if (next === 0) {
+          slider.scrollTo({ left: 0, behavior: 'smooth' });
         } else {
-            header.classList.remove("scrolled");
+          scrollToIndex(next);
         }
+      }, 3800);
+    }
+    function pauseAutoplay() {
+      if (autoplayTimer) {
+        clearInterval(autoplayTimer);
+        autoplayTimer = null;
+      }
+    }
+    function resumeAutoplay() {
+      pauseAutoplay();
+      startAutoplay();
     }
 
-    updateHeader();
+    slider.addEventListener('mouseenter', pauseAutoplay);
+    slider.addEventListener('mouseleave', resumeAutoplay);
 
-    window.addEventListener("scroll", updateHeader, {
-        passive: true
+    updateCounter();
+    startAutoplay();
+
+    window.addEventListener('resize', () => updateCounter());
+  }
+
+  /* ---------- PROJECT PREVIEW MODAL ---------- */
+  const projectModal = document.getElementById('projectModal');
+  const previewButtons = document.querySelectorAll('.preview-button');
+  const projectModalCloseButtons = projectModal ? projectModal.querySelectorAll('.modal-close') : [];
+
+  const projectDetails = {
+    project1: {
+      image: 'assets/pro1.png',
+      category: 'WEB DEVELOPMENT',
+      year: '2026',
+      title: 'Website "Jasa Pembuatan Website"',
+      description: 'Ini Adalah Project website untuk membuat layanan pemasanan website berbasis PHP sebagai backend.',
+      tech: ['PHP', 'Bootstrap', 'MySQL'],
+      link: 'https://vicode.ct.ws/'
+    },
+    project2: {
+      image: 'assets/pro2.png',
+      category: 'WEB DEVELOPMENT',
+      year: '2026',
+      title: 'Website Top Up Game',
+      description: 'Website top up game dengan alternatif payment gateway menggunakan pembayaran mandiri semi otomatis.',
+      tech: ['PHP', 'CSS', 'MySQL'],
+      link: 'https://virgigame.gt.tc/'
+    },
+    project3: {
+      image: 'assets/pro3.png',
+      category: 'WEB DEVELOPMENT',
+      year: '2026',
+      title: 'Website Sistem Akademik Sederhana',
+      description: 'Layanan akademik bagi mahasiswa dan dosen dengan fitur sederhana seperti manajemen tugas, absen, dan chat dosen.',
+      tech: ['PHP', 'CSS', 'MySQL'],
+      link: 'https://myacademic.ct.ws/'
+    },
+    project4: {
+      image: 'assets/port-2.png',
+      category: 'UI DESIGN',
+      year: '2026',
+      title: 'Desain Sistem Rumah Sakit',
+      description: 'Merancang desain sistem rumah sakit dengan 3 role: pasien, admin, dan dokter, untuk menyelesaikan mata kuliah Analisis Desain Perangkat Lunak.',
+      tech: ['Figma'],
+      link: 'https://figma.com'
+    },
+    project5: {
+      image: 'assets/pro5.png',
+      category: 'LANDING PAGE',
+      year: '2025',
+      title: 'Landing Page untuk Menyimpan Media',
+      description: 'Landing page untuk menyimpan foto dan video sebagai percobaan membangun website yang responsif dan modern.',
+      tech: ['HTML', 'CSS', 'JavaScript'],
+      link: 'https://github.com'
+    }
+  };
+
+  const modalImage = document.getElementById('modalProjectImage');
+  const modalCategory = document.getElementById('modalProjectCategory');
+  const modalYear = document.getElementById('modalProjectYear');
+  const modalTitle = document.getElementById('modalProjectTitle');
+  const modalDescription = document.getElementById('modalProjectDescription');
+  const modalTech1 = document.getElementById('modalTech1');
+  const modalTech2 = document.getElementById('modalTech2');
+  const modalTech3 = document.getElementById('modalTech3');
+  const modalDirectLink = document.getElementById('modalDirectLink');
+
+  previewButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const data = projectDetails[btn.dataset.project];
+      if (!data || !projectModal) return;
+
+      modalImage.src = data.image;
+      modalImage.alt = data.title;
+      modalCategory.textContent = data.category;
+      modalYear.textContent = data.year;
+      modalTitle.textContent = data.title;
+      modalDescription.textContent = data.description;
+
+      const techEls = [modalTech1, modalTech2, modalTech3];
+      techEls.forEach((el, i) => {
+        if (!el) return;
+        if (data.tech[i]) {
+          el.textContent = data.tech[i];
+          el.style.display = '';
+        } else {
+          el.style.display = 'none';
+        }
+      });
+
+      modalDirectLink.href = data.link;
+      openModal(projectModal);
     });
+  });
 
-
-    /* =====================================================
-       MOBILE MENU
-       ===================================================== */
-
-    if (navToggle && navMenu) {
-
-        navToggle.addEventListener("click", () => {
-
-            const isOpen = navMenu.classList.toggle("open");
-
-            navToggle.classList.toggle("open", isOpen);
-
-            navToggle.setAttribute(
-                "aria-expanded",
-                isOpen ? "true" : "false"
-            );
-
-        });
-
-
-        navLinks.forEach(link => {
-
-            link.addEventListener("click", () => {
-
-                navMenu.classList.remove("open");
-                navToggle.classList.remove("open");
-
-                navToggle.setAttribute(
-                    "aria-expanded",
-                    "false"
-                );
-
-            });
-
-        });
-
-    }
-
-
-    /* =====================================================
-       ACTIVE NAVIGATION
-       ===================================================== */
-
-    const observerOptions = {
-        root: null,
-        rootMargin: "-35% 0px -55% 0px",
-        threshold: 0
-    };
-
-    const sectionObserver = new IntersectionObserver(
-        entries => {
-
-            entries.forEach(entry => {
-
-                if (!entry.isIntersecting) return;
-
-                const id = entry.target.id;
-
-                navLinks.forEach(link => {
-
-                    const href = link.getAttribute("href");
-
-                    link.classList.toggle(
-                        "active",
-                        href === `#${id}`
-                    );
-
-                });
-
-            });
-
-        },
-        observerOptions
-    );
-
-    sections.forEach(section => {
-        sectionObserver.observe(section);
+  projectModalCloseButtons.forEach(btn => btn.addEventListener('click', () => closeModal(projectModal)));
+  if (projectModal) {
+    projectModal.addEventListener('click', (e) => {
+      if (e.target === projectModal || e.target.classList.contains('modal-backdrop')) closeModal(projectModal);
     });
+  }
 
+  /* ---------- BLOG MODAL ---------- */
+  const blogModals = document.querySelectorAll('.blog-modal');
+  const blogModal = blogModals[0]; // first one is the functional one
+  const blogButtons = document.querySelectorAll('.blog-btn');
 
-    /* =====================================================
-       SMOOTH ANCHOR
-       ===================================================== */
+  const blogDetails = {
+    1: {
+      image: 'assets/blog1.png',
+      meta: 'WEB DEVELOPMENT • 21 Juli 2026 • 5 MIN READ',
+      title: 'Cara Saya Mengenal Coding dan Web Developer',
+      description: 'Pengalaman saya dalam memulai dan mengenal dunia coding dan pengembangan website.',
+      text: `Awalnya saya penasaran dengan bagaimana sebuah website bisa dibuat, mulai dari tampilan sampai fungsinya. Dari rasa penasaran itu saya mulai belajar HTML dan CSS secara otodidak lewat video dan dokumentasi.
 
-    document.querySelectorAll('a[href^="#"]').forEach(link => {
+Semakin lama, saya mulai tertarik membuat website yang punya fungsi nyata, bukan sekadar tampilan statis. Di sinilah saya mulai belajar PHP dan database untuk membangun sistem sederhana seperti layanan pemesanan dan top up.
 
-        link.addEventListener("click", event => {
+Proses belajar ini tidak instan, banyak error dan percobaan berulang. Tapi dari situ saya belajar bahwa coding bukan soal seberapa cepat selesai, tapi seberapa konsisten mau belajar dari kesalahan.`
+    }
+  };
 
-            const targetId = link.getAttribute("href");
+  const blogModalImage = document.getElementById('blogModalImage');
+  const blogModalMeta = document.getElementById('blogModalMeta');
+  const blogModalTitle = document.getElementById('blogModalTitle');
+  const blogModalDescription = document.getElementById('blogModalDescription');
+  const blogModalText = document.getElementById('blogModalText');
 
-            if (
-                !targetId ||
-                targetId === "#" ||
-                targetId.length < 2
-            ) {
-                return;
-            }
+  blogButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const data = blogDetails[btn.dataset.blog];
+      if (!data || !blogModal) return;
 
-            const target = document.querySelector(targetId);
+      blogModalImage.src = data.image;
+      blogModalImage.alt = data.title;
+      blogModalMeta.textContent = data.meta;
+      blogModalTitle.textContent = data.title;
+      blogModalDescription.textContent = data.description;
+      blogModalText.innerHTML = data.text
+        .split('\n\n')
+        .map(p => `<p>${p}</p>`)
+        .join('');
 
-            if (!target) return;
-
-            event.preventDefault();
-
-            target.scrollIntoView({
-                behavior: "smooth",
-                block: "start"
-            });
-
-        });
-
+      openModal(blogModal);
     });
+  });
 
+  blogModals.forEach(modal => {
+    modal.querySelectorAll('.blog-modal-close').forEach(btn => btn.addEventListener('click', () => closeModal(modal)));
+    modal.querySelector('.blog-modal-overlay')?.addEventListener('click', () => closeModal(modal));
+  });
 
-    /* =====================================================
-       HERO MOUSE PARALLAX
-       ===================================================== */
-
-    const heroImageArea =
-        document.getElementById("heroImageArea");
-
-    const heroSection =
-        document.querySelector(".hero-new");
-
-    if (
-        heroImageArea &&
-        heroSection &&
-        window.matchMedia("(pointer: fine)").matches
-    ) {
-
-        heroSection.addEventListener("mousemove", event => {
-
-            const rect =
-                heroSection.getBoundingClientRect();
-
-            const x =
-                (event.clientX - rect.left) /
-                rect.width - .5;
-
-            const y =
-                (event.clientY - rect.top) /
-                rect.height - .5;
-
-            const rotateY = x * 5;
-            const rotateX = y * -5;
-
-            heroImageArea.style.transform =
-                `perspective(900px)
-                 rotateX(${rotateX}deg)
-                 rotateY(${rotateY}deg)`;
-
-        });
-
-        heroSection.addEventListener("mouseleave", () => {
-
-            heroImageArea.style.transform =
-                "perspective(900px) rotateX(0deg) rotateY(0deg)";
-
-        });
-
+  /* ---------- ESC closes any open modal ---------- */
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      [detailModal, projectModal, blogModal].forEach(m => {
+        if (m && m.classList.contains('open')) closeModal(m);
+      });
     }
+  });
 
+  /* ---------- CONTACT FORM: basic status feedback ---------- */
+  const contactForm = document.getElementById('contactForm');
+  const formStatus = document.getElementById('formStatus');
 
-    /* =====================================================
-       SCROLL REVEAL
-       ===================================================== */
-
-    const revealElements = document.querySelectorAll(
-        ".about-heading, .about-info, .about-visual, " +
-        ".bottom-item, .pro-title-wrap, .pro-header-side, " +
-        ".pro-category, .pro-showcase, .projects-title, " +
-        ".projects-description, .project-card, .blog-heading, " +
-        ".blog-single, .contact-heading, .contact-info, " +
-        ".contact-form-box"
-    );
-
-    revealElements.forEach((element, index) => {
-
-        element.classList.add("reveal");
-
-        if (
-            element.classList.contains("pro-category") ||
-            element.classList.contains("project-card") ||
-            element.classList.contains("bottom-item")
-        ) {
-            element.style.transitionDelay =
-                `${Math.min(index * .04, .3)}s`;
-        }
-
+  if (contactForm && formStatus) {
+    contactForm.addEventListener('submit', () => {
+      formStatus.textContent = 'Mengirim pesan...';
+      formStatus.style.color = 'var(--muted)';
     });
+  }
 
-    const revealObserver = new IntersectionObserver(
-        entries => {
-
-            entries.forEach(entry => {
-
-                if (!entry.isIntersecting) return;
-
-                entry.target.classList.add("revealed");
-
-                revealObserver.unobserve(entry.target);
-
-            });
-
-        },
-        {
-            threshold: .12,
-            rootMargin: "0px 0px -40px 0px"
-        }
-    );
-
-    revealElements.forEach(element => {
-        revealObserver.observe(element);
-    });
-
-
-    /* =====================================================
-       SKILLS
-       ===================================================== */
-
-    const skillData = {
-
-        frontend: {
-            title: "Front End",
-            number: "01",
-            description:
-                "Membangun tampilan website yang modern, responsif, dan interaktif.",
-            skills: [
-                ["HTML", "STRUCTURE"],
-                ["CSS", "STYLING"],
-                ["JavaScript", "INTERACTION"]
-            ]
-        },
-
-        backend: {
-            title: "Back End",
-            number: "02",
-            description:
-                "Mempelajari bagaimana website bekerja dari sisi server dan database.",
-            skills: [
-                ["PHP", "BACK END"],
-                ["MySQL", "DATABASE"],
-                ["CRUD", "SYSTEM"]
-            ]
-        },
-
-        programming: {
-            title: "Programming",
-            number: "03",
-            description:
-                "Mengembangkan logika pemrograman melalui project dan latihan.",
-            skills: [
-                ["PHP", "PROGRAMMING"],
-                ["JavaScript", "LOGIC"],
-                ["Python", "LEARNING"]
-            ]
-        },
-
-        ui: {
-            title: "UI Design",
-            number: "04",
-            description:
-                "Membuat interface yang sederhana, terstruktur, dan nyaman digunakan.",
-            skills: [
-                ["Figma", "UI DESIGN"],
-                ["Wireframe", "PLANNING"],
-                ["Prototype", "INTERACTION"]
-            ]
-        },
-
-        framework: {
-            title: "Framework",
-            number: "05",
-            description:
-                "Menggunakan framework dan library untuk mempercepat proses pengembangan.",
-            skills: [
-                ["Bootstrap", "CSS FRAMEWORK"],
-                ["Font Awesome", "ICONS"],
-                ["Responsive", "LAYOUT"]
-            ]
-        },
-
-        editing: {
-            title: "Editing",
-            number: "06",
-            description:
-                "Mengembangkan kemampuan visual untuk mendukung kebutuhan project.",
-            skills: [
-                ["Image Editing", "VISUAL"],
-                ["Video Editing", "CONTENT"],
-                ["Creative", "DESIGN"]
-            ]
-        },
-
-        tools: {
-            title: "Tools",
-            number: "07",
-            description:
-                "Berbagai tools yang membantu proses coding, desain, dan pengembangan project.",
-            skills: [
-                ["VS Code", "EDITOR"],
-                ["GitHub", "VERSION CONTROL"],
-                ["Figma", "DESIGN"]
-            ]
-        }
-
-    };
-
-
-    const skillButtons =
-        document.querySelectorAll(".pro-category");
-
-    const skillTitle =
-        document.getElementById("proSkillTitle");
-
-    const skillNumber =
-        document.getElementById("proSkillNumber");
-
-    const skillDescription =
-        document.getElementById("proSkillDescription");
-
-    const skillList =
-        document.getElementById("proSkillList");
-
-    const skillCount =
-        document.getElementById("proSkillCount");
-
-
-    function renderSkills(type) {
-
-        const data = skillData[type];
-
-        if (!data) return;
-
-        if (skillTitle) {
-            skillTitle.style.opacity = "0";
-            skillTitle.style.transform = "translateY(8px)";
-        }
-
-        if (skillDescription) {
-            skillDescription.style.opacity = "0";
-        }
-
-        setTimeout(() => {
-
-            if (skillTitle) {
-                skillTitle.textContent = data.title;
-                skillTitle.style.opacity = "1";
-                skillTitle.style.transform = "translateY(0)";
-            }
-
-            if (skillNumber) {
-                skillNumber.textContent = data.number;
-            }
-
-            if (skillDescription) {
-                skillDescription.textContent =
-                    data.description;
-
-                skillDescription.style.opacity = "1";
-            }
-
-            if (skillList) {
-
-                skillList.innerHTML = "";
-
-                data.skills.forEach((skill, index) => {
-
-                    const item =
-                        document.createElement("div");
-
-                    item.className = "skill-item";
-
-                    item.style.opacity = "0";
-                    item.style.transform = "translateY(12px)";
-
-                    item.innerHTML = `
-                        <strong>${skill[0]}</strong>
-                        <span>${skill[1]}</span>
-                    `;
-
-                    skillList.appendChild(item);
-
-                    requestAnimationFrame(() => {
-
-                        setTimeout(() => {
-
-                            item.style.opacity = "1";
-                            item.style.transform =
-                                "translateY(0)";
-
-                        }, index * 70);
-
-                    });
-
-                });
-
-            }
-
-            if (skillCount) {
-                skillCount.textContent =
-                    `${String(data.skills.length).padStart(2, "0")} SKILLS`;
-            }
-
-        }, 130);
-
-    }
-
-
-    skillButtons.forEach(button => {
-
-        button.addEventListener("click", () => {
-
-            skillButtons.forEach(item => {
-                item.classList.remove("active");
-            });
-
-            button.classList.add("active");
-
-            const skill =
-                button.dataset.skill;
-
-            renderSkills(skill);
-
-        });
-
-    });
-
-    renderSkills("frontend");
-
-
-    /* =====================================================
-       PROJECT SLIDER
-       ===================================================== */
-
-    const slider =
-        document.getElementById("projectsSlider");
-
-    const prevButton =
-        document.getElementById("projectPrev");
-
-    const nextButton =
-        document.getElementById("projectNext");
-
-    const currentProject =
-        document.getElementById("projectCurrent");
-
-    const progress =
-        document.getElementById("projectProgress");
-
-    const cards =
-        slider ?
-        slider.querySelectorAll(".project-card") :
-        [];
-
-
-    function getProjectStep() {
-
-        if (!cards.length) return 0;
-
-        const card = cards[0];
-
-        const gap =
-            parseFloat(
-                getComputedStyle(slider).gap
-            ) || 20;
-
-        return card.offsetWidth + gap;
-
-    }
-
-
-    function updateProjectCounter() {
-
-        if (!slider || !cards.length) return;
-
-        const step = getProjectStep();
-
-        if (!step) return;
-
-        const index =
-            Math.round(slider.scrollLeft / step);
-
-        const current =
-            Math.min(
-                Math.max(index + 1, 1),
-                cards.length
-            );
-
-        if (currentProject) {
-            currentProject.textContent =
-                String(current).padStart(2, "0");
-        }
-
-        if (progress) {
-
-            const percentage =
-                cards.length > 1
-                    ? (current - 1) /
-                      (cards.length - 1) * 100
-                    : 100;
-
-            progress.style.width =
-                `${Math.max(20, percentage)}%`;
-        }
-
-    }
-
-
-    if (prevButton && slider) {
-
-        prevButton.addEventListener("click", () => {
-
-            slider.scrollBy({
-                left: -getProjectStep(),
-                behavior: "smooth"
-            });
-
-        });
-
-    }
-
-
-    if (nextButton && slider) {
-
-        nextButton.addEventListener("click", () => {
-
-            slider.scrollBy({
-                left: getProjectStep(),
-                behavior: "smooth"
-            });
-
-        });
-
-    }
-
-
-    if (slider) {
-
-        slider.addEventListener(
-            "scroll",
-            updateProjectCounter,
-            { passive: true }
-        );
-
-        window.addEventListener(
-            "resize",
-            updateProjectCounter
-        );
-
-        updateProjectCounter();
-
-    }
-
-
-    /* =====================================================
-       DRAG TO SCROLL
-       ===================================================== */
-
-    if (slider) {
-
-        let isDown = false;
-        let startX = 0;
-        let startScroll = 0;
-
-        slider.addEventListener("mousedown", event => {
-
-            if (
-                event.target.closest("button") ||
-                event.target.closest("a")
-            ) {
-                return;
-            }
-
-            isDown = true;
-
-            slider.classList.add("dragging");
-
-            startX = event.pageX;
-
-            startScroll = slider.scrollLeft;
-
-        });
-
-        window.addEventListener("mouseup", () => {
-
-            isDown = false;
-
-            slider.classList.remove("dragging");
-
-        });
-
-        slider.addEventListener("mousemove", event => {
-
-            if (!isDown) return;
-
-            event.preventDefault();
-
-            const distance =
-                (event.pageX - startX) * 1.15;
-
-            slider.scrollLeft =
-                startScroll - distance;
-
-        });
-
-    }
-
-
-    /* =====================================================
-       PROJECT PREVIEW MODAL
-       ===================================================== */
-
-    const projectModal =
-        document.getElementById("projectModal");
-
-    const modalImage =
-        document.getElementById("modalProjectImage");
-
-    const modalTitle =
-        document.getElementById("modalProjectTitle");
-
-    const modalDescription =
-        document.getElementById("modalProjectDescription");
-
-    const modalCategory =
-        document.getElementById("modalProjectCategory");
-
-    const modalYear =
-        document.getElementById("modalProjectYear");
-
-    const modalTech1 =
-        document.getElementById("modalTech1");
-
-    const modalTech2 =
-        document.getElementById("modalTech2");
-
-    const modalTech3 =
-        document.getElementById("modalTech3");
-
-    const modalDirectLink =
-        document.getElementById("modalDirectLink");
-
-
-    const projectData = {
-
-        project1: {
-            image: "assets/pro1.png",
-            title: 'Website "Jasa Pembuatan Website"',
-            category: "WEB DEVELOPMENT",
-            year: "2026",
-            description:
-                "Website layanan pemesanan jasa pembuatan website berbasis PHP dengan sistem backend dan database.",
-            tech: ["PHP", "Bootstrap", "MySQL"],
-            link: "https://vicode.ct.ws/"
-        },
-
-        project2: {
-            image: "assets/pro2.png",
-            title: "Website Top Up Game",
-            category: "WEB DEVELOPMENT",
-            year: "2026",
-            description:
-                "Website top up game alternatif dengan sistem pembayaran semi otomatis.",
-            tech: ["PHP", "CSS", "MySQL"],
-            link: "https://virgigame.gt.tc/"
-        },
-
-        project3: {
-            image: "assets/pro3.png",
-            title: "Website Sistem Akademik Sederhana",
-            category: "WEB DEVELOPMENT",
-            year: "2026",
-            description:
-                "Sistem akademik sederhana untuk mahasiswa dan dosen dengan fitur manajemen tugas, absensi, dan komunikasi.",
-            tech: ["PHP", "CSS", "MySQL"],
-            link: "https://myacademic.ct.ws/"
-        },
-
-        project4: {
-            image: "assets/port-2.png",
-            title: "Desain Sistem Rumah Sakit",
-            category: "UI DESIGN",
-            year: "2026",
-            description:
-                "Perancangan interface sistem rumah sakit dengan role pasien, dokter, dan admin.",
-            tech: ["Figma", "UI", "Prototype"],
-            link: "https://figma.com/"
-        },
-
-        project5: {
-            image: "assets/pro5.png",
-            title: "Landing Page Media",
-            category: "LANDING PAGE",
-            year: "2025",
-            description:
-                "Landing page responsif untuk menyimpan foto dan video sekaligus menjadi latihan membangun interface modern.",
-            tech: ["HTML", "CSS", "JavaScript"],
-            link: "https://github.com/"
-        }
-
-    };
-
-
-    function openProjectModal(projectId) {
-
-        const data =
-            projectData[projectId];
-
-        if (!data || !projectModal) return;
-
-        if (modalImage) {
-            modalImage.src = data.image;
-            modalImage.alt = data.title;
-        }
-
-        if (modalTitle) {
-            modalTitle.textContent = data.title;
-        }
-
-        if (modalDescription) {
-            modalDescription.textContent =
-                data.description;
-        }
-
-        if (modalCategory) {
-            modalCategory.textContent =
-                data.category;
-        }
-
-        if (modalYear) {
-            modalYear.textContent =
-                data.year;
-        }
-
-        const techElements = [
-            modalTech1,
-            modalTech2,
-            modalTech3
-        ];
-
-        techElements.forEach((element, index) => {
-
-            if (!element) return;
-
-            if (data.tech[index]) {
-
-                element.textContent =
-                    data.tech[index];
-
-                element.style.display = "";
-
-            } else {
-
-                element.style.display = "none";
-
-            }
-
-        });
-
-        if (modalDirectLink) {
-            modalDirectLink.href = data.link;
-        }
-
-        projectModal.classList.add("active");
-
-        projectModal.setAttribute(
-            "aria-hidden",
-            "false"
-        );
-
-        body.classList.add("modal-open");
-
-    }
-
-
-    function closeProjectModal() {
-
-        if (!projectModal) return;
-
-        projectModal.classList.remove("active");
-
-        projectModal.setAttribute(
-            "aria-hidden",
-            "true"
-        );
-
-        body.classList.remove("modal-open");
-
-    }
-
-
-    document.querySelectorAll(".preview-button")
-        .forEach(button => {
-
-            button.addEventListener("click", event => {
-
-                event.stopPropagation();
-
-                openProjectModal(
-                    button.dataset.project
-                );
-
-            });
-
-        });
-
-
-    if (projectModal) {
-
-        const close =
-            projectModal.querySelector(".modal-close");
-
-        const backdrop =
-            projectModal.querySelector(".modal-backdrop");
-
-        if (close) {
-            close.addEventListener(
-                "click",
-                closeProjectModal
-            );
-        }
-
-        if (backdrop) {
-            backdrop.addEventListener(
-                "click",
-                closeProjectModal
-            );
-        }
-
-    }
-
-
-    /* =====================================================
-       PROFILE DETAIL MODAL
-       ===================================================== */
-
-    const detailModal =
-        document.getElementById("detailModal");
-
-    const detailButton =
-        document.getElementById("detailButton");
-
-
-    function openDetailModal() {
-
-        if (!detailModal) return;
-
-        detailModal.classList.add("active");
-
-        body.classList.add("modal-open");
-
-    }
-
-
-    function closeDetailModal() {
-
-        if (!detailModal) return;
-
-        detailModal.classList.remove("active");
-
-        body.classList.remove("modal-open");
-
-    }
-
-
-    if (detailButton) {
-
-        detailButton.addEventListener(
-            "click",
-            event => {
-
-                event.preventDefault();
-
-                openDetailModal();
-
-            }
-        );
-
-    }
-
-
-    if (detailModal) {
-
-        const close =
-            detailModal.querySelector(".modal-close");
-
-        if (close) {
-
-            close.addEventListener(
-                "click",
-                closeDetailModal
-            );
-
-        }
-
-        detailModal.addEventListener(
-            "click",
-            event => {
-
-                if (event.target === detailModal) {
-                    closeDetailModal();
-                }
-
-            }
-        );
-
-    }
-
-
-    /* =====================================================
-       BLOG MODAL
-       ===================================================== */
-
-    const blogModal =
-        document.getElementById("blogModal");
-
-    const blogButton =
-        document.querySelector(".blog-btn");
-
-
-    const blogData = {
-
-        "1": {
-            image: "assets/blog1.png",
-
-            meta:
-                "WEB DEVELOPMENT • 21 JULI 2026 • 5 MIN READ",
-
-            title:
-                "Cara Saya Mengenal Coding dan Web Developer",
-
-            description:
-                "Pengalaman saya dalam memulai dan mengenal dunia coding serta pengembangan website.",
-
-            content: `
-                <p>
-                    Perjalanan saya mengenal dunia coding
-                    dimulai dari rasa penasaran terhadap
-                    bagaimana sebuah website dapat bekerja.
-                </p>
-
-                <p>
-                    Dari sana saya mulai mempelajari HTML,
-                    CSS, JavaScript, PHP, dan berbagai teknologi
-                    lainnya melalui project-project kecil.
-                </p>
-
-                <p>
-                    Saya menyadari bahwa kemampuan programming
-                    tidak dibangun dalam satu malam. Setiap
-                    error, debugging, dan project yang selesai
-                    menjadi bagian dari proses belajar.
-                </p>
-
-                <p>
-                    Bagi saya, coding bukan hanya tentang
-                    menulis kode, tetapi juga tentang bagaimana
-                    memecahkan masalah dan terus berkembang.
-                </p>
-            `
-        }
-
-    };
-
-
-    function openBlogModal(id) {
-
-        if (!blogModal) return;
-
-        const data = blogData[id];
-
-        if (!data) return;
-
-        const image =
-            document.getElementById("blogModalImage");
-
-        const meta =
-            document.getElementById("blogModalMeta");
-
-        const title =
-            document.getElementById("blogModalTitle");
-
-        const description =
-            document.getElementById("blogModalDescription");
-
-        const text =
-            document.getElementById("blogModalText");
-
-
-        if (image) {
-            image.src = data.image;
-            image.alt = data.title;
-        }
-
-        if (meta) {
-            meta.textContent = data.meta;
-        }
-
-        if (title) {
-            title.textContent = data.title;
-        }
-
-        if (description) {
-            description.textContent =
-                data.description;
-        }
-
-        if (text) {
-            text.innerHTML = data.content;
-        }
-
-        blogModal.classList.add("active");
-
-        body.classList.add("modal-open");
-
-    }
-
-
-    function closeBlogModal() {
-
-        if (!blogModal) return;
-
-        blogModal.classList.remove("active");
-
-        body.classList.remove("modal-open");
-
-    }
-
-
-    if (blogButton) {
-
-        blogButton.addEventListener(
-            "click",
-            () => openBlogModal(
-                blogButton.dataset.blog || "1"
-            )
-        );
-
-    }
-
-
-    if (blogModal) {
-
-        const close =
-            blogModal.querySelector(".blog-modal-close");
-
-        const overlay =
-            blogModal.querySelector(".blog-modal-overlay");
-
-        if (close) {
-            close.addEventListener(
-                "click",
-                closeBlogModal
-            );
-        }
-
-        if (overlay) {
-            overlay.addEventListener(
-                "click",
-                closeBlogModal
-            );
-        }
-
-    }
-
-
-    /* =====================================================
-       ESC CLOSE ALL MODALS
-       ===================================================== */
-
-    document.addEventListener("keydown", event => {
-
-        if (event.key !== "Escape") return;
-
-        closeProjectModal();
-        closeDetailModal();
-        closeBlogModal();
-
-    });
-
-
-    /* =====================================================
-       CONTACT FORM
-       ===================================================== */
-
-    const contactForm =
-        document.getElementById("contactForm");
-
-    const formStatus =
-        document.getElementById("formStatus");
-
-
-    if (contactForm) {
-
-        contactForm.addEventListener(
-            "submit",
-            async event => {
-
-                event.preventDefault();
-
-                const submitButton =
-                    contactForm.querySelector(
-                        ".contact-submit"
-                    );
-
-                const originalText =
-                    submitButton
-                        ? submitButton.innerHTML
-                        : "";
-
-                if (submitButton) {
-
-                    submitButton.disabled = true;
-
-                    submitButton.innerHTML =
-                        "Mengirim...";
-
-                }
-
-                if (formStatus) {
-                    formStatus.textContent =
-                        "";
-                }
-
-                try {
-
-                    const response =
-                        await fetch(
-                            contactForm.action,
-                            {
-                                method: "POST",
-                                body:
-                                    new FormData(
-                                        contactForm
-                                    ),
-                                headers: {
-                                    "Accept":
-                                        "application/json"
-                                }
-                            }
-                        );
-
-                    if (response.ok) {
-
-                        contactForm.reset();
-
-                        if (formStatus) {
-
-                            formStatus.textContent =
-                                "Pesan berhasil dikirim. Terima kasih!";
-
-                            formStatus.style.color =
-                                "#21884c";
-
-                        }
-
-                    } else {
-
-                        throw new Error(
-                            "Request failed"
-                        );
-
-                    }
-
-                } catch (error) {
-
-                    if (formStatus) {
-
-                        formStatus.textContent =
-                            "Pesan belum berhasil dikirim. Silakan coba lagi.";
-
-                        formStatus.style.color =
-                            "#c33";
-
-                    }
-
-                } finally {
-
-                    if (submitButton) {
-
-                        submitButton.disabled = false;
-
-                        submitButton.innerHTML =
-                            originalText;
-
-                    }
-
-                }
-
-            }
-        );
-
-    }
-
-
-    /* =====================================================
-       PREVENT IMAGE DRAG
-       ===================================================== */
-
-    document.querySelectorAll("img").forEach(image => {
-
-        image.addEventListener(
-            "dragstart",
-            event => event.preventDefault()
-        );
-
-    });
-
-
-    /* =====================================================
-       HERO PARALLAX SCROLL
-       ===================================================== */
-
-    const heroVisual =
-        document.querySelector(".hero-new-visual");
-
-    if (heroVisual) {
-
-        window.addEventListener(
-            "scroll",
-            () => {
-
-                if (
-                    window.innerWidth < 760 ||
-                    window.matchMedia(
-                        "(prefers-reduced-motion: reduce)"
-                    ).matches
-                ) {
-                    return;
-                }
-
-                const rect =
-                    heroVisual.getBoundingClientRect();
-
-                const viewport =
-                    window.innerHeight;
-
-                if (
-                    rect.bottom < 0 ||
-                    rect.top > viewport
-                ) {
-                    return;
-                }
-
-                const progress =
-                    (viewport - rect.top) /
-                    (viewport + rect.height);
-
-                const offset =
-                    (progress - .5) * 18;
-
-                heroVisual.style.transform =
-                    `translateY(${offset}px)`;
-
-            },
-            { passive: true }
-        );
-
-    }
-
-
-    /* =====================================================
-       SPECIAL PAGE BUTTON
-       ===================================================== */
-
-    const specialPage =
-        document.querySelector(".nav-contact");
-
-    if (specialPage) {
-
-        specialPage.addEventListener(
-            "click",
-            event => {
-
-                event.preventDefault();
-
-                const target =
-                    document.getElementById("project");
-
-                if (target) {
-
-                    target.scrollIntoView({
-                        behavior: "smooth"
-                    });
-
-                }
-
-            }
-        );
-
-    }
-
-
-    /* =====================================================
-       INITIAL STATE
-       ===================================================== */
-
-    updateHeader();
-    updateProjectCounter();
-
-});
-
-/* =====================================================
-   HERO ENTRY ANIMATION
-   ===================================================== */
-
-document.addEventListener("DOMContentLoaded", () => {
-    const hero = document.querySelector(".hero-new");
-
-    if (!hero) return;
-
-    // Tambahkan class awal
-    hero.classList.add("hero-enter");
-
-    // Jalankan animasi setelah halaman siap
-    requestAnimationFrame(() => {
-        setTimeout(() => {
-            hero.classList.add("hero-show");
-        }, 150);
-    });
 });
