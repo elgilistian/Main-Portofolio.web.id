@@ -1,258 +1,244 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Elgi Listiani — Portofolio Website dan Project</title>
     <link rel="icon" type="image/png" href="assets/Main.png">
-    <meta
-    name="description"
-    content="Portfolio Elgi Listian, mahasiswa Teknik Informatika dan Junior Web Developer dari Riau. Lihat project website, keahlian, pengalaman belajar coding, dan berbagai karya yang saya kembangkan."
-    >
+    <meta name="description"
+        content="Portfolio Elgi Listian, mahasiswa Teknik Informatika dan Junior Web Developer dari Riau. Lihat project website, keahlian, pengalaman belajar coding, dan berbagai karya yang saya kembangkan.">
 
     <meta name="robots" content="index, follow">
-    
+
     <meta name="author" content="Elgi Listian">
-    
+
     <link rel="canonical" href="https://elgilistian.web.id/">
-
-
 
     <!-- Google Font -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
 
     <!-- CSS -->
     <link rel="stylesheet" href="style.css">
-    <link
-    rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css"
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css">
 </head>
 
 <body>
-<!-- ================= DETAIL MODAL ================= -->
+    <!-- ================= DETAIL MODAL ================= -->
 
-<div class="modal-overlay" id="detailModal">
+    <div class="modal-overlay" id="detailModal">
 
-    <div class="detail-modal">
+        <div class="detail-modal">
 
-        <!-- Close -->
-        <button
-            class="modal-close"
-            id="modalClose"
-            aria-label="Tutup"
-        >
-            &times;
-        </button>
+            <!-- Close -->
+            <button class="modal-close" id="modalClose" aria-label="Tutup">
+                &times;
+            </button>
 
 
-        <!-- Header Profile -->
-        <div class="profile-header">
+            <!-- Header Profile -->
+            <div class="profile-header">
 
-            <div class="profile-avatar">
-                <img
-                    src="assets/Main.png"
-                    alt="Elgi Listiani"
-                >
+                <div class="profile-avatar">
+                    <img src="assets/Main.png" alt="Elgi Listiani">
+                </div>
+
+                <div class="profile-heading">
+
+                    <span class="profile-label">
+                        PROFIL SAYA
+                    </span>
+
+                    <h2>
+                        Elgi Listiani
+                    </h2>
+
+                    <p>
+                        Mahasiswa & Web Developer
+                    </p>
+
+                </div>
+
             </div>
 
-            <div class="profile-heading">
 
-                <span class="profile-label">
-                    PROFIL SAYA
-                </span>
+            <!-- Informasi -->
+            <div class="profile-info">
 
-                <h2>
-                    Elgi Listiani
-                </h2>
+                <!-- Nama -->
+                <div class="info-card">
+
+
+                    <div class="info-text">
+
+                        <span>Nama</span>
+
+                        <strong>
+                            Elgi Listiani
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Pendidikan -->
+                <div class="info-card">
+
+
+                    <div class="info-text">
+
+                        <span>Pendidikan Terakhir</span>
+
+                        <strong>
+                            Universitas islam Riau
+                        </strong>
+
+                        <small>
+                            S1 Teknik Informatika
+                        </small>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Alamat -->
+                <div class="info-card">
+
+
+                    <div class="info-text">
+
+                        <span>Alamat</span>
+
+                        <strong>
+                            Pekanbaru, Riau, Indonesia.
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Status -->
+                <div class="info-card">
+                    <div class="info-text">
+
+                        <span>Status</span>
+
+                        <strong>
+                            Masih Mahasiswa
+                        </strong>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Description -->
+            <div class="profile-description">
+
+                <div class="description-title">
+
+                    <span class="description-line"></span>
+
+                    <h3>
+                        Info Singkat
+                    </h3>
+
+                </div>
 
                 <p>
-                    Mahasiswa & Web Developer
+                    Biasa di panggil Legi seoarang mahasiswa it asal riau, selain coding Hobi saya ialah Bermain
+                    bola, bulu tangkis ,catur dll. Alasan memilih TI ialah melihat dampak perkambangan teknologi yang
+                    sangat pesat Rasanya rugi jika tidak menjadi bagianya.
                 </p>
 
             </div>
 
-        </div>
 
+            <!-- Footer -->
+            <div class="modal-footer">
 
-        <!-- Informasi -->
-        <div class="profile-info">
-
-            <!-- Nama -->
-            <div class="info-card">
-
-
-                <div class="info-text">
-
-                    <span>Nama</span>
-
-                    <strong>
-                        Elgi Listiani
-                    </strong>
-
-                </div>
+                <span>
+                    ✦ Terima kasih sudah berkunjung
+                </span>
 
             </div>
-
-
-            <!-- Pendidikan -->
-            <div class="info-card">
-
-
-                <div class="info-text">
-
-                    <span>Pendidikan Terakhir</span>
-
-                    <strong>
-                        Universitas islam Riau
-                    </strong>
-
-                    <small>
-                        S1 Teknik Informatika
-                    </small>
-
-                </div>
-
-            </div>
-
-
-            <!-- Alamat -->
-            <div class="info-card">
-
-
-                <div class="info-text">
-
-                    <span>Alamat</span>
-
-                    <strong>
-                        Pekanbaru, Riau, Indonesia.
-                    </strong>
-
-                </div>
-
-            </div>
-
-
-            <!-- Status -->
-            <div class="info-card">
-                <div class="info-text">
-
-                    <span>Status</span>
-
-                    <strong>
-                        Masih Mahasiswa
-                    </strong>
-
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <!-- Description -->
-        <div class="profile-description">
-
-            <div class="description-title">
-
-                <span class="description-line"></span>
-
-                <h3>
-                    Info Singkat
-                </h3>
-
-            </div>
-
-            <p>
-                Biasa di panggil Legi seoarang mahasiswa it asal riau, selain coding Hobi saya ialah Bermain bola, bulu tangkis ,catur dll. Alasan memilih TI ialah melihat dampak perkambangan teknologi yang sangat pesat Rasanya rugi jika tidak menjadi bagianya. 
-            </p>
-
-        </div>
-
-
-        <!-- Footer -->
-        <div class="modal-footer">
-
-            <span>
-                ✦ Terima kasih sudah berkunjung
-            </span>
 
         </div>
 
     </div>
 
-</div>
+    <!-- =====================================================
+         NAVBAR
+    ===================================================== -->
 
-<!-- =====================================================
-     NAVBAR
-===================================================== -->
+    <header class="site-header" id="siteHeader">
 
-<header class="site-header" id="siteHeader">
+        <nav class="navbar">
 
-    <nav class="navbar">
-
-        <a href="#beranda" class="nav-logo">
-            ELGI LISTIAN<span>.</span>
-        </a>
-
-
-        <!-- DESKTOP MENU -->
-
-        <div class="nav-menu" id="navMenu">
-
-            <a href="#beranda" class="nav-link active">
-                Beranda
+            <a href="#beranda" class="nav-logo">
+                ELGI LISTIAN<span>.</span>
             </a>
 
-            <a href="#tentang" class="nav-link">
-                Tentang
+
+            <!-- DESKTOP MENU -->
+
+            <div class="nav-menu" id="navMenu">
+
+                <a href="#beranda" class="nav-link active">
+                    Beranda
+                </a>
+
+                <a href="#tentang" class="nav-link">
+                    Tentang
+                </a>
+
+                <a href="#keahlian" class="nav-link">
+                    Keahlian
+                </a>
+
+                <a href="#project" class="nav-link">
+                    Project
+                </a>
+
+                <a href="#blog" class="nav-link">
+                    Blog
+                </a>
+
+                <a href="#kontak" class="nav-link">
+                    Kontak
+                </a>
+
+            </div>
+
+
+            <!-- CONTACT BUTTON -->
+
+            <a href="#" class="nav-contact">
+                Special page
+                <span>↗</span>
             </a>
 
-            <a href="#keahlian" class="nav-link">
-                Keahlian
-            </a>
 
-            <a href="#project" class="nav-link">
-                Project
-            </a>
+            <!-- HAMBURGER -->
 
-            <a href="#blog" class="nav-link">
-                Blog
-            </a>
+            <button class="nav-toggle" id="navToggle" aria-label="Buka menu" aria-expanded="false">
 
-            <a href="#kontak" class="nav-link">
-                Kontak
-            </a>
+                <span></span>
+                <span></span>
 
-        </div>
+            </button>
 
+        </nav>
 
-        <!-- CONTACT BUTTON -->
-
-        <a href="#" class="nav-contact">
-            Special page
-            <span>↗</span>
-        </a>
-
-
-        <!-- HAMBURGER -->
-
-        <button
-            class="nav-toggle"
-            id="navToggle"
-            aria-label="Buka menu"
-            aria-expanded="false"
-        >
-
-            <span></span>
-            <span></span>
-
-        </button>
-
-    </nav>
-
-</header>
+    </header>
 
     <main>
 
@@ -328,19 +314,16 @@
 
                         <p class="hero-new-description">
 
-                        Selamat datang di website portfolio saya. Di sini saya 
-                        menyimpan berbagai project, pembelajaran coding, dan 
-                        perkembangan saya
+                            Selamat datang di website portfolio saya. Di sini saya
+                            menyimpan berbagai project, pembelajaran coding, dan
+                            perkembangan saya
 
                         </p>
 
 
                         <div class="hero-new-actions">
 
-                            <a
-                                id="detailButton"
-                                class="hero-main-btn"
-                            >
+                            <a id="detailButton" class="hero-main-btn">
 
                                 <span>
                                     Lebih Detail
@@ -351,10 +334,7 @@
                             </a>
 
 
-                            <a
-                                href="#"
-                                class="hero-text-btn"
-                            >
+                            <a href="#" class="hero-text-btn">
                             </a>
 
                         </div>
@@ -378,10 +358,7 @@
                         <div class="hero-orbit orbit-two"></div>
 
 
-                        <div
-                            class="hero-image-area"
-                            id="heroImageArea"
-                        >
+                        <div class="hero-image-area" id="heroImageArea">
 
                             <div class="hero-image-number">
                                 01
@@ -389,11 +366,7 @@
 
                             <div class="hero-image-border"></div>
 
-                            <img
-                                src="assets/foto Elgi Listiani.png"
-                                alt="Elgi"
-                                class="hero-new-image"
-                            >
+                            <img src="assets/foto Elgi Listiani.png" alt="Elgi" class="hero-new-image">
 
 
                             <div class="hero-image-label">
@@ -407,10 +380,7 @@
                             </div>
 
 
-                            <div
-                                class="hero-follow"
-                                id="heroFollow"
-                            >
+                            <div class="hero-follow" id="heroFollow">
                                 HALO!
                             </div>
 
@@ -471,7 +441,7 @@
                 <div class="hero-bottom">
 
                     <span>
-                       Scrol K
+                        Scrol K
                     </span>
 
                     <span class="hero-scroll-arrow">
@@ -479,7 +449,7 @@
                     </span>
 
                     <span>
-                       
+
                     </span>
 
                 </div>
@@ -489,9 +459,9 @@
         </section>
 
 
- <!-- ==================================================
-     SECTION TENTANG
-================================================== -->
+        <!-- ==================================================
+             SECTION TENTANG
+        ================================================== -->
 
         <section id="tentang" class="about-section">
 
@@ -535,11 +505,14 @@
                         </h3>
 
                         <p>
-                            Saat ini saya sedang berkuliah di Jurusan Informatika di salah satu Universitas di Riau. Saya sedang mendalami dunia programming, terutama dalam pengembangan website modern, desain UI sederhana, dan debugging.
+                            Saat ini saya sedang berkuliah di Jurusan Informatika di salah satu Universitas di Riau.
+                            Saya sedang mendalami dunia programming, terutama dalam pengembangan website modern,
+                            desain UI sederhana, dan debugging.
                         </p>
 
                         <p>
-                        Saya percaya bahwa belajar teknologi adalah proses yang terus berkembang. Oleh karena itu saya terus mencoba membangun project kecil untuk meningkatkan kemampuan saya.
+                            Saya percaya bahwa belajar teknologi adalah proses yang terus berkembang. Oleh karena itu
+                            saya terus mencoba membangun project kecil untuk meningkatkan kemampuan saya.
                         </p>
 
 
@@ -558,7 +531,7 @@
 
 
                         <!-- Social Media -->
-                    <div class="about-social">
+                        <div class="about-social">
 
                             <span class="social-label">
                                 FIND ME ON
@@ -567,13 +540,8 @@
                             <div class="social-links">
 
                                 <!-- Instagram -->
-                                <a
-                                    href="https://instagram.com/@legiiiii_"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    class="social-link instagram"
-                                    aria-label="Instagram"
-                                >
+                                <a href="https://instagram.com/@legiiiii_" target="_blank"
+                                    rel="noopener noreferrer" class="social-link instagram" aria-label="Instagram">
                                     <svg viewBox="0 0 24 24" aria-hidden="true">
                                         <rect x="3" y="3" width="18" height="18" rx="5"></rect>
                                         <circle cx="12" cy="12" r="4"></circle>
@@ -585,15 +553,12 @@
 
 
                                 <!-- GitHub -->
-                                <a
-                                    href="https://github.com/"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    class="social-link github"
-                                    aria-label="GitHub"
-                                >
+                                <a href="https://github.com/" target="_blank" rel="noopener noreferrer"
+                                    class="social-link github" aria-label="GitHub">
                                     <svg viewBox="0 0 24 24" aria-hidden="true">
-                                        <path d="M12 2C6.48 2 2 6.58 2 12.25c0 4.52 2.87 8.35 6.84 9.7.5.1.68-.22.68-.49v-1.73c-2.78.62-3.37-1.38-3.37-1.38-.46-1.19-1.11-1.51-1.11-1.51-.91-.64.07-.63.07-.63 1 .08 1.53 1.06 1.53 1.06.9 1.58 2.35 1.12 2.93.86.09-.67.35-1.12.64-1.38-2.22-.26-4.55-1.14-4.55-5.06 0-1.12.39-2.04 1.03-2.76-.1-.26-.45-1.31.1-2.73 0 0 .84-.28 2.75 1.05a9.25 9.25 0 0 1 5.01 0c1.91-1.33 2.75-1.05 2.75-1.05.55 1.42.2 2.47.1 2.73.64.72 1.03 1.64 1.03 2.76 0 3.93-2.34 4.8-4.57 5.05.36.32.68.94.68 1.9v2.82c0 .27.18.59.69.49A10.26 10.26 0 0 0 22 12.25C22 6.58 17.52 2 12 2z"></path>
+                                        <path
+                                            d="M12 2C6.48 2 2 6.58 2 12.25c0 4.52 2.87 8.35 6.84 9.7.5.1.68-.22.68-.49v-1.73c-2.78.62-3.37-1.38-3.37-1.38-.46-1.19-1.11-1.51-1.11-1.51-.91-.64.07-.63.07-.63 1 .08 1.53 1.06 1.53 1.06.9 1.58 2.35 1.12 2.93.86.09-.67.35-1.12.64-1.38-2.22-.26-4.55-1.14-4.55-5.06 0-1.12.39-2.04 1.03-2.76-.1-.26-.45-1.31.1-2.73 0 0 .84-.28 2.75 1.05a9.25 9.25 0 0 1 5.01 0c1.91-1.33 2.75-1.05 2.75-1.05.55 1.42.2 2.47.1 2.73.64.72 1.03 1.64 1.03 2.76 0 3.93-2.34 4.8-4.57 5.05.36.32.68.94.68 1.9v2.82c0 .27.18.59.69.49A10.26 10.26 0 0 0 22 12.25C22 6.58 17.52 2 12 2z">
+                                        </path>
                                     </svg>
 
                                     <span>GitHub</span>
@@ -601,15 +566,12 @@
 
 
                                 <!-- TikTok -->
-                                <a
-                                    href="https://tiktok.com/@gamevr1"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    class="social-link tiktok"
-                                    aria-label="TikTok"
-                                >
+                                <a href="https://tiktok.com/@gamevr1" target="_blank" rel="noopener noreferrer"
+                                    class="social-link tiktok" aria-label="TikTok">
                                     <svg viewBox="0 0 24 24" aria-hidden="true">
-                                        <path d="M15.5 3c.25 1.55 1.12 2.73 2.5 3.35.75.34 1.5.48 2.5.5v3.02c-1.04.01-2.01-.2-2.9-.61v6.1c0 3.62-2.56 5.64-5.6 5.64-2.77 0-5-2.07-5-4.82 0-2.9 2.39-4.96 5.2-4.96.36 0 .72.04 1.08.12v3.05a2.84 2.84 0 0 0-1.03-.19c-1.14 0-2.18.77-2.18 1.98 0 1.14.9 1.83 1.93 1.83 1.25 0 2.45-.73 2.45-2.67V3h3.05z"></path>
+                                        <path
+                                            d="M15.5 3c.25 1.55 1.12 2.73 2.5 3.35.75.34 1.5.48 2.5.5v3.02c-1.04.01-2.01-.2-2.9-.61v6.1c0 3.62-2.56 5.64-5.6 5.64-2.77 0-5-2.07-5-4.82 0-2.9 2.39-4.96 5.2-4.96.36 0 .72.04 1.08.12v3.05a2.84 2.84 0 0 0-1.03-.19c-1.14 0-2.18.77-2.18 1.98 0 1.14.9 1.83 1.93 1.83 1.25 0 2.45-.73 2.45-2.67V3h3.05z">
+                                        </path>
                                     </svg>
 
                                     <span>TikTok</span>
@@ -617,7 +579,7 @@
 
                             </div>
 
-                    </div>
+                        </div>
 
                     </div>
 
@@ -635,10 +597,7 @@
 
                             <div class="about-photo">
 
-                                <img
-                                    src="assets/b1.jpg"
-                                    alt="Elgi Listiani"
-                                >
+                                <img src="assets/b1.jpg" alt="Elgi Listiani">
 
                             </div>
 
@@ -647,7 +606,6 @@
 
                         </div>
 
-                        
 
 
                         <!-- Floating Info -->
@@ -668,13 +626,12 @@
 
                         </div>
 
-                        
+
 
                     </div>
 
                 </div>
 
-                
 
 
                 <!-- ================= BOTTOM HIGHLIGHT ================= -->
@@ -744,9 +701,9 @@
 
         </section>
 
-<!-- ==================================================
-     SECTION KEAHLIAN
-================================================== -->
+        <!-- ==================================================
+             SECTION KEAHLIAN
+        ================================================== -->
 
         <section class="pro-skills" id="keahlian">
 
@@ -799,8 +756,7 @@
                         </div>
 
 
-                        <button class="pro-category active"
-                            data-skill="frontend">
+                        <button class="pro-category active" data-skill="frontend">
 
                             <span class="pro-cat-number">01</span>
 
@@ -819,8 +775,7 @@
                         </button>
 
 
-                        <button class="pro-category"
-                            data-skill="backend">
+                        <button class="pro-category" data-skill="backend">
 
                             <span class="pro-cat-number">02</span>
 
@@ -839,8 +794,7 @@
                         </button>
 
 
-                        <button class="pro-category"
-                            data-skill="programming">
+                        <button class="pro-category" data-skill="programming">
 
                             <span class="pro-cat-number">03</span>
 
@@ -859,8 +813,7 @@
                         </button>
 
 
-                        <button class="pro-category"
-                            data-skill="ui">
+                        <button class="pro-category" data-skill="ui">
 
                             <span class="pro-cat-number">04</span>
 
@@ -879,8 +832,7 @@
                         </button>
 
 
-                        <button class="pro-category"
-                            data-skill="framework">
+                        <button class="pro-category" data-skill="framework">
 
                             <span class="pro-cat-number">05</span>
 
@@ -899,8 +851,7 @@
                         </button>
 
 
-                        <button class="pro-category"
-                            data-skill="editing">
+                        <button class="pro-category" data-skill="editing">
 
                             <span class="pro-cat-number">06</span>
 
@@ -919,8 +870,7 @@
                         </button>
 
 
-                        <button class="pro-category"
-                            data-skill="tools">
+                        <button class="pro-category" data-skill="tools">
 
                             <span class="pro-cat-number">07</span>
 
@@ -958,26 +908,20 @@
 
                             </div>
 
-                            <div
-                                class="showcase-number"
-                                id="proSkillNumber">
+                            <div class="showcase-number" id="proSkillNumber">
                                 01
                             </div>
 
                         </div>
 
 
-                        <p
-                            class="showcase-description"
-                            id="proSkillDescription">
+                        <p class="showcase-description" id="proSkillDescription">
                             Membangun tampilan website yang modern,
                             responsif, dan interaktif.
                         </p>
 
 
-                        <div
-                            class="pro-skill-list"
-                            id="proSkillList">
+                        <div class="pro-skill-list" id="proSkillList">
                         </div>
 
 
@@ -1000,9 +944,9 @@
 
         </section>
 
-<!-- ==================================================
-     PROJECT SECTION
-================================================== -->
+        <!-- ==================================================
+             PROJECT SECTION
+        ================================================== -->
 
         <section id="project" class="projects-section">
 
@@ -1035,21 +979,13 @@
 
                         <div class="slider-controls">
 
-                            <button
-                                type="button"
-                                id="projectPrev"
-                                class="slider-button"
-                                aria-label="Project sebelumnya"
-                            >
+                            <button type="button" id="projectPrev" class="slider-button"
+                                aria-label="Project sebelumnya">
                                 <span>←</span>
                             </button>
 
-                            <button
-                                type="button"
-                                id="projectNext"
-                                class="slider-button"
-                                aria-label="Project berikutnya"
-                            >
+                            <button type="button" id="projectNext" class="slider-button"
+                                aria-label="Project berikutnya">
                                 <span>→</span>
                             </button>
 
@@ -1062,10 +998,7 @@
 
                 <!-- PROJECT SLIDER -->
 
-                <div
-                    class="projects-slider"
-                    id="projectsSlider"
-                >
+                <div class="projects-slider" id="projectsSlider">
 
                     <!-- PROJECT 01 -->
 
@@ -1073,11 +1006,7 @@
 
                         <div class="project-image">
 
-                            <img
-                                src="assets/pro1.png"
-                                alt="Sistem Informasi Rumah Sakit"
-                                draggable="false"
-                            >
+                            <img src="assets/pro1.png" alt="Sistem Informasi Rumah Sakit" draggable="false">
 
                             <div class="project-overlay"></div>
 
@@ -1085,11 +1014,7 @@
                                 01
                             </span>
 
-                            <button
-                                type="button"
-                                class="preview-button"
-                                data-project="project1"
-                            >
+                            <button type="button" class="preview-button" data-project="project1">
                                 Preview
                             </button>
 
@@ -1115,7 +1040,7 @@
                             </h3>
 
                             <p>
-                                Ini Adalah Project website untuk membuat layanan pemasanan 
+                                Ini Adalah Project website untuk membuat layanan pemasanan
                                 website berbasis php sebagai backend
                             </p>
 
@@ -1130,12 +1055,8 @@
 
                                 </div>
 
-                                <a
-                                    href="https://vicode.ct.ws/"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    class="project-direct-link"
-                                >
+                                <a href="https://vicode.ct.ws/" target="_blank" rel="noopener noreferrer"
+                                    class="project-direct-link">
                                     Cek Langsung
                                     <span>↗</span>
                                 </a>
@@ -1153,11 +1074,7 @@
 
                         <div class="project-image">
 
-                            <img
-                                src="assets/pro2.png"
-                                alt="Personal Portfolio"
-                                draggable="false"
-                            >
+                            <img src="assets/pro2.png" alt="Personal Portfolio" draggable="false">
 
                             <div class="project-overlay"></div>
 
@@ -1165,11 +1082,7 @@
                                 02
                             </span>
 
-                            <button
-                                type="button"
-                                class="preview-button"
-                                data-project="project2"
-                            >
+                            <button type="button" class="preview-button" data-project="project2">
                                 Preview
                             </button>
 
@@ -1195,7 +1108,8 @@
                             </h3>
 
                             <p>
-                                Website Top up game Alternatif Payment Gatway menggunakan pembayaran mandiri semi otomatis
+                                Website Top up game Alternatif Payment Gatway menggunakan pembayaran mandiri semi
+                                otomatis
                             </p>
 
 
@@ -1209,12 +1123,8 @@
 
                                 </div>
 
-                                <a
-                                    href="https://virgigame.gt.tc/"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    class="project-direct-link"
-                                >
+                                <a href="https://virgigame.gt.tc/" target="_blank" rel="noopener noreferrer"
+                                    class="project-direct-link">
                                     Cek Langsung
                                     <span>↗</span>
                                 </a>
@@ -1232,11 +1142,7 @@
 
                         <div class="project-image">
 
-                            <img
-                                src="assets/pro3.png"
-                                alt="Dashboard Management"
-                                draggable="false"
-                            >
+                            <img src="assets/pro3.png" alt="Dashboard Management" draggable="false">
 
                             <div class="project-overlay"></div>
 
@@ -1244,11 +1150,7 @@
                                 03
                             </span>
 
-                            <button
-                                type="button"
-                                class="preview-button"
-                                data-project="project3"
-                            >
+                            <button type="button" class="preview-button" data-project="project3">
                                 Preview
                             </button>
 
@@ -1273,8 +1175,9 @@
                                 Website Sistem Akademik sederhana
                             </h3>
 
-                            <p >
-                                pada wesbite ini adalah layanan akademik bagi mahasiswa dan dosen dengan fitur sederhana sperti menejmen tugas, absen, chat dosen dll
+                            <p>
+                                pada wesbite ini adalah layanan akademik bagi mahasiswa dan dosen dengan fitur
+                                sederhana sperti menejmen tugas, absen, chat dosen dll
                             </p>
 
 
@@ -1288,12 +1191,8 @@
 
                                 </div>
 
-                                <a
-                                    href="https://myacademic.ct.ws/"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    class="project-direct-link"
-                                >
+                                <a href="https://myacademic.ct.ws/" target="_blank" rel="noopener noreferrer"
+                                    class="project-direct-link">
                                     Cek Langsung
                                     <span>↗</span>
                                 </a>
@@ -1311,11 +1210,7 @@
 
                         <div class="project-image">
 
-                            <img
-                                src="assets/port-2.png"
-                                alt="Modern Landing Page"
-                                draggable="false"
-                            >
+                            <img src="assets/port-2.png" alt="Modern Landing Page" draggable="false">
 
                             <div class="project-overlay"></div>
 
@@ -1323,11 +1218,7 @@
                                 04
                             </span>
 
-                            <button
-                                type="button"
-                                class="preview-button"
-                                data-project="project4"
-                            >
+                            <button type="button" class="preview-button" data-project="project4">
                                 Preview
                             </button>
 
@@ -1353,7 +1244,9 @@
                             </h3>
 
                             <p>
-                            Saya Dan tim Saya memrancang desain sistem rumah sakit yang terdapat 3 role pasien ,Admin, Dokter. Yang bertujuan untuk menyelesaikan matkul Analisis Desain Perangkat Lunak
+                                Saya Dan tim Saya memrancang desain sistem rumah sakit yang terdapat 3 role pasien
+                                ,Admin, Dokter. Yang bertujuan untuk menyelesaikan matkul Analisis Desain Perangkat
+                                Lunak
                             </p>
 
 
@@ -1366,12 +1259,8 @@
 
                                 </div>
 
-                                <a
-                                    href="https://figma.com"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    class="project-direct-link"
-                                >
+                                <a href="https://figma.com" target="_blank" rel="noopener noreferrer"
+                                    class="project-direct-link">
                                     Cek Langsung
                                     <span>↗</span>
                                 </a>
@@ -1385,11 +1274,7 @@
 
                         <div class="project-image">
 
-                            <img
-                                src="assets/pro5.png"
-                                alt="Modern Landing Page"
-                                draggable="false"
-                            >
+                            <img src="assets/pro5.png" alt="Modern Landing Page" draggable="false">
 
                             <div class="project-overlay"></div>
 
@@ -1397,11 +1282,7 @@
                                 05
                             </span>
 
-                            <button
-                                type="button"
-                                class="preview-button"
-                                data-project="project5"
-                            >
+                            <button type="button" class="preview-button" data-project="project5">
                                 Preview
                             </button>
 
@@ -1427,7 +1308,8 @@
                             </h3>
 
                             <p>
-                            Saya membuat wesbite landing page untuk menyimpan foto dan vidio sebagai percobaan Membangun Wesbite yang responsif dan modren. 
+                                Saya membuat wesbite landing page untuk menyimpan foto dan vidio sebagai percobaan
+                                Membangun Wesbite yang responsif dan modren.
                             </p>
 
 
@@ -1442,12 +1324,8 @@
 
                                 </div>
 
-                                <a
-                                    href="https://github.com"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    class="project-direct-link"
-                                >
+                                <a href="https://github.com" target="_blank" rel="noopener noreferrer"
+                                    class="project-direct-link">
                                     Cek Langsung
                                     <span>↗</span>
                                 </a>
@@ -1496,28 +1374,14 @@
             PROJECT PREVIEW MODAL
         ================================================== -->
 
-        <div
-            class="project-modal"
-            id="projectModal"
-            aria-hidden="true"
-        >
+        <div class="project-modal" id="projectModal" aria-hidden="true">
 
             <div class="modal-backdrop"></div>
 
 
-            <div
-                class="project-modal-box"
-                role="dialog"
-                aria-modal="true"
-                aria-labelledby="modalProjectTitle"
-            >
+            <div class="project-modal-box" role="dialog" aria-modal="true" aria-labelledby="modalProjectTitle">
 
-                <button
-                    type="button"
-                    class="modal-close"
-                    id="modalClose"
-                    aria-label="Tutup preview"
-                >
+                <button type="button" class="modal-close" id="modalClose" aria-label="Tutup preview">
                     ×
                 </button>
 
@@ -1526,11 +1390,7 @@
 
                 <div class="modal-image">
 
-                    <img
-                        id="modalProjectImage"
-                        src=""
-                        alt=""
-                    >
+                    <img id="modalProjectImage" src="" alt="">
 
                 </div>
 
@@ -1579,13 +1439,8 @@
                     </div>
 
 
-                    <a
-                        href="#"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        class="modal-direct-link"
-                        id="modalDirectLink"
-                    >
+                    <a href="#" target="_blank" rel="noopener noreferrer" class="modal-direct-link"
+                        id="modalDirectLink">
                         Cek Project Langsung
 
                         <span>
@@ -1625,10 +1480,7 @@
 
                     <div class="blog-single-image">
 
-                        <img
-                            src="assets/blog1.png"
-                            alt="Memulai Perjalanan Menjadi Web Developer"
-                        >
+                        <img src="assets/blog1.png" alt="Memulai Perjalanan Menjadi Web Developer">
 
                     </div>
 
@@ -1650,15 +1502,12 @@
 
 
                         <p>
-                        pengalaman Saya Dalam Memulai dan mengenal dunia Coding dan 
-                        pengembangan website 
+                            pengalaman Saya Dalam Memulai dan mengenal dunia Coding dan
+                            pengembangan website
                         </p>
 
 
-                        <button
-                            class="blog-btn"
-                            data-blog="1"
-                        >
+                        <button class="blog-btn" data-blog="1">
                             Baca Artikel
                             <span>↗</span>
                         </button>
@@ -1672,181 +1521,219 @@
         </section>
 
 
-<!-- =========================
-     BLOG MODAL
-========================= -->
+        <!-- =========================
+             BLOG MODAL
+        ========================= -->
 
-<div class="blog-modal" id="blogModal">
+        <div class="blog-modal" id="blogModal">
 
-    <div class="blog-modal-overlay"></div>
+            <div class="blog-modal-overlay"></div>
 
-    <div class="blog-modal-box">
+            <div class="blog-modal-box">
 
-        <button
-            class="blog-modal-close"
-            id="blogModalClose"
-        >
-            ×
-        </button>
+                <button class="blog-modal-close" id="blogModalClose">
+                    ×
+                </button>
 
-        <img
-            id="blogModalImage"
-            src=""
-            alt=""
-        >
+                <img id="blogModalImage" src="" alt="">
 
-        <div class="blog-modal-body">
+                <div class="blog-modal-body">
 
-            <small id="blogModalMeta"></small>
+                    <small id="blogModalMeta"></small>
 
-            <h2 id="blogModalTitle"></h2>
+                    <h2 id="blogModalTitle"></h2>
 
-            <p id="blogModalDescription"></p>
+                    <p id="blogModalDescription"></p>
 
-            <div id="blogModalText"></div>
+                    <div id="blogModalText"></div>
 
-        </div>
+                </div>
 
-    </div>
-
-</div>
-
-
-<!-- BLOG MODAL -->
-
-<div class="blog-modal" id="blogModal">
-
-    <div class="blog-modal-overlay"></div>
-
-    <div class="blog-modal-box">
-
-        <button
-            class="blog-modal-close"
-            id="blogModalClose"
-        >
-            ×
-        </button>
-
-        <img
-            id="blogModalImage"
-            src=""
-            alt=""
-        >
-
-        <div class="blog-modal-body">
-
-            <small id="blogModalMeta"></small>
-
-            <h2 id="blogModalTitle"></h2>
-
-            <p id="blogModalDescription"></p>
-
-            <div id="blogModalText"></div>
-
-        </div>
-
-    </div>
-
-</div>
-
-
-<!-- =========================================
-     CONTACT SECTION
-========================================= -->
-
-<section class="contact-section" id="kontak">
-
-    <div class="contact-container">
-
-        <!-- HEADER -->
-        <div class="contact-heading">
-
-            <span>CONTACT</span>
-
-            <h2>
-                Mari <strong>terhubung.</strong>
-            </h2>
-
-            <p>
-                Punya pertanyaan, ide, atau ingin bekerja
-                sama? Silakan kirim pesan melalui form.
-            </p>
+            </div>
 
         </div>
 
 
-        <!-- CONTACT CONTENT -->
-        <div class="contact-wrapper">
+        <!-- BLOG MODAL -->
 
-            <!-- LEFT -->
-            <div class="contact-info">
+        <div class="blog-modal" id="blogModal">
 
-                <div class="contact-intro">
+            <div class="blog-modal-overlay"></div>
 
-                    <h3>
-                        Punya sesuatu
-                        untuk dibicarakan?
-                    </h3>
+            <div class="blog-modal-box">
+
+                <button class="blog-modal-close" id="blogModalClose">
+                    ×
+                </button>
+
+                <img id="blogModalImage" src="" alt="">
+
+                <div class="blog-modal-body">
+
+                    <small id="blogModalMeta"></small>
+
+                    <h2 id="blogModalTitle"></h2>
+
+                    <p id="blogModalDescription"></p>
+
+                    <div id="blogModalText"></div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =========================================
+             CONTACT SECTION
+        ========================================= -->
+
+        <section class="contact-section" id="kontak">
+
+            <div class="contact-container">
+
+                <!-- HEADER -->
+                <div class="contact-heading">
+
+                    <span>CONTACT</span>
+
+                    <h2>
+                        Mari <strong>terhubung.</strong>
+                    </h2>
 
                     <p>
-                        Saya terbuka untuk berdiskusi mengenai
-                        project, website, maupun hal-hal menarik
-                        lainnya.
+                        Punya pertanyaan, ide, atau ingin bekerja
+                        sama? Silakan kirim pesan melalui form.
                     </p>
 
                 </div>
 
 
-                <!-- EMAIL -->
-                <div class="contact-item">
+                <!-- CONTACT CONTENT -->
+                <div class="contact-wrapper">
 
-                    <div class="contact-icon">
-                        @
+                    <!-- LEFT -->
+                    <div class="contact-info">
+
+                        <div class="contact-intro">
+
+                            <h3>
+                                Punya sesuatu
+                                untuk dibicarakan?
+                            </h3>
+
+                            <p>
+                                Saya terbuka untuk berdiskusi mengenai
+                                project, website, maupun hal-hal menarik
+                                lainnya.
+                            </p>
+
+                        </div>
+
+
+                        <!-- EMAIL -->
+                        <div class="contact-item">
+
+                            <div class="contact-icon">
+                                @
+                            </div>
+
+                            <div>
+                                <span>Email</span>
+                                <a href="mailto:emailkamu@gmail.com">
+                                    Elgilistian@student.uir.ac.id
+                                </a>
+                            </div>
+
+                        </div>
+
+
+                        <!-- LOCATION -->
+                        <div class="contact-item">
+
+                            <div class="contact-icon">
+                                +
+                            </div>
+
+                            <div>
+                                <span>Lokasi</span>
+                                <p>pekanbaru, riau, Indonesia</p>
+                            </div>
+
+                        </div>
+
+
+                        <!-- SOCIAL -->
+                        <div class="contact-social">
+
+                            <span>FOLLOW ME</span>
+
+                            <div class="contact-social-links">
+
+                                <a href="#" aria-label="Instagram">
+                                    Instagram
+                                </a>
+
+                                <a href="#" aria-label="GitHub">
+                                    GitHub
+                                </a>
+
+                                <a href="#" aria-label="TikTok">
+                                    TikTok
+                                </a>
+
+                            </div>
+
+                        </div>
+
                     </div>
 
-                    <div>
-                        <span>Email</span>
-                        <a href="mailto:emailkamu@gmail.com">
-                            Elgilistian@student.uir.ac.id
-                        </a>
-                    </div>
 
-                </div>
+                    <!-- RIGHT : FORM -->
+                    <div class="contact-form-box">
+
+                        <form id="contactForm" action="https://formspree.io/f/xgaeenbq" method="POST">
+                            <div class="form-row">
+
+                                <div class="form-group">
+                                    <label for="name">
+                                        Nama
+                                    </label>
+
+                                    <input type="text" id="name" name="name" placeholder="Nama kamu" required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="email">
+                                        Email
+                                    </label>
+
+                                    <input type="email" id="email" name="email" placeholder="email@example.com"
+                                        required>
+                                </div>
+
+                            </div>
+
+                            <div class="form-group">
+                                <label for="message">
+                                    Pesan
+                                </label>
+
+                                <textarea id="message" name="message" rows="6"
+                                    placeholder="Tulis pesan kamu..." required></textarea>
+                            </div>
+
+                            <button type="submit" class="contact-submit">
+                                Kirim Pesan
+                                <span>↗</span>
+                            </button>
+
+                            <p class="form-status" id="formStatus"></p>
+
+                        </form>
 
 
-                <!-- LOCATION -->
-                <div class="contact-item">
-
-                    <div class="contact-icon">
-                        +
-                    </div>
-
-                    <div>
-                        <span>Lokasi</span>
-                        <p>pekanbaru, riau, Indonesia</p>
-                    </div>
-
-                </div>
-
-
-                <!-- SOCIAL -->
-                <div class="contact-social">
-
-                    <span>FOLLOW ME</span>
-
-                    <div class="contact-social-links">
-
-                        <a href="#" aria-label="Instagram">
-                            Instagram
-                        </a>
-
-                        <a href="#" aria-label="GitHub">
-                            GitHub
-                        </a>
-
-                        <a href="#" aria-label="TikTok">
-                            TikTok
-                        </a>
 
                     </div>
 
@@ -1854,160 +1741,80 @@
 
             </div>
 
-
-            <!-- RIGHT : FORM -->
-            <div class="contact-form-box">
-
-                <form
-                    id="contactForm"
-                    action="https://formspree.io/f/xgaeenbq"
-                    method="POST"
-                >
-                    <div class="form-row">
-
-                        <div class="form-group">
-                            <label for="name">
-                                Nama
-                            </label>
-
-                            <input
-                                type="text"
-                                id="name"
-                                name="name"
-                                placeholder="Nama kamu"
-                                required
-                            >
-                        </div>
-
-                        <div class="form-group">
-                            <label for="email">
-                                Email
-                            </label>
-
-                            <input
-                                type="email"
-                                id="email"
-                                name="email"
-                                placeholder="email@example.com"
-                                required
-                            >
-                        </div>
-
-                    </div>
-
-                    <div class="form-group">
-                        <label for="message">
-                            Pesan
-                        </label>
-
-                        <textarea
-                            id="message"
-                            name="message"
-                            rows="6"
-                            placeholder="Tulis pesan kamu..."
-                            required
-                        ></textarea>
-                    </div>
-
-                    <button
-                        type="submit"
-                        class="contact-submit"
-                    >
-                         Kirim Pesan
-                        <span>↗</span>
-                    </button>
-
-                    <p
-                        class="form-status"
-                        id="formStatus"
-                    ></p>
-
-                </form>
+        </section>
 
 
+
+        <!-- =========================================
+             FOOTER
+        ========================================= -->
+
+        <footer class="footer">
+
+            <div class="footer-container">
+
+                <div class="footer-top">
+
+                    <!-- LOGO -->
+                    <a href="#beranda" class="footer-logo">
+                        Elgi<span>.</span>
+                    </a>
+
+
+                    <!-- NAVIGATION -->
+                    <nav class="footer-nav">
+
+                        <a href="#beranda">
+                            Beranda
+                        </a>
+
+                        <a href="#tentang">
+                            Tentang
+                        </a>
+
+                        <a href="#keahlian">
+                            Keahlian
+                        </a>
+
+                        <a href="#project">
+                            Project
+                        </a>
+
+                        <a href="#blog">
+                            Blog
+                        </a>
+
+                        <a href="#kontak">
+                            Kontak
+                        </a>
+
+                    </nav>
+
+
+
+
+                </div>
+
+
+                <div class="footer-bottom">
+
+                    <p>
+                        © 2026 Elgi. All rights reserved.
+                    </p>
+
+                    <p>
+                        Designed & Built with HTML, CSS & JavaScript.
+                    </p>
+
+                </div>
 
             </div>
 
-        </div>
+        </footer>
 
-    </div>
+    </main>
 
-</section>
-
-
-
-<!-- =========================================
-     FOOTER
-========================================= -->
-
-<footer class="footer" >
-
-    <div class="footer-container">
-
-        <div class="footer-top">
-
-            <!-- LOGO -->
-            <a
-                href="#beranda"
-                class="footer-logo"
-            >
-                Elgi<span>.</span>
-            </a>
-
-
-            <!-- NAVIGATION -->
-            <nav class="footer-nav">
-
-                <a href="#beranda">
-                    Beranda
-                </a>
-
-                <a href="#tentang">
-                    Tentang
-                </a>
-
-                <a href="#keahlian">
-                    Keahlian
-                </a>
-
-                <a href="#project">
-                    Project
-                </a>
-
-                <a href="#blog">
-                    Blog
-                </a>
-
-                <a href="#kontak">
-                    Kontak
-                </a>
-
-            </nav>
-
-
-
-
-        </div>
-
-
-        <div class="footer-bottom">
-
-            <p>
-                © 2026 Elgi. All rights reserved.
-            </p>
-
-            <p>
-                Designed & Built with HTML, CSS & JavaScript.
-            </p>
-
-        </div>
-
-    </div>
-
-</footer>
-
-</main>
-
-<script src="script.js"></script>
+    <script src="script.js"></script>
 </body>
+
 </html>
