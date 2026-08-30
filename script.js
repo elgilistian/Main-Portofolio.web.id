@@ -406,7 +406,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 ["HTML", "Semantic structure"],
                 ["CSS", "Responsive styling"],
                 ["JavaScript", "Interaction"],
-                ["Bootstrap", "Rapid UI"]
             ]
         },
 
@@ -446,10 +445,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             skills: [
                 ["Figma", "Interface design"],
-                ["Wireframe", "Page structure"],
-                ["Prototype", "Interaction"],
-                ["Typography", "Hierarchy"]
-            ]
+                ["Canva", "Interface design & typograpi"],
         },
 
         framework: {
@@ -460,9 +456,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
             skills: [
                 ["Bootstrap", "CSS framework"],
-                ["Font Awesome", "Icons"],
-                ["PHP", "Backend"],
-                ["Components", "Reusable UI"]
+                ["Tailwind CSS", "CSS framework"],
+                
             ]
         },
 
@@ -473,10 +468,10 @@ document.addEventListener("DOMContentLoaded", function () {
                 "Mengolah media visual untuk kebutuhan digital.",
 
             skills: [
-                ["Photo Editing", "Visual"],
-                ["Video Editing", "Video"],
-                ["Thumbnail", "Content"],
-                ["Layout", "Composition"]
+                ["Photshop", "Visual"],
+                ["Capcut PC", "Video editing"],
+                ["Pixallab", "Image editing"],
+                ["Canva", "Design alternatif"]
             ]
         },
 
@@ -489,8 +484,9 @@ document.addEventListener("DOMContentLoaded", function () {
             skills: [
                 ["VS Code", "Code editor"],
                 ["GitHub", "Version control"],
-                ["Figma", "Design"],
-                ["DevTools", "Debugging"]
+                ["Laragon", "Server Web"],
+                ["Visual Studio", "IDE Programing"],
+                ["Colab Studio", "Python Analyst"]
             ]
         }
 
