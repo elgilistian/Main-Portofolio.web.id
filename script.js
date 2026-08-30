@@ -446,6 +446,7 @@ document.addEventListener("DOMContentLoaded", function () {
             skills: [
                 ["Figma", "Interface design"],
                 ["Canva", "Interface design & typograpi"],
+            ]
         },
 
         framework: {
