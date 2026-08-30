@@ -1,26 +1,13 @@
-/* =========================================================
-   ELGI PORTFOLIO
-   CLEAN INTERACTION SYSTEM
-========================================================= */
-
 document.addEventListener("DOMContentLoaded", function () {
     "use strict";
-
-
-    /* =====================================================
-       HELPER
-    ===================================================== */
 
     const $ = (selector, parent = document) => {
         return parent.querySelector(selector);
     };
 
     const $$ = (selector, parent = document) => {
-        return Array.from(
-            parent.querySelectorAll(selector)
-        );
+        return Array.from(parent.querySelectorAll(selector));
     };
-
 
     /* =====================================================
        PAGE LOAD
@@ -29,7 +16,6 @@ document.addEventListener("DOMContentLoaded", function () {
     window.addEventListener("load", function () {
         document.body.classList.add("page-ready");
     });
-
 
     /* =====================================================
        NAVBAR
@@ -44,67 +30,34 @@ document.addEventListener("DOMContentLoaded", function () {
 
         navMenu.classList.remove("active");
         navToggle.classList.remove("is-open");
-
-        navToggle.setAttribute(
-            "aria-expanded",
-            "false"
-        );
+        navToggle.setAttribute("aria-expanded", "false");
     }
 
     if (navToggle) {
-        navToggle.addEventListener(
-            "click",
-            function (event) {
+        navToggle.addEventListener("click", function (event) {
+            event.stopPropagation();
 
-                event.stopPropagation();
+            const isOpen = navMenu.classList.contains("active");
 
-                const isOpen =
-                    navMenu.classList.contains(
-                        "active"
-                    );
-
-                navMenu.classList.toggle(
-                    "active",
-                    !isOpen
-                );
-
-                navToggle.classList.toggle(
-                    "is-open",
-                    !isOpen
-                );
-
-                navToggle.setAttribute(
-                    "aria-expanded",
-                    String(!isOpen)
-                );
-            }
-        );
+            navMenu.classList.toggle("active", !isOpen);
+            navToggle.classList.toggle("is-open", !isOpen);
+            navToggle.setAttribute("aria-expanded", String(!isOpen));
+        });
     }
 
     $$(".nav-link").forEach(function (link) {
-        link.addEventListener(
-            "click",
-            closeNav
-        );
+        link.addEventListener("click", closeNav);
     });
 
-    document.addEventListener(
-        "click",
-        function (event) {
-
-            if (!navMenu || !navToggle) {
-                return;
-            }
-
-            if (
-                !navMenu.contains(event.target) &&
-                !navToggle.contains(event.target)
-            ) {
-                closeNav();
-            }
+    document.addEventListener("click", function (event) {
+        if (!navMenu || !navToggle) {
+            return;
         }
-    );
 
+        if (!navMenu.contains(event.target) && !navToggle.contains(event.target)) {
+            closeNav();
+        }
+    });
 
     /* Header scroll */
 
@@ -112,193 +65,99 @@ document.addEventListener("DOMContentLoaded", function () {
         if (!siteHeader) return;
 
         if (window.scrollY > 15) {
-            siteHeader.classList.add(
-                "scrolled"
-            );
+            siteHeader.classList.add("scrolled");
         } else {
-            siteHeader.classList.remove(
-                "scrolled"
-            );
+            siteHeader.classList.remove("scrolled");
         }
     }
 
-    window.addEventListener(
-        "scroll",
-        headerScroll,
-        { passive: true }
-    );
+    window.addEventListener("scroll", headerScroll, { passive: true });
 
     headerScroll();
-
 
     /* =====================================================
        NAV ACTIVE SECTION
     ===================================================== */
 
-    const sections = $$(
-        "#beranda, #tentang, #keahlian, #project, #blog, #kontak"
-    );
+    const sections = $$("#beranda, #tentang, #keahlian, #project, #blog, #kontak");
 
     const navLinks = $$(".nav-link");
 
     if (sections.length) {
 
-        const navObserver =
-            new IntersectionObserver(
-                function (entries) {
+        const navObserver = new IntersectionObserver(
+            function (entries) {
+                entries.forEach(function (entry) {
+                    if (!entry.isIntersecting) {
+                        return;
+                    }
 
-                    entries.forEach(
-                        function (entry) {
+                    navLinks.forEach(function (link) {
+                        link.classList.remove("active");
 
-                            if (
-                                !entry.isIntersecting
-                            ) {
-                                return;
-                            }
+                        const href = link.getAttribute("href");
 
-                            navLinks.forEach(
-                                function (link) {
-
-                                    link.classList.remove(
-                                        "active"
-                                    );
-
-                                    const href =
-                                        link.getAttribute(
-                                            "href"
-                                        );
-
-                                    if (
-                                        href ===
-                                        "#" +
-                                        entry.target.id
-                                    ) {
-                                        link.classList.add(
-                                            "active"
-                                        );
-                                    }
-                                }
-                            );
+                        if (href === "#" + entry.target.id) {
+                            link.classList.add("active");
                         }
-                    );
-                },
-                {
-                    threshold: 0.15,
-                    rootMargin:
-                        "-20% 0px -60% 0px"
-                }
-            );
-
-        sections.forEach(
-            function (section) {
-                navObserver.observe(
-                    section
-                );
+                    });
+                });
+            },
+            {
+                threshold: 0.15,
+                rootMargin: "-20% 0px -60% 0px"
             }
         );
-    }
 
+        sections.forEach(function (section) {
+            navObserver.observe(section);
+        });
+    }
 
     /* =====================================================
        SMOOTH ANCHOR
     ===================================================== */
 
-    $$('a[href^="#"]').forEach(
-        function (link) {
+    $$('a[href^="#"]').forEach(function (link) {
+        link.addEventListener("click", function (event) {
+            const href = link.getAttribute("href");
 
-            link.addEventListener(
-                "click",
-                function (event) {
+            if (!href || href === "#") {
+                return;
+            }
 
-                    const href =
-                        link.getAttribute(
-                            "href"
-                        );
+            const target = document.querySelector(href);
 
-                    if (
-                        !href ||
-                        href === "#"
-                    ) {
-                        return;
-                    }
+            if (!target) return;
 
-                    const target =
-                        document.querySelector(
-                            href
-                        );
+            event.preventDefault();
 
-                    if (!target) return;
-
-                    event.preventDefault();
-
-                    target.scrollIntoView({
-                        behavior: "smooth"
-                    });
-                }
-            );
-        }
-    );
-
+            target.scrollIntoView({ behavior: "smooth" });
+        });
+    });
 
     /* =====================================================
        HERO PARALLAX
     ===================================================== */
 
-    const hero =
-        $(".hero-new");
+    const hero = $(".hero-new");
+    const heroImage = $(".hero-image-area");
 
-    const heroImage =
-        $(".hero-image-area");
+    if (hero && heroImage && window.matchMedia("(pointer: fine)").matches) {
 
-    if (
-        hero &&
-        heroImage &&
-        window.matchMedia(
-            "(pointer: fine)"
-        ).matches
-    ) {
+        hero.addEventListener("mousemove", function (event) {
+            const rect = hero.getBoundingClientRect();
 
-        hero.addEventListener(
-            "mousemove",
-            function (event) {
+            const x = (event.clientX - rect.left) / rect.width - .5;
+            const y = (event.clientY - rect.top) / rect.height - .5;
 
-                const rect =
-                    hero.getBoundingClientRect();
+            heroImage.style.transform = `translate(${x * -5}px, ${y * -5}px)`;
+        });
 
-                const x =
-                    (
-                        event.clientX -
-                        rect.left
-                    ) /
-                    rect.width -
-                    .5;
-
-                const y =
-                    (
-                        event.clientY -
-                        rect.top
-                    ) /
-                    rect.height -
-                    .5;
-
-                heroImage.style.transform =
-                    `translate(
-                        ${x * -5}px,
-                        ${y * -5}px
-                    )`;
-            }
-        );
-
-        hero.addEventListener(
-            "mouseleave",
-            function () {
-
-                heroImage.style.transform =
-                    "";
-            }
-        );
+        hero.addEventListener("mouseleave", function () {
+            heroImage.style.transform = "";
+        });
     }
-
 
     /* =====================================================
        SCROLL REVEAL
@@ -321,72 +180,38 @@ document.addEventListener("DOMContentLoaded", function () {
         ".contact-form-box"
     ];
 
-    revealTargets.forEach(
-        function (selector) {
+    revealTargets.forEach(function (selector) {
+        $$(selector).forEach(function (element) {
+            element.style.opacity = "0";
+            element.style.transform = "translateY(25px)";
+            element.style.transition = "opacity .7s ease, transform .7s cubic-bezier(.22,1,.36,1)";
+        });
+    });
 
-            $$(selector).forEach(
-                function (element) {
-
-                    element.style.opacity =
-                        "0";
-
-                    element.style.transform =
-                        "translateY(25px)";
-
-                    element.style.transition =
-                        "opacity .7s ease, transform .7s cubic-bezier(.22,1,.36,1)";
+    const revealObserver = new IntersectionObserver(
+        function (entries, observer) {
+            entries.forEach(function (entry) {
+                if (!entry.isIntersecting) {
+                    return;
                 }
-            );
+
+                entry.target.style.opacity = "1";
+                entry.target.style.transform = "translateY(0)";
+
+                observer.unobserve(entry.target);
+            });
+        },
+        {
+            threshold: .08,
+            rootMargin: "0px 0px -40px 0px"
         }
     );
 
-
-    const revealObserver =
-        new IntersectionObserver(
-            function (entries, observer) {
-
-                entries.forEach(
-                    function (entry) {
-
-                        if (
-                            !entry.isIntersecting
-                        ) {
-                            return;
-                        }
-
-                        entry.target.style.opacity =
-                            "1";
-
-                        entry.target.style.transform =
-                            "translateY(0)";
-
-                        observer.unobserve(
-                            entry.target
-                        );
-                    }
-                );
-            },
-            {
-                threshold: .08,
-                rootMargin:
-                    "0px 0px -40px 0px"
-            }
-        );
-
-    revealTargets.forEach(
-        function (selector) {
-
-            $$(selector).forEach(
-                function (element) {
-
-                    revealObserver.observe(
-                        element
-                    );
-                }
-            );
-        }
-    );
-
+    revealTargets.forEach(function (selector) {
+        $$(selector).forEach(function (element) {
+            revealObserver.observe(element);
+        });
+    });
 
     /* =====================================================
        =====================================================
@@ -399,8 +224,7 @@ document.addEventListener("DOMContentLoaded", function () {
         frontend: {
             title: "Front End",
             number: "01",
-            description:
-                "Membangun tampilan website yang modern, responsif, dan interaktif.",
+            description: "Membangun tampilan website yang modern, responsif, dan interaktif.",
 
             skills: [
                 ["HTML", "Semantic structure"],
@@ -412,8 +236,7 @@ document.addEventListener("DOMContentLoaded", function () {
         backend: {
             title: "Back End",
             number: "02",
-            description:
-                "Mengembangkan logic website, pengolahan data, dan komunikasi dengan database.",
+            description: "Mengembangkan logic website, pengolahan data, dan komunikasi dengan database.",
 
             skills: [
                 ["PHP", "Server-side"],
@@ -426,8 +249,7 @@ document.addEventListener("DOMContentLoaded", function () {
         programming: {
             title: "Programming",
             number: "03",
-            description:
-                "Programming untuk membangun logic dan menyelesaikan berbagai masalah.",
+            description: "Programming untuk membangun logic dan menyelesaikan berbagai masalah.",
 
             skills: [
                 ["PHP", "Programming"],
@@ -440,8 +262,7 @@ document.addEventListener("DOMContentLoaded", function () {
         ui: {
             title: "UI Design",
             number: "04",
-            description:
-                "Membuat interface yang sederhana, jelas, dan nyaman digunakan.",
+            description: "Membuat interface yang sederhana, jelas, dan nyaman digunakan.",
 
             skills: [
                 ["Figma", "Interface design"],
@@ -452,21 +273,19 @@ document.addEventListener("DOMContentLoaded", function () {
         framework: {
             title: "Framework",
             number: "05",
-            description:
-                "Menggunakan framework dan library untuk mempercepat proses development.",
+            description: "Menggunakan framework dan library untuk mempercepat proses development.",
 
             skills: [
                 ["Bootstrap", "CSS framework"],
                 ["Tailwind CSS", "CSS framework"],
-                
+
             ]
         },
 
         editing: {
             title: "Editing",
             number: "06",
-            description:
-                "Mengolah media visual untuk kebutuhan digital.",
+            description: "Mengolah media visual untuk kebutuhan digital.",
 
             skills: [
                 ["Photshop", "Visual"],
@@ -479,8 +298,7 @@ document.addEventListener("DOMContentLoaded", function () {
         tools: {
             title: "Tools",
             number: "07",
-            description:
-                "Tools yang membantu coding, debugging, design, dan pengembangan website.",
+            description: "Tools yang membantu coding, debugging, design, dan pengembangan website.",
 
             skills: [
                 ["VS Code", "Code editor"],
@@ -493,67 +311,38 @@ document.addEventListener("DOMContentLoaded", function () {
 
     };
 
+    const skillButtons = $$(".pro-category");
+    const skillTitle = $("#proSkillTitle");
+    const skillNumber = $("#proSkillNumber");
+    const skillDescription = $("#proSkillDescription");
+    const skillList = $("#proSkillList");
+    const skillCount = $("#proSkillCount");
 
-    const skillButtons =
-        $$(".pro-category");
+    function showSkills(key) {
 
-    const skillTitle =
-        $("#proSkillTitle");
-
-    const skillNumber =
-        $("#proSkillNumber");
-
-    const skillDescription =
-        $("#proSkillDescription");
-
-    const skillList =
-        $("#proSkillList");
-
-    const skillCount =
-        $("#proSkillCount");
-
-
-    function showSkills(
-        key
-    ) {
-
-        const data =
-            skillData[key];
+        const data = skillData[key];
 
         if (!data) return;
 
-
         /* active */
 
-        skillButtons.forEach(
-            function (button) {
-
-                button.classList.toggle(
-                    "active",
-                    button.dataset.skill ===
-                    key
-                );
-            }
-        );
-
+        skillButtons.forEach(function (button) {
+            button.classList.toggle("active", button.dataset.skill === key);
+        });
 
         /* heading */
 
         if (skillTitle) {
-            skillTitle.textContent =
-                data.title;
+            skillTitle.textContent = data.title;
         }
 
         if (skillNumber) {
-            skillNumber.textContent =
-                data.number;
+            skillNumber.textContent = data.number;
         }
 
         if (skillDescription) {
-            skillDescription.textContent =
-                data.description;
+            skillDescription.textContent = data.description;
         }
-
 
         /* list */
 
@@ -561,21 +350,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
             skillList.innerHTML = "";
 
-            data.skills.forEach(
-                function (
-                    skill,
-                    index
-                ) {
+            data.skills.forEach(function (skill, index) {
 
-                    const card =
-                        document.createElement(
-                            "div"
-                        );
+                const card = document.createElement("div");
 
-                    card.className =
-                        "skill-chip";
+                card.className = "skill-chip";
 
-                    card.innerHTML = `
+                card.innerHTML = `
                         <strong>
                             ${skill[0]}
                         </strong>
@@ -585,93 +366,62 @@ document.addEventListener("DOMContentLoaded", function () {
                         </span>
                     `;
 
-                    skillList.appendChild(
-                        card
-                    );
+                skillList.appendChild(card);
 
-                    card.animate(
-                        [
-                            {
-                                opacity: 0,
-                                transform:
-                                    "translateY(10px)"
-                            },
-                            {
-                                opacity: 1,
-                                transform:
-                                    "translateY(0)"
-                            }
-                        ],
+                card.animate(
+                    [
                         {
-                            duration: 350,
-                            delay:
-                                index * 50,
-                            fill: "both",
-                            easing:
-                                "cubic-bezier(.22,1,.36,1)"
+                            opacity: 0,
+                            transform: "translateY(10px)"
+                        },
+                        {
+                            opacity: 1,
+                            transform: "translateY(0)"
                         }
-                    );
-                }
-            );
+                    ],
+                    {
+                        duration: 350,
+                        delay: index * 50,
+                        fill: "both",
+                        easing: "cubic-bezier(.22,1,.36,1)"
+                    }
+                );
+            });
         }
-
 
         /* count */
 
         if (skillCount) {
-            skillCount.textContent =
-                String(
-                    data.skills.length
-                ).padStart(
-                    2,
-                    "0"
-                ) +
-                " SKILLS";
+            skillCount.textContent = String(data.skills.length).padStart(2, "0") + " SKILLS";
         }
     }
-
 
     /* =====================================================
        SKILL BUTTON
        SUPER SIMPLE
     ===================================================== */
 
-    skillButtons.forEach(
-        function (button) {
+    skillButtons.forEach(function (button) {
+        button.addEventListener("click", function () {
+            const skill = button.dataset.skill;
 
-            button.addEventListener(
-                "click",
-                function () {
-
-                    const skill =
-                        button.dataset.skill;
-
-                    showSkills(
-                        skill
-                    );
-                }
-            );
-        }
-    );
-
+            showSkills(skill);
+        });
+    });
 
     /* default */
 
-    showSkills(
-        "frontend"
-    );
-
+    showSkills("frontend");
 
     /* =====================================================
        SKILL HORIZONTAL DRAG
        MOBILE + TABLET
-       
+
        IMPORTANT:
        BUTTON CLICK TIDAK DIGANGGU
     ===================================================== */
 
-    const skillScroller =
-        $(".pro-category-nav");
+    const skillScroller = $(".pro-category-nav");
 
     if (skillScroller) {
 
@@ -682,58 +432,37 @@ document.addEventListener("DOMContentLoaded", function () {
 
         let movedDistance = 0;
 
-        skillScroller.addEventListener(
-            "pointerdown",
-            function (event) {
+        skillScroller.addEventListener("pointerdown", function (event) {
 
-                /*
-                 * Kalau yang ditekan button,
-                 * jangan memulai drag.
-                 */
-                if (
-                    event.target.closest(
-                        ".pro-category"
-                    )
-                ) {
-                    return;
-                }
-
-                isDragging = true;
-
-                startX =
-                    event.clientX;
-
-                startScroll =
-                    skillScroller.scrollLeft;
-
-                movedDistance = 0;
-
-                skillScroller.classList.add(
-                    "dragging"
-                );
+            /*
+             * Kalau yang ditekan button,
+             * jangan memulai drag.
+             */
+            if (event.target.closest(".pro-category")) {
+                return;
             }
-        );
 
+            isDragging = true;
 
-        skillScroller.addEventListener(
-            "pointermove",
-            function (event) {
+            startX = event.clientX;
 
-                if (!isDragging) return;
+            startScroll = skillScroller.scrollLeft;
 
-                const distance =
-                    event.clientX -
-                    startX;
+            movedDistance = 0;
 
-                movedDistance =
-                    Math.abs(distance);
+            skillScroller.classList.add("dragging");
+        });
 
-                skillScroller.scrollLeft =
-                    startScroll -
-                    distance;
-            }
-        );
+        skillScroller.addEventListener("pointermove", function (event) {
 
+            if (!isDragging) return;
+
+            const distance = event.clientX - startX;
+
+            movedDistance = Math.abs(distance);
+
+            skillScroller.scrollLeft = startScroll - distance;
+        });
 
         function endSkillDrag() {
 
@@ -743,22 +472,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
             isDragging = false;
 
-            skillScroller.classList.remove(
-                "dragging"
-            );
+            skillScroller.classList.remove("dragging");
         }
 
+        skillScroller.addEventListener("pointerup", endSkillDrag);
 
-        skillScroller.addEventListener(
-            "pointerup",
-            endSkillDrag
-        );
-
-        skillScroller.addEventListener(
-            "pointercancel",
-            endSkillDrag
-        );
-
+        skillScroller.addEventListener("pointercancel", endSkillDrag);
 
         /*
          * Wheel desktop
@@ -767,26 +486,13 @@ document.addEventListener("DOMContentLoaded", function () {
         skillScroller.addEventListener(
             "wheel",
             function (event) {
-
-                if (
-                    Math.abs(
-                        event.deltaY
-                    ) >
-                    Math.abs(
-                        event.deltaX
-                    )
-                ) {
-
-                    skillScroller.scrollLeft +=
-                        event.deltaY;
+                if (Math.abs(event.deltaY) > Math.abs(event.deltaX)) {
+                    skillScroller.scrollLeft += event.deltaY;
                 }
             },
-            {
-                passive: true
-            }
+            { passive: true }
         );
     }
-
 
     /* =====================================================
        =====================================================
@@ -794,59 +500,42 @@ document.addEventListener("DOMContentLoaded", function () {
        =====================================================
     ===================================================== */
 
-    const projectSlider =
-        $("#projectsSlider");
-
-    const projectCards =
-        $$(".project-card");
-
-    const previousButton =
-        $("#projectPrev");
-
-    const nextButton =
-        $("#projectNext");
-
-    const currentCounter =
-        $("#projectCurrent");
-
-    const progressBar =
-        $("#projectProgress");
-
+    const projectSlider = $("#projectsSlider");
+    const projectCards = $$(".project-card");
+    const previousButton = $("#projectPrev");
+    const nextButton = $("#projectNext");
+    const currentCounter = $("#projectCurrent");
+    const progressBar = $("#projectProgress");
 
     let projectTimer = null;
 
+    /*
+     * PENTING (FIX):
+     * currentProjectIndex dilacak secara eksplisit
+     * dan navigasi memakai offsetLeft tiap kartu
+     * (bukan kalkulasi "step" lebar+gap).
+     *
+     * Ini memastikan SEMUA kartu (5, 4, berapapun
+     * jumlahnya) bisa dijangkau dengan benar,
+     * termasuk kartu terakhir, karena tidak
+     * bergantung pada pembulatan lebar/gap yang
+     * bisa meleset dan membuat kartu terakhir
+     * tidak pernah tercapai.
+     */
 
-    /* =====================================================
-       PROJECT STEP
-    ===================================================== */
+    let currentProjectIndex = 0;
 
-    function getProjectStep() {
+    function clampProjectIndex(index) {
 
-        if (
-            !projectCards.length
-        ) {
+        if (!projectCards.length) {
             return 0;
         }
 
-        const card =
-            projectCards[0];
-
-        const style =
-            window.getComputedStyle(
-                projectSlider
-            );
-
-        const gap =
-            parseFloat(
-                style.gap
-            ) || 22;
-
-        return (
-            card.offsetWidth +
-            gap
+        return Math.max(
+            0,
+            Math.min(index, projectCards.length - 1)
         );
     }
-
 
     /* =====================================================
        PROJECT COUNTER
@@ -854,115 +543,73 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function updateProjectCounter() {
 
-        if (
-            !projectSlider ||
-            !projectCards.length
-        ) {
+        if (!projectSlider || !projectCards.length) {
             return;
         }
 
-        const step =
-            getProjectStep();
+        /*
+         * Cari kartu paling dekat dengan
+         * posisi scroll saat ini (offsetLeft),
+         * ini yang menggantikan perhitungan
+         * step lama.
+         */
 
-        if (!step) return;
+        let closestIndex = 0;
+        let closestDistance = Infinity;
 
-        const index =
-            Math.round(
-                projectSlider.scrollLeft /
-                step
+        projectCards.forEach(function (card, index) {
+
+            const distance = Math.abs(
+                card.offsetLeft - projectSlider.scrollLeft
             );
 
-        const safeIndex =
-            Math.max(
-                0,
-                Math.min(
-                    index,
-                    projectCards.length - 1
-                )
-            );
+            if (distance < closestDistance) {
+                closestDistance = distance;
+                closestIndex = index;
+            }
+        });
 
+        currentProjectIndex = closestIndex;
 
         if (currentCounter) {
-
-            currentCounter.textContent =
-                String(
-                    safeIndex + 1
-                ).padStart(
-                    2,
-                    "0"
-                );
+            currentCounter.textContent = String(closestIndex + 1).padStart(2, "0");
         }
-
 
         if (progressBar) {
 
-            const max =
-                projectSlider.scrollWidth -
-                projectSlider.clientWidth;
+            const max = projectSlider.scrollWidth - projectSlider.clientWidth;
 
             let percent = 20;
 
             if (max > 0) {
-
-                percent =
-                    (
-                        projectSlider.scrollLeft /
-                        max
-                    ) * 100;
+                percent = (projectSlider.scrollLeft / max) * 100;
             }
 
-            progressBar.style.width =
-                Math.max(
-                    20,
-                    Math.min(
-                        100,
-                        percent
-                    )
-                ) + "%";
+            progressBar.style.width = Math.max(20, Math.min(100, percent)) + "%";
         }
     }
-
 
     /* =====================================================
        PROJECT GO TO
     ===================================================== */
 
-    function goToProject(
-        index
-    ) {
+    function goToProject(index) {
 
-        if (
-            !projectSlider ||
-            !projectCards.length
-        ) {
+        if (!projectSlider || !projectCards.length) {
             return;
         }
 
-        const step =
-            getProjectStep();
+        const safeIndex = clampProjectIndex(index);
 
-        const max =
-            projectSlider.scrollWidth -
-            projectSlider.clientWidth;
+        const card = projectCards[safeIndex];
 
-        let target =
-            step * index;
-
-        target =
-            Math.max(
-                0,
-                Math.min(
-                    target,
-                    max
-                )
-            );
+        currentProjectIndex = safeIndex;
 
         projectSlider.scrollTo({
-            left: target,
+            left: card.offsetLeft,
             behavior: "smooth"
         });
     }
-
 
     /* =====================================================
        NEXT PROJECT
@@ -970,41 +617,22 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function nextProject() {
 
-        if (!projectSlider) return;
+        if (!projectSlider || !projectCards.length) return;
 
-        const step =
-            getProjectStep();
-
-        const max =
-            projectSlider.scrollWidth -
-            projectSlider.clientWidth;
-
-        let target =
-            projectSlider.scrollLeft +
-            step;
-
+        let nextIndex = currentProjectIndex + 1;
 
         /*
          * End → back to first
          */
 
-        if (
-            target >=
-            max - 5
-        ) {
-            target = 0;
+        if (nextIndex > projectCards.length - 1) {
+            nextIndex = 0;
         }
 
-
-        projectSlider.scrollTo({
-            left: target,
-            behavior: "smooth"
-        });
-
+        goToProject(nextIndex);
 
         restartProjectTimer();
     }
-
 
     /* =====================================================
        PREVIOUS PROJECT
@@ -1012,50 +640,26 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function previousProject() {
 
-        if (!projectSlider) return;
+        if (!projectSlider || !projectCards.length) return;
 
-        const step =
-            getProjectStep();
-
-        let target =
-            projectSlider.scrollLeft -
-            step;
-
+        let prevIndex = currentProjectIndex - 1;
 
         /*
          * Beginning → go to last
          */
 
-        if (target <= 5) {
-
-            const max =
-                projectSlider.scrollWidth -
-                projectSlider.clientWidth;
-
-            target = max;
+        if (prevIndex < 0) {
+            prevIndex = projectCards.length - 1;
         }
 
-
-        projectSlider.scrollTo({
-            left: target,
-            behavior: "smooth"
-        });
-
+        goToProject(prevIndex);
 
         restartProjectTimer();
     }
 
+    previousButton?.addEventListener("click", previousProject);
 
-    previousButton?.addEventListener(
-        "click",
-        previousProject
-    );
-
-    nextButton?.addEventListener(
-        "click",
-        nextProject
-    );
-
+    nextButton?.addEventListener("click", nextProject);
 
     /* =====================================================
        PROJECT AUTO SLIDE
@@ -1064,59 +668,37 @@ document.addEventListener("DOMContentLoaded", function () {
     function stopProjectTimer() {
 
         if (projectTimer) {
-
-            clearInterval(
-                projectTimer
-            );
+            clearInterval(projectTimer);
 
             projectTimer = null;
         }
     }
 
-
     function startProjectTimer() {
 
-        if (
-            !projectSlider ||
-            projectCards.length < 2
-        ) {
+        if (!projectSlider || projectCards.length < 2) {
             return;
         }
 
-
         stopProjectTimer();
-
 
         /*
          * 5 second interval.
          */
 
-        projectTimer =
-            setInterval(
-                function () {
-
-                    nextProject();
-
-                },
-                1000
-            );
+        projectTimer = setInterval(function () {
+            nextProject();
+        }, 5000);
     }
-
 
     function restartProjectTimer() {
 
         stopProjectTimer();
 
-        setTimeout(
-            function () {
-
-                startProjectTimer();
-
-            },
-            2000
-        );
+        setTimeout(function () {
+            startProjectTimer();
+        }, 2000);
     }
-
 
     /* =====================================================
        PAUSE AUTO SLIDE WHEN HOVER
@@ -1124,45 +706,20 @@ document.addEventListener("DOMContentLoaded", function () {
 
     if (projectSlider) {
 
-        projectSlider.addEventListener(
-            "mouseenter",
-            stopProjectTimer
-        );
+        projectSlider.addEventListener("mouseenter", stopProjectTimer);
 
-        projectSlider.addEventListener(
-            "mouseleave",
-            startProjectTimer
-        );
+        projectSlider.addEventListener("mouseleave", startProjectTimer);
 
-        projectSlider.addEventListener(
-            "touchstart",
-            stopProjectTimer,
-            {
-                passive: true
-            }
-        );
+        projectSlider.addEventListener("touchstart", stopProjectTimer, { passive: true });
 
-        projectSlider.addEventListener(
-            "touchend",
-            restartProjectTimer,
-            {
-                passive: true
-            }
-        );
+        projectSlider.addEventListener("touchend", restartProjectTimer, { passive: true });
 
-        projectSlider.addEventListener(
-            "scroll",
-            updateProjectCounter,
-            {
-                passive: true
-            }
-        );
+        projectSlider.addEventListener("scroll", updateProjectCounter, { passive: true });
     }
-
 
     /* =====================================================
        PROJECT DRAG
-       
+
        VERY IMPORTANT:
        Kita tidak menggunakan setPointerCapture.
        Jadi tombol Preview tetap menerima click.
@@ -1178,71 +735,43 @@ document.addEventListener("DOMContentLoaded", function () {
 
         let moved = false;
 
+        projectSlider.addEventListener("pointerdown", function (event) {
 
-        projectSlider.addEventListener(
-            "pointerdown",
-            function (event) {
-
-                /*
-                 * Jangan drag ketika klik
-                 * tombol Preview.
-                 */
-                if (
-                    event.target.closest(
-                        "button, a"
-                    )
-                ) {
-                    return;
-                }
-
-
-                dragging = true;
-
-                moved = false;
-
-                startX =
-                    event.clientX;
-
-                startScroll =
-                    projectSlider.scrollLeft;
-
-                projectSlider.classList.add(
-                    "dragging"
-                );
-
-
-                stopProjectTimer();
+            /*
+             * Jangan drag ketika klik
+             * tombol Preview.
+             */
+            if (event.target.closest("button, a")) {
+                return;
             }
-        );
 
+            dragging = true;
 
-        projectSlider.addEventListener(
-            "pointermove",
-            function (event) {
+            moved = false;
 
-                if (!dragging) {
-                    return;
-                }
+            startX = event.clientX;
 
-                const distance =
-                    event.clientX -
-                    startX;
+            startScroll = projectSlider.scrollLeft;
 
+            projectSlider.classList.add("dragging");
 
-                if (
-                    Math.abs(distance) >
-                    5
-                ) {
-                    moved = true;
-                }
+            stopProjectTimer();
+        });
 
+        projectSlider.addEventListener("pointermove", function (event) {
 
-                projectSlider.scrollLeft =
-                    startScroll -
-                    distance;
+            if (!dragging) {
+                return;
             }
-        );
 
+            const distance = event.clientX - startX;
+
+            if (Math.abs(distance) > 5) {
+                moved = true;
+            }
+
+            projectSlider.scrollLeft = startScroll - distance;
+        });
 
         function endProjectDrag() {
 
@@ -1252,53 +781,29 @@ document.addEventListener("DOMContentLoaded", function () {
 
             dragging = false;
 
-            projectSlider.classList.remove(
-                "dragging"
-            );
-
+            projectSlider.classList.remove("dragging");
 
             updateProjectCounter();
 
             restartProjectTimer();
         }
 
+        projectSlider.addEventListener("pointerup", endProjectDrag);
 
-        projectSlider.addEventListener(
-            "pointerup",
-            endProjectDrag
-        );
-
-        projectSlider.addEventListener(
-            "pointercancel",
-            endProjectDrag
-        );
+        projectSlider.addEventListener("pointercancel", endProjectDrag);
     }
-
 
     /* =====================================================
        PROJECT PREVIEW MODAL
     ===================================================== */
 
-    const projectModal =
-        $("#projectModal");
-
-    const modalImage =
-        $("#modalProjectImage");
-
-    const modalCategory =
-        $("#modalProjectCategory");
-
-    const modalYear =
-        $("#modalProjectYear");
-
-    const modalTitle =
-        $("#modalProjectTitle");
-
-    const modalDescription =
-        $("#modalProjectDescription");
-
-    const modalDirectLink =
-        $("#modalDirectLink");
+    const projectModal = $("#projectModal");
+    const modalImage = $("#modalProjectImage");
+    const modalCategory = $("#modalProjectCategory");
+    const modalYear = $("#modalProjectYear");
+    const modalTitle = $("#modalProjectTitle");
+    const modalDescription = $("#modalProjectDescription");
+    const modalDirectLink = $("#modalDirectLink");
 
     const modalTech = [
         $("#modalTech1"),
@@ -1306,181 +811,102 @@ document.addEventListener("DOMContentLoaded", function () {
         $("#modalTech3")
     ];
 
-
     function getCardData(card) {
 
         if (!card) return null;
 
-        const image =
-            $(".project-image img", card);
+        const image = $(".project-image img", card);
 
-        const category =
-            $(".project-meta span:first-child", card);
+        const category = $(".project-meta span:first-child", card);
 
-        const year =
-            $(".project-meta span:last-child", card);
+        const year = $(".project-meta span:last-child", card);
 
-        const title =
-            $(".project-body h3", card);
+        const title = $(".project-body h3", card);
 
-        const description =
-            $(".project-body > p", card);
+        const description = $(".project-body > p", card);
 
-        const tags =
-            $$(".project-tags span", card);
+        const tags = $$(".project-tags span", card);
 
-        const directLink =
-            $(".project-direct-link", card);
-
+        const directLink = $(".project-direct-link", card);
 
         return {
 
-            image:
-                image
-                    ? image.src
-                    : "",
+            image: image ? image.src : "",
 
-            category:
-                category
-                    ? category.textContent.trim()
-                    : "",
+            category: category ? category.textContent.trim() : "",
 
-            year:
-                year
-                    ? year.textContent.trim()
-                    : "",
+            year: year ? year.textContent.trim() : "",
 
-            title:
-                title
-                    ? title.textContent.trim()
-                    : "",
+            title: title ? title.textContent.trim() : "",
 
-            description:
-                description
-                    ? description.textContent.trim()
-                    : "",
+            description: description ? description.textContent.trim() : "",
 
-            tags:
-                tags.map(
-                    function (tag) {
-                        return tag.textContent.trim();
-                    }
-                ),
+            tags: tags.map(function (tag) {
+                return tag.textContent.trim();
+            }),
 
-            link:
-                directLink
-                    ? directLink.href
-                    : "#"
+            link: directLink ? directLink.href : "#"
         };
     }
-
 
     /* =====================================================
        OPEN PROJECT
     ===================================================== */
 
-    function openProject(
-        card
-    ) {
+    function openProject(card) {
 
-        if (
-            !projectModal ||
-            !card
-        ) {
+        if (!projectModal || !card) {
             return;
         }
 
-        const data =
-            getCardData(card);
+        const data = getCardData(card);
 
         if (!data) return;
 
-
         if (modalImage) {
-
-            modalImage.src =
-                data.image;
-
-            modalImage.alt =
-                data.title;
+            modalImage.src = data.image;
+            modalImage.alt = data.title;
         }
-
 
         if (modalCategory) {
-
-            modalCategory.textContent =
-                data.category;
+            modalCategory.textContent = data.category;
         }
-
 
         if (modalYear) {
-
-            modalYear.textContent =
-                data.year;
+            modalYear.textContent = data.year;
         }
-
 
         if (modalTitle) {
-
-            modalTitle.textContent =
-                data.title;
+            modalTitle.textContent = data.title;
         }
-
 
         if (modalDescription) {
-
-            modalDescription.textContent =
-                data.description;
+            modalDescription.textContent = data.description;
         }
 
+        modalTech.forEach(function (tech, index) {
 
-        modalTech.forEach(
-            function (
-                tech,
-                index
-            ) {
+            if (!tech) return;
 
-                if (!tech) return;
+            const value = data.tags[index] || "";
 
-                const value =
-                    data.tags[index] ||
-                    "";
+            tech.textContent = value;
 
-                tech.textContent =
-                    value;
-
-                tech.style.display =
-                    value
-                        ? "inline-block"
-                        : "none";
-            }
-        );
-
+            tech.style.display = value ? "inline-block" : "none";
+        });
 
         if (modalDirectLink) {
-
-            modalDirectLink.href =
-                data.link;
+            modalDirectLink.href = data.link;
         }
 
+        projectModal.classList.add("active");
 
-        projectModal.classList.add(
-            "active"
-        );
+        projectModal.setAttribute("aria-hidden", "false");
 
-        projectModal.setAttribute(
-            "aria-hidden",
-            "false"
-        );
-
-        document.body.classList.add(
-            "lock-scroll"
-        );
-
+        document.body.classList.add("lock-scroll");
 
         stopProjectTimer();
     }
-
 
     /* =====================================================
        CLOSE PROJECT
@@ -1490,272 +916,138 @@ document.addEventListener("DOMContentLoaded", function () {
 
         if (!projectModal) return;
 
-        projectModal.classList.remove(
-            "active"
-        );
+        projectModal.classList.remove("active");
 
-        projectModal.setAttribute(
-            "aria-hidden",
-            "true"
-        );
+        projectModal.setAttribute("aria-hidden", "true");
 
-        document.body.classList.remove(
-            "lock-scroll"
-        );
+        document.body.classList.remove("lock-scroll");
 
         startProjectTimer();
     }
 
-
     /* =====================================================
        PREVIEW BUTTONS
-       
+
        IMPORTANT:
        Query langsung semua tombol.
     ===================================================== */
 
-    $$(".preview-button").forEach(
-        function (button) {
+    $$(".preview-button").forEach(function (button) {
+        button.addEventListener("click", function (event) {
 
-            button.addEventListener(
-                "click",
-                function (event) {
+            event.preventDefault();
 
-                    event.preventDefault();
+            event.stopPropagation();
 
-                    event.stopPropagation();
+            const card = button.closest(".project-card");
 
-
-                    const card =
-                        button.closest(
-                            ".project-card"
-                        );
-
-
-                    openProject(
-                        card
-                    );
-                }
-            );
-        }
-    );
-
+            openProject(card);
+        });
+    });
 
     /* close */
 
-    $$(".project-modal .modal-close")
-        .forEach(
-            function (button) {
+    $$(".project-modal .modal-close").forEach(function (button) {
+        button.addEventListener("click", closeProject);
+    });
 
-                button.addEventListener(
-                    "click",
-                    closeProject
-                );
-            }
-        );
-
-
-    $(".project-modal .modal-backdrop")
-        ?.addEventListener(
-            "click",
-            closeProject
-        );
-
+    $(".project-modal .modal-backdrop")?.addEventListener("click", closeProject);
 
     /* =====================================================
        DETAIL MODAL
     ===================================================== */
 
-    const detailModal =
-        $("#detailModal");
+    const detailModal = $("#detailModal");
+    const detailButton = $("#detailButton");
 
-    const detailButton =
-        $("#detailButton");
+    if (detailModal && detailButton) {
 
+        detailButton.addEventListener("click", function (event) {
 
-    if (
-        detailModal &&
-        detailButton
-    ) {
+            event.preventDefault();
 
-        detailButton.addEventListener(
-            "click",
-            function (event) {
+            detailModal.classList.add("active");
 
-                event.preventDefault();
+            document.body.classList.add("lock-scroll");
 
-                detailModal.classList.add(
-                    "active"
-                );
+            stopProjectTimer();
+        });
 
-                document.body.classList.add(
-                    "lock-scroll"
-                );
+        $$(".modal-close", detailModal).forEach(function (button) {
+            button.addEventListener("click", function () {
 
-                stopProjectTimer();
+                detailModal.classList.remove("active");
+
+                document.body.classList.remove("lock-scroll");
+
+                startProjectTimer();
+            });
+        });
+
+        detailModal.addEventListener("click", function (event) {
+            if (event.target === detailModal) {
+
+                detailModal.classList.remove("active");
+
+                document.body.classList.remove("lock-scroll");
+
+                startProjectTimer();
             }
-        );
-
-
-        $$(".modal-close", detailModal)
-            .forEach(
-                function (button) {
-
-                    button.addEventListener(
-                        "click",
-                        function () {
-
-                            detailModal.classList.remove(
-                                "active"
-                            );
-
-                            document.body.classList.remove(
-                                "lock-scroll"
-                            );
-
-                            startProjectTimer();
-                        }
-                    );
-                }
-            );
-
-
-        detailModal.addEventListener(
-            "click",
-            function (event) {
-
-                if (
-                    event.target ===
-                    detailModal
-                ) {
-
-                    detailModal.classList.remove(
-                        "active"
-                    );
-
-                    document.body.classList.remove(
-                        "lock-scroll"
-                    );
-
-                    startProjectTimer();
-                }
-            }
-        );
+        });
     }
-
 
     /* =====================================================
        BLOG MODAL
-       
+
        HTML kamu mempunyai dua blog modal.
        Kita hanya gunakan modal pertama.
     ===================================================== */
 
-    const blogModal =
-        $(".blog-modal");
+    const blogModal = $(".blog-modal");
+    const blogButton = $(".blog-btn");
 
-    const blogButton =
-        $(".blog-btn");
+    if (blogModal && blogButton) {
 
+        const blogClose = $(".blog-modal-close", blogModal);
 
-    if (
-        blogModal &&
-        blogButton
-    ) {
+        const blogOverlay = $(".blog-modal-overlay", blogModal);
 
-        const blogClose =
-            $(".blog-modal-close",
-                blogModal
-            );
+        const blogImage = $("#blogModalImage", blogModal);
 
-        const blogOverlay =
-            $(".blog-modal-overlay",
-                blogModal
-            );
+        const blogMeta = $("#blogModalMeta", blogModal);
 
-        const blogImage =
-            $("#blogModalImage",
-                blogModal
-            );
+        const blogTitle = $("#blogModalTitle", blogModal);
 
-        const blogMeta =
-            $("#blogModalMeta",
-                blogModal
-            );
+        const blogDescription = $("#blogModalDescription", blogModal);
 
-        const blogTitle =
-            $("#blogModalTitle",
-                blogModal
-            );
-
-        const blogDescription =
-            $("#blogModalDescription",
-                blogModal
-            );
-
-        const blogText =
-            $("#blogModalText",
-                blogModal
-            );
-
+        const blogText = $("#blogModalText", blogModal);
 
         function openBlog() {
 
-            const image =
-                $(".blog-single-image img");
+            const image = $(".blog-single-image img");
 
-            const meta =
-                $(".blog-meta");
+            const meta = $(".blog-meta");
 
-            const title =
-                $(".blog-single-content h3");
+            const title = $(".blog-single-content h3");
 
-            const description =
-                $(".blog-single-content > p");
+            const description = $(".blog-single-content > p");
 
-
-            if (
-                blogImage &&
-                image
-            ) {
-
-                blogImage.src =
-                    image.src;
-
-                blogImage.alt =
-                    image.alt;
+            if (blogImage && image) {
+                blogImage.src = image.src;
+                blogImage.alt = image.alt;
             }
 
-
-            if (
-                blogMeta &&
-                meta
-            ) {
-
-                blogMeta.textContent =
-                    meta.textContent.trim();
+            if (blogMeta && meta) {
+                blogMeta.textContent = meta.textContent.trim();
             }
 
-
-            if (
-                blogTitle &&
-                title
-            ) {
-
-                blogTitle.textContent =
-                    title.textContent.trim();
+            if (blogTitle && title) {
+                blogTitle.textContent = title.textContent.trim();
             }
 
-
-            if (
-                blogDescription &&
-                description
-            ) {
-
-                blogDescription.textContent =
-                    description.textContent.trim();
+            if (blogDescription && description) {
+                blogDescription.textContent = description.textContent.trim();
             }
-
 
             if (blogText) {
 
@@ -1790,206 +1082,117 @@ document.addEventListener("DOMContentLoaded", function () {
                 `;
             }
 
+            blogModal.classList.add("active");
 
-            blogModal.classList.add(
-                "active"
-            );
-
-            document.body.classList.add(
-                "lock-scroll"
-            );
+            document.body.classList.add("lock-scroll");
 
             stopProjectTimer();
         }
 
-
         function closeBlog() {
 
-            blogModal.classList.remove(
-                "active"
-            );
+            blogModal.classList.remove("active");
 
-            document.body.classList.remove(
-                "lock-scroll"
-            );
+            document.body.classList.remove("lock-scroll");
 
             startProjectTimer();
         }
 
+        blogButton.addEventListener("click", function (event) {
+            event.preventDefault();
 
-        blogButton.addEventListener(
-            "click",
-            function (event) {
+            openBlog();
+        });
 
-                event.preventDefault();
+        blogClose?.addEventListener("click", closeBlog);
 
-                openBlog();
-            }
-        );
-
-
-        blogClose?.addEventListener(
-            "click",
-            closeBlog
-        );
-
-
-        blogOverlay?.addEventListener(
-            "click",
-            closeBlog
-        );
+        blogOverlay?.addEventListener("click", closeBlog);
     }
-
 
     /* =====================================================
        ESC KEY
     ===================================================== */
 
-    document.addEventListener(
-        "keydown",
-        function (event) {
+    document.addEventListener("keydown", function (event) {
 
-            if (
-                event.key !==
-                "Escape"
-            ) {
-                return;
-            }
-
-
-            closeProject();
-
-
-            if (detailModal) {
-
-                detailModal.classList.remove(
-                    "active"
-                );
-            }
-
-
-            if (blogModal) {
-
-                blogModal.classList.remove(
-                    "active"
-                );
-            }
-
-
-            document.body.classList.remove(
-                "lock-scroll"
-            );
-
-
-            closeNav();
+        if (event.key !== "Escape") {
+            return;
         }
-    );
 
+        closeProject();
+
+        if (detailModal) {
+            detailModal.classList.remove("active");
+        }
+
+        if (blogModal) {
+            blogModal.classList.remove("active");
+        }
+
+        document.body.classList.remove("lock-scroll");
+
+        closeNav();
+    });
 
     /* =====================================================
        CONTACT FORMSPREE
     ===================================================== */
 
-    const contactForm =
-        $("#contactForm");
-
-    const formStatus =
-        $("#formStatus");
-
+    const contactForm = $("#contactForm");
+    const formStatus = $("#formStatus");
 
     if (contactForm) {
 
-        contactForm.addEventListener(
-            "submit",
-            async function (event) {
+        contactForm.addEventListener("submit", async function (event) {
 
-                event.preventDefault();
+            event.preventDefault();
 
+            const button = $(".contact-submit", contactForm);
 
-                const button =
-                    $(".contact-submit",
-                        contactForm
-                    );
+            const oldHTML = button ? button.innerHTML : "";
 
+            if (button) {
+                button.disabled = true;
+                button.textContent = "Mengirim...";
+            }
 
-                const oldHTML =
-                    button
-                        ? button.innerHTML
-                        : "";
+            try {
 
+                const response = await fetch(contactForm.action, {
+                    method: "POST",
+
+                    body: new FormData(contactForm),
+
+                    headers: {
+                        Accept: "application/json"
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error("Request failed");
+                }
+
+                contactForm.reset();
+
+                if (formStatus) {
+                    formStatus.textContent = "Pesan berhasil dikirim.";
+                }
+
+            } catch (error) {
+
+                if (formStatus) {
+                    formStatus.textContent = "Pesan gagal dikirim. Silakan coba lagi.";
+                }
+
+            } finally {
 
                 if (button) {
-
-                    button.disabled =
-                        true;
-
-                    button.textContent =
-                        "Mengirim...";
-                }
-
-
-                try {
-
-                    const response =
-                        await fetch(
-                            contactForm.action,
-                            {
-                                method: "POST",
-
-                                body:
-                                    new FormData(
-                                        contactForm
-                                    ),
-
-                                headers: {
-                                    Accept:
-                                        "application/json"
-                                }
-                            }
-                        );
-
-
-                    if (
-                        !response.ok
-                    ) {
-                        throw new Error(
-                            "Request failed"
-                        );
-                    }
-
-
-                    contactForm.reset();
-
-
-                    if (formStatus) {
-
-                        formStatus.textContent =
-                            "Pesan berhasil dikirim.";
-                    }
-
-                } catch (error) {
-
-                    if (formStatus) {
-
-                        formStatus.textContent =
-                            "Pesan gagal dikirim. Silakan coba lagi.";
-                    }
-
-                } finally {
-
-                    if (button) {
-
-                        button.disabled =
-                            false;
-
-                        button.innerHTML =
-                            oldHTML;
-                    }
+                    button.disabled = false;
+                    button.innerHTML = oldHTML;
                 }
             }
-        );
+        });
     }
-
 
     /* =====================================================
        INITIAL PROJECT STATE
@@ -1997,24 +1200,16 @@ document.addEventListener("DOMContentLoaded", function () {
 
     updateProjectCounter();
 
-    setTimeout(
-        function () {
-            startProjectTimer();
-        },
-        1000
-    );
-
+    setTimeout(function () {
+        startProjectTimer();
+    }, 1000);
 
     /* =====================================================
        RESIZE
     ===================================================== */
 
-    window.addEventListener(
-        "resize",
-        function () {
-
-            updateProjectCounter();
-        }
-    );
+    window.addEventListener("resize", function () {
+        updateProjectCounter();
+    });
 
 });
